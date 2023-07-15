@@ -5,14 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Page;
 use Illuminate\Http\Request;
 
+
 class PageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function home()
+    public function home(Request $request)
     {
-        return view("welcome");
+        $page = "home";
+        $fullUrl = $request->url();
+        $url_parts = explode("//", $fullUrl);
+        $url_without_protocol = $url_parts[1];
+        $url_parts_1 = explode("/", $url_without_protocol);
+        if(count($url_parts_1)> 1){
+            $url_slug = $url_parts_1[1];
+        } else {
+            $url_slug = "home";
+        }
+        return view("welcome")->with("page", "$url_slug");
     }
     public function index()
     {
