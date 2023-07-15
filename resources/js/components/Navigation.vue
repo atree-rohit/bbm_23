@@ -86,6 +86,12 @@ ul li:hover a::after{
 import {defineComponent} from 'vue'
 export default defineComponent({
     name: "Navigation",
+    props: {
+        current_page: {
+            type: String,
+            default: "home"
+        }
+    },
     data(){
         return {
             links: [
@@ -129,7 +135,16 @@ export default defineComponent({
         }
     },
     mounted() {
-        console.log('Navigation Component mounted.')
+        this.set_current_link()
+    },
+    methods:{
+        set_current_link(){
+            if(this.current_page == "home"){
+                this.current_link = 1
+            } else {
+                this.current_link = this.links.find((link) => link.link.replace("/", "") == this.current_page).id
+            }
+        }
     }
 })
 </script>
