@@ -27,7 +27,7 @@
 
 <template>
     <div class="main-container">
-        <navigation />
+        <navigation :current_page="current_page"/>
         <div class="main-content">
             Main
         </div>
@@ -46,6 +46,7 @@ export default defineComponent({
     components: {Navigation},
     data(){
         return {
+            current_page: window.page
         }
     },
     mounted(){
