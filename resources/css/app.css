@@ -1,0 +1,19 @@
+:root{
+    --primary: rgb(10, 90, 135);
+    --primary-text: rgb(200,200,200);
+    --active-clr: rgb(255,255,255);
+
+    --transition-time: 500ms;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+html, body{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
