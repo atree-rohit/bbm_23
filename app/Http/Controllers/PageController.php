@@ -25,6 +25,12 @@ class PageController extends Controller
         }
         return view("welcome")->with("page", "$url_slug");
     }
+    
+    public function about()
+    {
+        return view('about');
+    }
+
     public function index()
     {
         //
