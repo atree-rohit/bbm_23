@@ -13,74 +13,36 @@ class PageController extends Controller
      */
     public function home(Request $request)
     {
-        $page = "home";
-        $fullUrl = $request->url();
-        $url_parts = explode("//", $fullUrl);
-        $url_without_protocol = $url_parts[1];
-        $url_parts_1 = explode("/", $url_without_protocol);
-        if(count($url_parts_1)> 1){
-            $url_slug = $url_parts_1[1];
-        } else {
-            $url_slug = "home";
-        }
-        return view("welcome")->with("page", "$url_slug");
+        return view("welcome");
+    }
+
+    public function data()
+    {
+        return view('pages.data');
     }
     
     public function about()
     {
-        return view('about');
+        return view('pages.about');
     }
 
-    public function index()
+    public function participate()
     {
-        //
+        return view('pages.participate');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function registration()
     {
-        //
+        return view('pages.registration');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function resources()
     {
-        //
+        return view('pages.resources');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Page $page)
+    public function calendar()
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Page $page)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Page $page)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Page $page)
-    {
-        //
+        return view('pages.calendar');
     }
 }

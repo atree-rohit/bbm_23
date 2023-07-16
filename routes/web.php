@@ -15,5 +15,10 @@ use App\Http\Controllers\PageController;
 */
 
 Route::get('/', [PageController::class, 'home']);
+Route::get('/data', [PageController::class, 'data']);
 Route::get('/about', [PageController::class, 'about']);
-Route::get('/{any}', [PageController::class, 'home']);
+Route::get('/participate', [PageController::class, 'participate']);
+Route::get('/registration', [PageController::class, 'registration']);
+Route::get('/resources', [PageController::class, 'resources']);
+Route::get('/calendar', [PageController::class, 'calendar']);
+// Route::get('/{any}', [PageController::class, 'home']);
