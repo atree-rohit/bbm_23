@@ -15,7 +15,7 @@
 html, body{
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 nav{
@@ -24,13 +24,17 @@ nav{
     background-color: var(--primary);
 }
 nav .logo{
-        display: grid;
-        justify-content: center;
-        align-items: center;
-    }
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
 .logo{
     width: 7.5%;
-    border: 1px solid red;
+}
+
+.logo img{
+    width: 100%;
+    max-height: 60px;
 }
 
 ul{

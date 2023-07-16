@@ -7,12 +7,12 @@
             "link" => "/"
         ],[
             "id" => 2,
-            "label" => "Data",
-            "link" => "/data"
-        ],[
-            "id" => 3,
             "label" => "About us",
             "link" => "/about"
+        ],[
+            "id" => 3,
+            "label" => "Data",
+            "link" => "/data"            
         ],[
             "id" => 4,
             "label" => "How to Participate",
@@ -42,7 +42,9 @@
 <nav>
 
     
-    <div class="logo">Logo</div>
+    <div class="logo">
+        <img src="./img/bbm_logo.png" alt="">
+    </div>
     <ul>
         @foreach($links as $link)
         <li @if($current_path == $link['link']) class='active' @endif>
