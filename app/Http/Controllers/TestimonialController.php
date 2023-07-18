@@ -38,7 +38,23 @@ class TestimonialController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:100',
+            'text' => 'required|min: 10|max: 5000',
+        ]);
+
+        $testimonial = new Testimonial();
+        $testimonial->name = $request->name;
+        $testimonial->designation = $request->designation;
+        $testimonial->text = $request->text;
+        $testimonial->added_by = $request->user["id"];
+        $testimonial->save();
+
+        return response()->json([
+            'message' => 'Testimonial added successfully!',
+            'status' => 200,
+            'data' => $testimonial->toArray()
+        ]);
     }
 
     /**
