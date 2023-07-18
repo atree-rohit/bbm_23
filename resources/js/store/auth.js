@@ -41,7 +41,7 @@ export default {
                 commit('SET_AUTHENTICATED', false)
                 window.location.href = window.location.origin
             } catch ({ response: { data: data_1 } }) {
-                console.log("error logging out")
+                console.error("error logging out")
             }
         }
     }
