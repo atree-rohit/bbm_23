@@ -29,6 +29,10 @@
             "id" => 7,
             "label" => "Calendar",
             "link" => "/calendar"
+        ],[
+            "id" => 8,
+            "label" => "Login",
+            "link" => "/login"
         ]
     ];
     $current_path = "/";
