@@ -3,7 +3,7 @@
         align-items: center;
     }
 
-    .header h1{
+    .header .h1{
         flex-grow:2;
     }
 
@@ -25,7 +25,7 @@
 
 <template>
     <div class="header d-flex px-2">
-        <h1>Testimonials</h1>
+        <div class="h1">Testimonials</div>
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
