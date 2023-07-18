@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import auth from './auth'
 import testimonials from './testimonials'
+import press_links from './press_links'
 
 const store = createStore({
     plugins: [
@@ -10,7 +11,8 @@ const store = createStore({
     ],
     modules: {
         auth,
-        testimonials
+        testimonials,
+        press_links
     }
 })
 
