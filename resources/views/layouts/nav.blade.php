@@ -29,19 +29,32 @@
             "id" => 7,
             "label" => "Calendar",
             "link" => "/calendar"
-        ],[
+        ]
+    ];
+    if(auth()->user()){
+        $links[] = [
+            "id" => 8,
+            "label" => "Logout",
+            "link" => "/logout"
+        ];
+    } else {
+        $links[] = [
             "id" => 8,
             "label" => "Login",
             "link" => "/login"
-        ]
-    ];
+        ];
+    }
     $current_path = "/";
     foreach($links as $link){
         if(str_replace("/", "", $link["link"]) == $path){
             $current_path = $link["link"];
         }
     }
-    // dd($path, $current_path);
+    if($current_path == "/"){
+        if($path == "register" || $path == "logout"){
+            $current_path = "/login";
+        }
+    }    
 @endphp
 <nav>
 
