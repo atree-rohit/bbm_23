@@ -14,12 +14,25 @@ export default {
         SET_ALL_DATA(state, value){
             state.all_data = value
         },
+        ADD_DATA(state, value){
+            let { created_at, updated_at, ...data} = value.data
+            console.log(value)
+            state.all_data.push(data)
+        }
     },
     actions: {
         async getAllData({commit}){
             try {
                 const { data } = await axios.get('/api/testimonials')
                 commit('SET_ALL_DATA', data)
+            } catch ({ response: { data: data_1 } }) {
+                console.log("error retreiving testimonials")
+            }
+        },
+        async store({commit}, payload){
+            try {
+                const { data } = await axios.post('/api/store_testimonials', payload)
+                commit('ADD_DATA', data)
             } catch ({ response: { data: data_1 } }) {
                 console.log("error retreiving testimonials")
             }
