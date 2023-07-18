@@ -6,6 +6,21 @@
     .header h1{
         flex-grow:2;
     }
+
+    .testimonials-container .testimonial{
+        font-size: 1.2rem;
+        background: rgba(225, 225, 225, .75);
+        border-radius: 1rem;;
+    }
+    .testimonials-container .testimonial .testimonial-text{
+        font-weight: 100;
+        color: #444;
+        text-align: justify;
+    }
+    .testimonials-container .testimonial .testimonial-attribution{
+        color: #000;
+        text-align: end;
+    }
 </style>
 
 <template>
@@ -14,25 +29,62 @@
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
-            <button class="btn btn-sm btn-success mx-5">Add Testimonials</button>
+            <button class="btn btn-sm btn-success mx-5" @click="show_modal = true">Add Testimonials</button>
         </div>
     </div>
     
-    <div class="testimonials-container">
-        <div class="testimonial" v-for="testimonial in all_data" :key="testimonial.id">
-            <p>{{ testimonial.text }}</p>
-            <p>{{ testimonial.name }}</p>
-            <p>{{ testimonial.location }}</p>
+    <div class="testimonials-container m-4">
+        <div
+            class="testimonial my-4 p-4"
+            v-for="testimonial in all_data"
+            :key="testimonial.id"
+        >
+            <div class="testimonial-text fst-italic">{{ testimonial.text }}</div>
+            <div class="testimonial-attribution pt-4">-- {{ testimonial.name }} <span>( {{ testimonial.designation }} )</span></div>
         </div>
     </div>
+    <modal-add-testimonial
+        :show="show_modal"
+        title="Add Testimonial"
+        :body="testimonial_form"
+        :post_url="'/api/store_testimonials'"
+        :user="user"
+        @close="show_modal=false"
+    />
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
+import ModalAddTestimonial from './ModalAddTestimonial.vue'
 export default defineComponent({
     name: 'Testimonials',
+    components: {
+        ModalAddTestimonial
+    },
+    data(){
+        return {
+            show_modal: false,
+            testimonial_form: [
+                {
+                    type: 'text',
+                    label: 'Name',
+                    name: 'name'
+                },
+                {
+                    type: 'text',
+                    label: 'Designation',
+                    name: 'designation'
+                },
+                {
+                    type: 'textarea',
+                    label: 'Text',
+                    name: 'text'
+                }
+            ]
+        }
+    },
     computed: {
         ...mapState({
             user: state => state.auth.user,
