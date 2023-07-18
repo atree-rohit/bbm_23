@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title', 100)->nullable(false);
             $table->string('link', 100)->nullable(true);
-            $table->enum('type', ['video', 'presentation', 'e-book', 'website', 'other'])->default('video');
+            $table->enum('resource_type', ['video', 'presentation', 'e-book', 'website', 'other'])->default('video');
             $table->string('image', 100)->nullable(true);
             $table->string('description', 100)->nullable(true);
             $table->string('tags', 200)->nullable(true);

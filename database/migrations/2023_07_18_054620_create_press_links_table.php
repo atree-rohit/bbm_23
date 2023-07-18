@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('press_links', function (Blueprint $table) {
             $table->id();
             $table->string('title', 100)->nullable(false);
-            $table->enum('type', ['newspaper_print', 'newspaper_online', 'journal', 'magazine','socialmedia', 'blog', 'other'])->default('newspaper-print');
+            $table->enum('link_type', ['newspaper_print', 'newspaper_online', 'journal', 'magazine','socialmedia', 'blog', 'other'])->default('newspaper_print');
             $table->string('link', 100)->nullable(true);
             $table->string('image', 100)->nullable(true);
             $table->string('description', 100)->nullable(true);
