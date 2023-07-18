@@ -39,7 +39,27 @@ class PressLinkController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:100',
+            'link_type' => 'required|in:newspaper_print,newspaper_online,journal,magazine,socialmedia,blog,other',
+        ]);
+
+        $press_link = new PressLink();
+        $press_link->title = $request->title;
+        $press_link->link_type = $request->link_type;
+        $press_link->link = $request->link;
+        $press_link->image = $request->image;
+        $press_link->description = $request->description;
+        $press_link->tags = $request->tags;
+        $press_link->added_by = $request->user["id"];
+        dd($request->all);
+        // $press_link->save();
+
+        return response()->json([
+            'message' => 'Press Link added successfully!',
+            'status' => 200,
+            'data' => $press_link->toArray()
+        ]);
     }
 
     /**

@@ -62,7 +62,7 @@
             </div>
         </div>
     </div>
-    <modal-add-testimonial
+    <modal-add-press-link
         :show="show_modal"
         :user="user"
         @close="show_modal=false"
@@ -73,11 +73,11 @@
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
-import ModalAddTestimonial from './ModalAddTestimonial.vue'
+import ModalAddPressLink from './ModalAddPressLink.vue'
 export default defineComponent({
     name: 'PressLinks',
     components: {
-        ModalAddTestimonial
+        ModalAddPressLink
     },
     data(){
         return {

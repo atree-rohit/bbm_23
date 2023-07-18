@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('link_type', ['newspaper_print', 'newspaper_online', 'journal', 'magazine','socialmedia', 'blog', 'other'])->default('newspaper_print');
             $table->string('link', 1000)->nullable(true);
             $table->string('image', 100)->nullable(true);
-            $table->string('description', 100)->nullable(true);
+            $table->text('description')->nullable(true);
             $table->string('tags', 200)->nullable(true);
             $table->foreignId('added_by')->constrained(
                 table: 'users', indexName: 'press_links_user_id'

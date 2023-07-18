@@ -19,7 +19,7 @@
                         <div v-for="question in form_questions" :key="question.name" class="form-group col-12">
                             <label :for="question.name" class="font-weight-bold" v-text="question.label" />
                             <input type="text" name="name" v-model="testimonial[question.name]" id="name" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
-                            <textarea class="form-control" v-else-if="question.type == 'textarea'" v-model="testimonial.text" :placeholder="`Enter ${question.name}`" />
+                            <textarea class="form-control" v-else-if="question.type == 'textarea'" v-model="testimonial[question.name]" :placeholder="`Enter ${question.name}`" />
                         </div>
                     </form>
                 </div>
@@ -56,17 +56,20 @@ export default defineComponent({
                 {
                     type: 'text',
                     label: 'Name',
-                    name: 'name'
+                    name: 'name',
+                    required: true
                 },
                 {
                     type: 'text',
                     label: 'Designation',
-                    name: 'designation'
+                    name: 'designation',
+                    required: false
                 },
                 {
                     type: 'textarea',
                     label: 'Text',
-                    name: 'text'
+                    name: 'text',
+                    required: true
                 }
             ],
             testimonial:{
