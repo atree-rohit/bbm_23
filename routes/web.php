@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +22,9 @@ Route::get('/participate', [PageController::class, 'participate']);
 Route::get('/registration', [PageController::class, 'registration']);
 Route::get('/resources', [PageController::class, 'resources']);
 Route::get('/calendar', [PageController::class, 'calendar']);
-Route::get('/login', [PageController::class, 'login']);
+Route::get('/register', [PageController::class, 'register']);
+Route::post('/register', [UserController::class, 'register']);
+Route::get('/login', [PageController::class, 'login'])->name('login');
+Route::post('/login', [UserController::class, 'login']);
+Route::get('/logout', [UserController::class, 'logout']);
 // Route::get('/{any}', [PageController::class, 'home']);
