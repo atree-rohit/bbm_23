@@ -51,7 +51,7 @@ p::first-letter {
             <testimonials />
         </div>
         <div class="section">
-            <h1>Press Links</h1>
+            <press-links />
         </div>
     </div>
 </template>
@@ -59,11 +59,13 @@ p::first-letter {
 <script>
 import { defineComponent } from 'vue'
 import Testimonials from './Testimonials.vue'
+import PressLinks from './PressLinks.vue'
 
 export default defineComponent({
     name: "Home",
     components: {
-        Testimonials
+        Testimonials,
+        PressLinks
     }
 })
 </script>
