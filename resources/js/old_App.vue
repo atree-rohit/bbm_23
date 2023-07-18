@@ -51,6 +51,7 @@ export default defineComponent({
     },
     mounted(){
         // console.clear()
+        console.log(1111)
     }
 })
 </script>
