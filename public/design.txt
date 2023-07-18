@@ -14,10 +14,10 @@ Models
         iNat
         IBP
         IFB
-    Testimonials
-    Press Links
-    Partners
-    District Coordinators
-    Resources - links to videos, presentations, other links (books)
+    + Testimonials
+    + Press Links
+    + Partners
+    + District Coordinators
+    + Resources - links to videos, presentations, other links (books)
 
 
