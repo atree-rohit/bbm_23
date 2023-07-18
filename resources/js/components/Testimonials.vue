@@ -45,9 +45,6 @@
     </div>
     <modal-add-testimonial
         :show="show_modal"
-        title="Add Testimonial"
-        :body="testimonial_form"
-        :post_url="'/api/store_testimonials'"
         :user="user"
         @close="show_modal=false"
     />
@@ -66,23 +63,6 @@ export default defineComponent({
     data(){
         return {
             show_modal: false,
-            testimonial_form: [
-                {
-                    type: 'text',
-                    label: 'Name',
-                    name: 'name'
-                },
-                {
-                    type: 'text',
-                    label: 'Designation',
-                    name: 'designation'
-                },
-                {
-                    type: 'textarea',
-                    label: 'Text',
-                    name: 'text'
-                }
-            ]
         }
     },
     computed: {

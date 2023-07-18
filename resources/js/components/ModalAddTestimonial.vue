@@ -11,12 +11,12 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLiveLabel">{{title}}</h3>
+                    <h3 class="modal-title" id="exampleModalLiveLabel">Add Testimonial</h3>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
                     <form action="javascript:void(0)" @submit="submit" class="row" method="post">
-                        <div v-for="question in body" :key="question.name" class="form-group col-12">
+                        <div v-for="question in form_questions" :key="question.name" class="form-group col-12">
                             <label :for="question.name" class="font-weight-bold" v-text="question.label" />
                             <input type="text" name="name" v-model="testimonial[question.name]" id="name" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
                             <textarea class="form-control" v-else-if="question.type == 'textarea'" v-model="testimonial.text" :placeholder="`Enter ${question.name}`" />
@@ -44,22 +44,6 @@ export default defineComponent({
             type: Boolean,
             default: false
         },
-        title: {
-            type: String,
-            default: 'Modal title'
-        },
-        body: {
-            type: Array,
-            default: []
-        },
-        footer: {
-            type: Array,
-            default: []
-        },
-        post_url: {
-            type: String,
-            default: ''
-        },
         user: {
             type: Object,
             default: {}
@@ -68,6 +52,23 @@ export default defineComponent({
     emits: ["close"],
     data(){
         return {
+            form_questions: [
+                {
+                    type: 'text',
+                    label: 'Name',
+                    name: 'name'
+                },
+                {
+                    type: 'text',
+                    label: 'Designation',
+                    name: 'designation'
+                },
+                {
+                    type: 'textarea',
+                    label: 'Text',
+                    name: 'text'
+                }
+            ],
             testimonial:{
                 name:"",
                 designation:"",
@@ -87,11 +88,10 @@ export default defineComponent({
         },
         async submit(){
             try{
-                let response = await this.store(this.testimonial)
-                console.log(response)
+                await this.store(this.testimonial)
                 this.closeModal()
             }catch(error){
-                console.log(error)
+                console.error(error)
             }
         }
     }
