@@ -21,3 +21,4 @@ Models
     + Resources - links to videos, presentations, other links (books)
 
 
+Auth based on https://techvblogs.com/blog/spa-authentication-laravel-sanctum-vuejs
