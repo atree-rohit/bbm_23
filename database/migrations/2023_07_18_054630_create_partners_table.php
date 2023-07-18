@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('partners', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 100)->nullable(false);
+            $table->enum('type', ['ngo', 'research_organization', 'school', 'college', 'university' ,'nature_club', 'social_media_group', 'other'])->default('ngo');
+            $table->text('description')->nullable(true);
+            $table->string('logo', 200)->nullable(true);
+            $table->string('link', 100)->nullable(true);
+            $table->foreignId('added_by')->constrained(
+                table: 'users', indexName: 'partners_user_id'
+            );
             $table->timestamps();
         });
     }

@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 100)->nullable(false);
+            $table->string('designation', 100)->nullable(true);
+            $table->text('text')->nullable(false);
+            $table->foreignId('added_by')->constrained(
+                table: 'users', indexName: 'testimonials_user_id'
+            );
             $table->timestamps();
         });
     }
