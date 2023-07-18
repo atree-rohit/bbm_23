@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TestimonialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,5 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/logout', 'App\Http\Controllers\UserController@logout');
-Route::get('/testimonials', 'App\Http\Controllers\TestimonialController@all_data');
+Route::get('/logout', [UserController::class, 'logout']);
+Route::get('/testimonials', [TestimonialController::class, 'all_data']);
+Route::post('/store_testimonials', [TestimonialController::class, 'store']);
