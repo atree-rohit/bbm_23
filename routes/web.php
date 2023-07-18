@@ -21,4 +21,5 @@ Route::get('/participate', [PageController::class, 'participate']);
 Route::get('/registration', [PageController::class, 'registration']);
 Route::get('/resources', [PageController::class, 'resources']);
 Route::get('/calendar', [PageController::class, 'calendar']);
+Route::get('/login', [PageController::class, 'login']);
 // Route::get('/{any}', [PageController::class, 'home']);
