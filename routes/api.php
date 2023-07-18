@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/logout', 'App\Http\Controllers\UserController@logout');
+Route::get('/testimonials', 'App\Http\Controllers\TestimonialController@all_data');
