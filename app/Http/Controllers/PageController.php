@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Page;
 use Illuminate\Http\Request;
 
 
@@ -44,5 +43,15 @@ class PageController extends Controller
     public function calendar()
     {
         return view('pages.calendar');
+    }
+
+    public function register()
+    {
+        return view('pages.auth.register');
+    }
+
+    public function login()
+    {
+        return view('pages.auth.login');
     }
 }
