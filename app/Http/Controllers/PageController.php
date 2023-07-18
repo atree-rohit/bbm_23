@@ -54,4 +54,9 @@ class PageController extends Controller
     {
         return view('pages.auth.login');
     }
+
+    public function logout()
+    {
+        return view('pages.auth.logout');
+    }
 }

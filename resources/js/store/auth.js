@@ -34,9 +34,15 @@ export default {
                 commit('SET_AUTHENTICATED', false)
             }
         },
-        logout({commit}){
-            commit('SET_USER', {})
-            commit('SET_AUTHENTICATED', false)
+        async logout({commit}){
+            try {
+                const { data } = await axios.get('/api/logout')
+                commit('SET_USER', {})
+                commit('SET_AUTHENTICATED', false)
+                window.location.href = window.location.origin
+            } catch ({ response: { data: data_1 } }) {
+                console.log("error logging out")
+            }
         }
     }
 }
