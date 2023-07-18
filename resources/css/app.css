@@ -13,7 +13,7 @@
     font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 html, body{
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     /* overflow: hidden; */
 }
@@ -38,7 +38,7 @@ nav .logo{
 }
 
 ul{
-    max-width: 75rem;
+    max-width: 65rem;
     list-style: none;
     display:flex;
     justify-content: space-around;
