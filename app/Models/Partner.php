@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Partner extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'partner_type',
+        'description',
+        'logo',
+        'link',
+        'added_by'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
 }

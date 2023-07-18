@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Resource extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'link',
+        'resource_type',
+        'image',
+        'description',
+        'tags',
+        'added_by'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
 }
