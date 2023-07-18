@@ -21,7 +21,7 @@
                                 </button>
                             </div>
                             <div class="col-12 text-center">
-                                <label>Don't have an account? <router-link :to="{name:'register'}">Register Now!</router-link></label>
+                                <label>Don't have an account? <a href="./register">Register Now!</a></label>
                             </div>
                         </form>
                     </div>
@@ -32,7 +32,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import axios from 'axios'
+import { mapActions, mapState } from 'vuex'
 export default {
     name:"login",
     data(){
@@ -43,6 +44,11 @@ export default {
             },
             processing:false
         }
+    },
+    computed:{
+        ...mapState({
+            user: state => state.auth.user
+        })
     },
     methods:{
         ...mapActions({
