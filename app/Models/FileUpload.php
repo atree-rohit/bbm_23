@@ -20,4 +20,24 @@ class FileUpload extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
+
+    public function press_link_image()
+    {
+        return $this->belongsTo(PressLink::class, 'id', 'image');
+    }
+
+    public function partner_image()
+    {
+        return $this->belongsTo(Partner::class, 'id', 'image');
+    }
+
+    public function resource_image()
+    {
+        return $this->belongsTo(Resource::class, 'id', 'image');
+    }
+
+    public function district_coordinator_image()
+    {
+        return $this->belongsTo(DistrictCoordinator::class, 'id', 'image');
+    }
 }
