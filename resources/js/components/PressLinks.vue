@@ -7,32 +7,62 @@
         flex-grow:2;
     }
 
-    .press-links-container .press-link{
-        font-size: 1.2rem;
-        background: rgba(225, 225, 225, .75);
-        border-radius: 1rem;
-        border: 1px solid transparent;
+    .main-container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    .card{
+        width: 20rem;
+        position: relative;
         transition: all var(--transition-time);
-    }
-    .press-links-container .press-link .press-link-title{
-        font-weight: 100;
-        color: #444;
-        text-align: justify;
-    }
-    .press-links-container .press-link:hover{
-        background: rgba(225,225,255,1);
-        border: 1px solid rgb(50, 50, 200);
-        cursor: pointer;
+        box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
+        border-radius: 0.67rem;
     }
 
-    .press-link-image img{
-        width: 15rem;
-        height: auto;
+    
+    .card .card-body{
+        display: grid;
+        align-items: end;
     }
-    .press-link-tag{
-        font-weight: 100;
-        font-size: .8rem;
+    .card .card-badge{
+        position: absolute;
+        font-size: .75rem;
+        bottom: 0;
+        right: 0;
+        font-weight: 300;
+        opacity: 0;
+        transition: all var(--transition-time);        
     }
+
+    .card-delete{
+        content: '🗑';
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: .75rem;
+        opacity: 0;
+        transition: all var(--transition-time);
+    }
+
+    .card:hover{
+        cursor: pointer;
+        transform: scale(1.05);
+        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
+    }
+
+    .card-img-top{
+        width: auto;
+        height: 10rem;
+        object-fit: contain;
+    }
+
+    .card:hover .card-badge,
+    .card:hover .card-delete{
+        opacity: 1;
+    }
+
 </style>
 
 <template>
@@ -45,16 +75,29 @@
         </div>
     </div>
     
-    <div class="press-links-container m-4">
+    <div class="main-container m-4">
         <div
-            class="press-link my-4 p-4"
+            class="card"
             v-for="press_link in all_data"
             :key="press_link.id"
             @click="gotoLink(press_link.link)"
         >
-            <div class="press-link-title h3">{{ press_link.title }}</div>
-            <div class="press-link-image pt-4" v-if="press_link.image">
-                <img :src="press_link.image_path" alt="">
+            <img
+                :src="press_link.image_path"
+                class="card-img-top"
+            >
+            <div class="card-body">
+                <h5 class="card-title">{{ press_link.title }}</h5>
+                <span class="card-badge badge" :class="badgeColor(press_link.link_type)">
+                    {{ press_link.link_type }}
+                </span>
+                <span
+                    class="card-delete badge bg-danger"
+                    v-if="user.user_type == 'super_admin'"
+                    @click.stop="deletePressLink(press_link.id)"
+                >
+                    X
+                </span>
             </div>
             <div class="press-link-tags" v-if="press_link.tags">
                 <span
@@ -102,6 +145,29 @@ export default defineComponent({
         },
         get_tags(tags){
             return tags.split(',').map((t) => t.trim())
+        },
+        badgeColor(type){
+            switch(type){
+                case 'newspaper_print': return 'bg-info'
+                    break
+                case 'newspaper_online': return 'bg-info'
+                    break
+                case 'journal': return 'bg-warning'
+                    break
+                case 'magazine': return 'bg-warning'
+                    break
+                case 'socialmedia': return 'bg-success'
+                    break
+                case 'blog': return 'bg-success'
+                    break
+                case 'other': return 'bg-danger'
+                    break
+            }
+        },
+        deletePressLink(id){
+            if(confirm('Are you sure you want to delete this Press Link?')){
+                store.dispatch('press_links/delete', id)
+            }
         }
     }
 })
