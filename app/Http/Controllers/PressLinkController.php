@@ -11,7 +11,9 @@ class PressLinkController extends Controller
     {
         $all_data = PressLink::with("press_link_image")->get();
         $all_data->transform(function($i) {
-            $i->image_path = $i->press_link_image->path;
+            if($i->press_link_image){
+                $i->image_path = $i->press_link_image->path;
+            }
             unset($i->created_at);
             unset($i->updated_at);
             unset($i->press_link_image);
