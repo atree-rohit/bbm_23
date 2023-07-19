@@ -21,19 +21,19 @@
                             <input
                                 type="text"
                                 v-if="question.type == 'text'"
-                                v-model="press_link[question.name]"
+                                v-model="form_data[question.name]"
                                 :placeholder="`Enter ${question.name}`"
                                 class="form-control"
                             >
                             <textarea
                                 v-else-if="question.type == 'textarea'"
-                                v-model="press_link[question.name]"
+                                v-model="form_data[question.name]"
                                 :placeholder="`Enter ${question.name}`"
                                 class="form-control"
                             />
                             <select
                                 v-else-if="question.type == 'select'"
-                                v-model="press_link[question.name]"
+                                v-model="form_data[question.name]"
                                 class="form-select"
                             >
                                 <option>Select Link Type</option>
@@ -57,9 +57,6 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <pre style="font-size:.8rem;">
-                        {{ press_link }}
-                    </pre>
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
                     <button type="button" class="btn btn-success" @click="submit">Save changes</button>
                 </div>
@@ -71,7 +68,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import FileUploadComponent from './FileUploadComponent.vue'
 
 export default defineComponent({
@@ -80,10 +77,6 @@ export default defineComponent({
         show:{
             type: Boolean,
             default: false
-        },
-        user: {
-            type: Object,
-            default: {}
         }
     },
     components: {
@@ -148,7 +141,21 @@ export default defineComponent({
                     required: false
                 }
             ],
-            press_link:{
+            form_data: {},
+            upload_file_flag: false,
+        }
+    },
+    computed:{
+        ...mapState({
+            user: state => state.auth.user,
+        }),
+    },
+    methods:{
+        ...mapActions({
+            store:'press_links/store'
+        }),
+        initFormData(){
+            this.form_data = {
                 title:"",
                 link_type:"newspaper_print",
                 link:"",
@@ -156,33 +163,17 @@ export default defineComponent({
                 description:"",
                 tags:"",
                 user: this.user
-            },
-            upload_file_flag: false,
-        }
-    },
-    computed:{
-    },
-    methods:{
-        ...mapActions({
-            store:'press_links/store'
-        }),
+            }
+        }, 
         closeModal(){
             this.$emit('close')
         },
         handleUploadedFileId(file){
-            this.press_link.image = file.data.id
+            this.form_data.image = file.data.id
             try{
-                this.store(this.press_link)
+                this.store(this.form_data)
                 this.closeModal()
-                this.press_link = {
-                    title:"",
-                    link_type:"newspaper_print",
-                    link:"",
-                    image:"",
-                    description:"",
-                    tags:"",
-                    user: this.user
-                }
+                this.initFormData()
                 this.upload_file_flag = false
             }catch(error){
                 console.error(error)

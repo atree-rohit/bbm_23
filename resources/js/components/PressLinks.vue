@@ -68,7 +68,6 @@
     </div>
     <modal-add-press-link
         :show="show_modal"
-        :user="user"
         @close="show_modal=false"
     />
 </template>
