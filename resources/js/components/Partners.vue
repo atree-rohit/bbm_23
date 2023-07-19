@@ -13,14 +13,19 @@
         justify-content: center;
         gap: 1rem;
     }
-    .partner-card{
+    .card{
         width: 13rem;
         position: relative;
         transition: all var(--transition-time);
         box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
     }
+
     
-    .partner-card .card-badge{
+    .card .card-body{
+        display: grid;
+        align-items: end;
+    }
+    .card .card-badge{
         position: absolute;
         font-size: .75rem;
         bottom: 0;
@@ -40,20 +45,20 @@
         transition: all var(--transition-time);
     }
 
-    .partner-card:hover{
+    .card:hover{
         cursor: pointer;
         transform: scale(1.05);
         box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
     }
 
-    .card-imag-top{
+    .card-img-top{
         width: auto;
         height: 10rem;
         object-fit: contain;
     }
 
-    .partner-card:hover .card-badge,
-    .partner-card:hover .card-delete{
+    .card:hover .card-badge,
+    .card:hover .card-delete{
         opacity: 1;
     }
 
@@ -71,14 +76,14 @@
     
     <div class="main-container m-4">
         <div
-            class="card partner-card rounded-3"
+            class="card rounded-3"
             v-for="partner in all_data"
             :key="partner.id"
             @click="gotoLink(partner.link)"
         >
             <img
                 :src="partner.image_path"
-                class="card-imag-top"
+                class="card-img-top"
             >
             <div class="card-body">
                 <h5 class="card-title">{{ partner.name }}</h5>
