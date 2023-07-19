@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('press_links', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 100)->nullable(false);
+            $table->string('title', 200)->nullable(false);
             $table->enum('link_type', ['newspaper_print', 'newspaper_online', 'journal', 'magazine','socialmedia', 'blog', 'other'])->default('newspaper_print');
-            $table->string('link', 1000)->nullable(true);
-            $table->string('image', 100)->nullable(true);
+            $table->text('link')->nullable(true);
+            $table->foreignId('image')->constrained(
+                table: 'file_uploads', indexName: 'press_links_image_id'
+            );
             $table->text('description')->nullable(true);
             $table->string('tags', 200)->nullable(true);
             $table->foreignId('added_by')->constrained(
