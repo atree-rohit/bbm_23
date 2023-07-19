@@ -5,6 +5,7 @@ import auth from './auth'
 import partners from './partners'
 import testimonials from './testimonials'
 import press_links from './press_links'
+import resources from './resources'
 
 const store = createStore({
     plugins: [
@@ -14,7 +15,8 @@ const store = createStore({
         auth,
         testimonials,
         partners,
-        press_links
+        press_links,
+        resources
     }
 })
 
