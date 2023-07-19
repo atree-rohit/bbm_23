@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Resource::class, 'added_by');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileUpload::class, 'added_by');
+    }
 }
