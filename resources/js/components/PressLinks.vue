@@ -12,7 +12,7 @@
         background: rgba(225, 225, 225, .75);
         border-radius: 1rem;
         border: 1px solid transparent;
-        transition: all 250ms;
+        transition: all var(--transition-time);
     }
     .press-links-container .press-link .press-link-title{
         font-weight: 100;
