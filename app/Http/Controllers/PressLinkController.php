@@ -52,8 +52,7 @@ class PressLinkController extends Controller
         $press_link->description = $request->description;
         $press_link->tags = $request->tags;
         $press_link->added_by = $request->user["id"];
-        dd($request->all);
-        // $press_link->save();
+        $press_link->save();
 
         return response()->json([
             'message' => 'Press Link added successfully!',
