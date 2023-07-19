@@ -31,7 +31,7 @@ export default {
             default: false
         }
     },
-    emits: ["uploaded_file_id"],
+    emits: ["uploaded_file_id", "file_selected"],
     data() {
         return {
             name: '',
@@ -56,10 +56,16 @@ export default {
     },
     methods: {
         onChange(e) {
+            this.$emit('file_selected', true)
             this.element = e
             this.file = e.target.files[0]
         },
         formSubmit() {
+            if(this.element == null){
+                this.$emit('uploaded_file_id', null)
+                this.submitting_form = false
+                return 
+            } 
             this.element.preventDefault()
             let existingObj = this
             const config = {

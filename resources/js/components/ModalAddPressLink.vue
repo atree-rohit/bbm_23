@@ -50,6 +50,7 @@
                                 class="form-control"
                                 type="file"
                                 :upload_file="upload_file_flag"
+                                :file_selected="fileSelected"
                                 :folder="`press_links`"
                                 @uploaded_file_id="handleUploadedFileId"
                             />
@@ -145,6 +146,9 @@ export default defineComponent({
             upload_file_flag: false,
         }
     },
+    created(){
+        this.initFormData()
+    },
     computed:{
         ...mapState({
             user: state => state.auth.user,
@@ -154,12 +158,15 @@ export default defineComponent({
         ...mapActions({
             store:'press_links/store'
         }),
+        fileSelected(data){
+            console.log("ModalAddPressLink - fileSelected", data)
+        },
         initFormData(){
             this.form_data = {
                 title:"",
                 link_type:"newspaper_print",
                 link:"",
-                image:"",
+                image:null,
                 description:"",
                 tags:"",
                 user: this.user
@@ -169,7 +176,9 @@ export default defineComponent({
             this.$emit('close')
         },
         handleUploadedFileId(file){
-            this.form_data.image = file.data.id
+            if(file != null){
+                this.form_data.image = file.data.id
+            }
             try{
                 this.store(this.form_data)
                 this.closeModal()

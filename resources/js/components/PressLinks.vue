@@ -54,7 +54,7 @@
         >
             <div class="press-link-title h3">{{ press_link.title }}</div>
             <div class="press-link-image pt-4" v-if="press_link.image">
-                <img :src="press_link.press_link_image.path" alt="">
+                <img :src="press_link.image_path" alt="">
             </div>
             <div class="press-link-tags" v-if="press_link.tags">
                 <span
