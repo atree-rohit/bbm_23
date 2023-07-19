@@ -93,6 +93,9 @@ ul li.active a::after{
 ul li:hover a{
     color: yellow;
 }
+ul li a span{
+    padding: 1rem 0.125rem;
+}
 ul li:hover a::before,
 ul li:hover a::after{
     background-color: yellow;
