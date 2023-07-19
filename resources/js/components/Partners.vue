@@ -7,28 +7,39 @@
         flex-grow:2;
     }
 
-    .main-container .card-div{
-        font-size: 1.2rem;
-        background: rgba(225, 225, 225, .75);
-        border-radius: 1rem;
-        border: 1px solid transparent;
-        transition: all 250ms;
+    .main-container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
     }
-    .main-container .card-div .card-div-title{
-        font-weight: 100;
-        color: #444;
-        text-align: justify;
+    .partner-card{
+        width: 13rem;
+        position: relative;
+        transition: all var(--transition-time);
+        box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
     }
-    .main-container .card-div:hover{
-        background: rgba(225,225,255,1);
-        border: 1px solid rgb(50, 50, 200);
-        cursor: pointer;
+    
+    .partner-card .card-badge{
+        position: absolute;
+        font-size: .75rem;
+        bottom: 0;
+        right: 0;
+        font-weight: 300;
+        opacity: 0;
+        transition: all var(--transition-time);        
     }
 
-    .card-div-tag{
-        font-weight: 100;
-        font-size: .8rem;
+    .partner-card:hover{
+        cursor: pointer;
+        transform: scale(1.05);
+        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
     }
+
+    .partner-card:hover .card-badge{
+        opacity: 1;
+    }
+
 </style>
 
 <template>
@@ -43,14 +54,23 @@
     
     <div class="main-container m-4">
         <div
-            class="card-div my-4 p-4"
+            class="card partner-card rounded-3"
             v-for="partner in all_data"
             :key="partner.id"
             @click="gotoLink(partner.link)"
         >
-            <div class="card-div-title h3">{{ partner.name }}</div>
-            <div class="card-div-image pt-4" v-if="partner.image">
-                <img :src="partner.image" alt="">
+            <img
+                :src="partner.partner_image.path"
+                class="card-imag-top"
+            >
+            <div class="card-body">
+                <h5 class="card-title">{{ partner.name }}</h5>
+                <!-- <p class="card-text">
+                    {{ partner.contact_person }}
+                </p> -->
+                <span class="card-badge badge" :class="badgeColor(partner.partner_type)">
+                    {{ partner.partner_type }}
+                </span>
             </div>
             <div class="card-div-tags" v-if="partner.tags">
                 <span
@@ -62,9 +82,8 @@
             </div>
         </div>
     </div>
-    <modal-add-press-link
+    <modal-add-partner
         :show="show_modal"
-        :user="user"
         @close="show_modal=false"
     />
 </template>
@@ -73,11 +92,11 @@
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
-import ModalAddPressLink from './ModalAddPressLink.vue'
+import ModalAddPartner from './ModalAddPartner.vue'
 export default defineComponent({
     name: 'Partners',
     components: {
-        ModalAddPressLink
+        ModalAddPartner
     },
     data(){
         return {
@@ -99,6 +118,26 @@ export default defineComponent({
         },
         get_tags(tags){
             return tags.split(',').map((t) => t.trim())
+        },
+        badgeColor(type){
+            switch(type){
+                case 'ngo': return 'bg-info'
+                    break
+                case 'research_organization': return 'bg-info'
+                    break
+                case 'school': return 'bg-warning'
+                    break
+                case 'college': return 'bg-warning'
+                    break
+                case 'university': return 'bg-warning'
+                    break
+                case 'nature_club': return 'bg-success'
+                    break
+                case 'social_media_group': return 'bg-primary'
+                    break
+                case 'other': return 'bg-danger'
+                    break
+            }
         }
     }
 })
