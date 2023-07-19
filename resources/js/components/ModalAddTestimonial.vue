@@ -18,8 +18,8 @@
                     <form action="javascript:void(0)" @submit="submit" class="row" method="post">
                         <div v-for="question in form_questions" :key="question.name" class="form-group col-12">
                             <label :for="question.name" class="font-weight-bold" v-text="question.label" />
-                            <input type="text" name="name" v-model="testimonial[question.name]" id="name" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
-                            <textarea class="form-control" v-else-if="question.type == 'textarea'" v-model="testimonial[question.name]" :placeholder="`Enter ${question.name}`" />
+                            <input type="text" name="name" v-model="form_data[question.name]" id="name" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
+                            <textarea class="form-control" v-else-if="question.type == 'textarea'" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" />
                         </div>
                     </form>
                 </div>
@@ -35,7 +35,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
     name: 'ModalAddTestimonial',
@@ -43,10 +43,6 @@ export default defineComponent({
         show:{
             type: Boolean,
             default: false
-        },
-        user: {
-            type: Object,
-            default: {}
         }
     },
     emits: ["close"],
@@ -72,26 +68,36 @@ export default defineComponent({
                     required: true
                 }
             ],
-            testimonial:{
-                name:"",
-                designation:"",
-                text:"",
-                user: this.user
-            }
+            form_data:{}
         }
     },
     computed:{
+        ...mapState({
+            user: state => state.auth.user,
+        }),
+    },
+    created(){
+        this.init_form_data()
     },
     methods:{
         ...mapActions({
             store:'testimonials/store'
         }),
+        init_form_data(){
+            this.form_data = {
+                name:"",
+                designation:"",
+                text:"",
+                user: this.user
+            }
+        },
         closeModal(){
             this.$emit('close')
         },
         async submit(){
             try{
-                await this.store(this.testimonial)
+                await this.store(this.form_data)
+                this.init_form_data()
                 this.closeModal()
             }catch(error){
                 console.error(error)
