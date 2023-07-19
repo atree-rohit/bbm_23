@@ -7,6 +7,17 @@ use Illuminate\Http\Request;
 
 class ResourceController extends Controller
 {
+
+    public function all_data()
+    {
+        $all_data = Resource::with("resource_image")->get();
+        $all_data->transform(function($i) {
+            unset($i->created_at);
+            unset($i->updated_at);
+            return $i;
+        });
+        return $all_data;
+    }
     /**
      * Display a listing of the resource.
      */
