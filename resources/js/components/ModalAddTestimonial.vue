@@ -71,13 +71,23 @@ export default defineComponent({
             form_data:{}
         }
     },
+    created(){
+        this.init_form_data()
+    },
+    watch:{
+        show(newVal){
+            let body = document.querySelector('body')
+            if(newVal == true){
+                body.classList.add('modal-open')
+            } else {
+                body.classList.remove('modal-open')
+            }
+        }
+    },
     computed:{
         ...mapState({
             user: state => state.auth.user,
         }),
-    },
-    created(){
-        this.init_form_data()
     },
     methods:{
         ...mapActions({

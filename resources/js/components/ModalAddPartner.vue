@@ -152,6 +152,16 @@ export default defineComponent({
     created(){
         this.initFormData()
     },
+    watch:{
+        show(newVal){
+            let body = document.querySelector('body')
+            if(newVal == true){
+                body.classList.add('modal-open')
+            } else {
+                body.classList.remove('modal-open')
+            }
+        }
+    },
     computed:{
         ...mapState({
             user: state => state.auth.user,
