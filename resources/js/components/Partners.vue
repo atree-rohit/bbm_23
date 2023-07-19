@@ -18,6 +18,7 @@
         position: relative;
         transition: all var(--transition-time);
         box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
+        border-radius: 0.67rem;
     }
 
     
@@ -76,7 +77,7 @@
     
     <div class="main-container m-4">
         <div
-            class="card rounded-3"
+            class="card"
             v-for="partner in all_data"
             :key="partner.id"
             @click="gotoLink(partner.link)"
