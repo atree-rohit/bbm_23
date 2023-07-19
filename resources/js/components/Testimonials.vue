@@ -45,7 +45,6 @@
     </div>
     <modal-add-testimonial
         :show="show_modal"
-        :user="user"
         @close="show_modal=false"
     />
 </template>
