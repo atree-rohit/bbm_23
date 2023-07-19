@@ -1,6 +1,6 @@
 <style scoped>
 .main-container{
-    margin: 0 5rem;
+    margin: 0 1.5rem;
 }
 .img-container{
     display: flex;
@@ -11,9 +11,11 @@
     /* max-height: 30vh; */
 }
 .section{
-    border: 1px solid red;
+    border: 1px solid #ccc;
+    border-radius: 1.5rem;
     min-height: 50vh;
-    padding: 1.5rem 0;
+    margin: 2.5rem 0;
+    padding: 2.5rem 0;
 }
 
 .text-section{
@@ -21,6 +23,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 2rem;
 }
 .section p{
     font-size: 1.25rem;
