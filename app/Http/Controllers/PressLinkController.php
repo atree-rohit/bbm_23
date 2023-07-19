@@ -9,7 +9,7 @@ class PressLinkController extends Controller
 {
     public function all_data()
     {
-        $all_data = PressLink::all();
+        $all_data = PressLink::with("press_link_image")->get();
         $all_data->transform(function($i) {
             unset($i->created_at);
             unset($i->updated_at);
