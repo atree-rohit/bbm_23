@@ -12,65 +12,55 @@ class ResourceController extends Controller
     {
         $all_data = Resource::with("resource_image")->get();
         $all_data->transform(function($i) {
+            if($i->resource_image){
+                $i->image_path = $i->resource_image->path;
+            }
             unset($i->created_at);
             unset($i->updated_at);
+            unset($i->resource_image);
             return $i;
         });
         return $all_data;
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'title' => 'required|max:100',
+            'resource_type' => 'required|in:video,presentation,e-book,website,other',
+        ]);
+        
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Resource $resource)
-    {
-        //
-    }
+        $resource = new Resource();
+        $resource->title = $request->title;
+        $resource->link = $request->link;
+        $resource->resource_type = $request->resource_type;
+        $resource->image = $request->image;
+        $resource->description = $request->description;
+        $resource->tags = $request->tags;
+        $resource->added_by = $request->user["id"];
+        $resource->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Resource $resource)
-    {
-        //
+        return response()->json([
+            'message' => 'Resource added successfully!',
+            'status' => 200,
+            'data' => $resource->toArray()
+        ]);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Resource $resource)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Resource $resource)
-    {
-        //
+    
+    public function delete($resource_id){
+        $resource = PressLink::find($resource_id);
+        if($resource){
+            $resource->delete();
+            return response()->json([
+                'message' => 'Resource deleted successfully!',
+                'status' => 200,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Resource not found!',
+                'status' => 404,
+            ]);
+        }
     }
 }

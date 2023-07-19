@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\PressLinkController;
+use App\Http\Controllers\ResourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,6 @@ Route::delete('/delete_testimonial/{id}', [TestimonialController::class, 'delete
 Route::get('/press_links', [PressLinkController::class, 'all_data']);
 Route::post('/store_press_link', [PressLinkController::class, 'store']);
 Route::delete('/delete_press_link/{id}', [PressLinkController::class, 'delete']);
+Route::get('/resources', [ResourceController::class, 'all_data']);
+Route::post('/store_resource', [ResourceController::class, 'store']);
+Route::delete('/delete_resource/{id}', [ResourceController::class, 'delete']);
