@@ -168,4 +168,3 @@ export default defineComponent({
     }
 })
 </script>
-'video','presentation','e-book','website','other'
