@@ -27,5 +27,7 @@ Route::post('/store_partners', [PartnerController::class, 'store']);
 Route::delete('/delete_partner/{id}', [PartnerController::class, 'delete']);
 Route::get('/testimonials', [TestimonialController::class, 'all_data']);
 Route::post('/store_testimonials', [TestimonialController::class, 'store']);
+Route::delete('/delete_testimonial/{id}', [TestimonialController::class, 'delete']);
 Route::get('/press_links', [PressLinkController::class, 'all_data']);
 Route::post('/store_press_link', [PressLinkController::class, 'store']);
+Route::delete('/delete_press_link/{id}', [PressLinkController::class, 'delete']);
