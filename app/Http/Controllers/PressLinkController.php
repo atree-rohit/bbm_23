@@ -11,32 +11,15 @@ class PressLinkController extends Controller
     {
         $all_data = PressLink::with("press_link_image")->get();
         $all_data->transform(function($i) {
+            $i->image_path = $i->press_link_image->path;
             unset($i->created_at);
             unset($i->updated_at);
+            unset($i->press_link_image);
             return $i;
         });
         return $all_data;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -60,36 +43,20 @@ class PressLinkController extends Controller
             'data' => $press_link->toArray()
         ]);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(PressLink $pressLink)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PressLink $pressLink)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PressLink $pressLink)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(PressLink $pressLink)
-    {
-        //
+    
+    public function delete($press_link_id){
+        $press_link = PressLink::find($press_link_id);
+        if($press_link){
+            $press_link->delete();
+            return response()->json([
+                'message' => 'Press Link deleted successfully!',
+                'status' => 200,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Press Link not found!',
+                'status' => 404,
+            ]);
+        }
     }
 }
