@@ -9,7 +9,7 @@ class PartnerController extends Controller
 {
     public function all_data()
     {
-        $all_data = Partner::all();
+        $all_data = Partner::with("partner_image")->get();
         $all_data->transform(function($i) {
             unset($i->created_at);
             unset($i->updated_at);
@@ -48,11 +48,10 @@ class PartnerController extends Controller
         $partner->partner_type = $request->partner_type;
         $partner->description = $request->description;
         $partner->contact_person = $request->contact_person;
-        // $partner->logo = $request->logo;
+        $partner->image = $request->image;
         $partner->link = $request->link;
         $partner->added_by = $request->user["id"];
-        dd($request->all);
-        // $partner->save();
+        $partner->save();
 
         return response()->json([
             'message' => 'Partner added successfully!',
