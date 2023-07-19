@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('coordinates', 100)->nullable(true);
             $table->string('email', 100)->nullable(true);
             $table->string('phone', 100)->nullable(true);
-            $table->foreignId('image')->constrained(
+            $table->foreignId('image')->nullable(true)->constrained(
                 table: 'file_uploads', indexName: 'district_coordinator_image_id'
             );
             $table->foreignId('added_by')->constrained(

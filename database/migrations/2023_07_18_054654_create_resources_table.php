@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title', 200)->nullable(false);
             $table->text('link')->nullable(true);
             $table->enum('resource_type', ['video', 'presentation', 'e-book', 'website', 'other'])->default('video');
-            $table->foreignId('image')->constrained(
+            $table->foreignId('image')->nullable(true)->constrained(
                 table: 'file_uploads', indexName: 'resource_image_id'
             );
             $table->text('description')->nullable(true);

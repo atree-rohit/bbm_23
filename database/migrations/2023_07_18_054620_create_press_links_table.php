@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title', 200)->nullable(false);
             $table->enum('link_type', ['newspaper_print', 'newspaper_online', 'journal', 'magazine','socialmedia', 'blog', 'other'])->default('newspaper_print');
             $table->text('link')->nullable(true);
-            $table->foreignId('image')->constrained(
+            $table->foreignId('image')->nullable(true)->constrained(
                 table: 'file_uploads', indexName: 'press_links_image_id'
             );
             $table->text('description')->nullable(true);

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('partner_type', ['ngo', 'research_organization', 'school', 'college', 'university' ,'nature_club', 'social_media_group', 'other'])->default('ngo');
             $table->text('description')->nullable(true);
             $table->string('contact_person', 100)->nullable(true);
-            $table->foreignId('image')->constrained(
+            $table->foreignId('image')->nullable(true)->constrained(
                 table: 'file_uploads', indexName: 'partner_image_id'
             );
             $table->text('link')->nullable(true);
