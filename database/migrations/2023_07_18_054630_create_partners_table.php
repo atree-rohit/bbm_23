@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name', 100)->nullable(false);
             $table->enum('partner_type', ['ngo', 'research_organization', 'school', 'college', 'university' ,'nature_club', 'social_media_group', 'other'])->default('ngo');
             $table->text('description')->nullable(true);
+            $table->string('contact_person', 100)->nullable(true);
             $table->string('logo', 200)->nullable(true);
             $table->string('link', 100)->nullable(true);
             $table->foreignId('added_by')->constrained(
