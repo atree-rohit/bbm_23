@@ -25,4 +25,8 @@ class DistrictCoordinator extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
+
+    public function district_coordinator_image(){
+        return $this->hasOne(FileUpload::class, 'id', 'image');
+    }
 }

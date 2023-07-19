@@ -23,4 +23,8 @@ class Resource extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
+
+    public function resource_image(){
+        return $this->hasOne(FileUpload::class, 'id', 'image');
+    }
 }

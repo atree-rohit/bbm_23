@@ -13,7 +13,7 @@ class Partner extends Model
         'name',
         'partner_type',
         'description',
-        'logo',
+        'image',
         'link',
         'added_by'
     ];
@@ -21,5 +21,9 @@ class Partner extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function partner_image(){
+        return $this->hasOne(FileUpload::class, 'id', 'image');
     }
 }

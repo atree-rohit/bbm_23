@@ -23,4 +23,8 @@ class PressLink extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
+
+    public function press_link_image(){
+        return $this->hasOne(FileUpload::class, 'id', 'image');
+    }
 }
