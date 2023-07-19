@@ -11,9 +11,10 @@ class PartnerController extends Controller
     {
         $all_data = Partner::with("partner_image")->get();
         $all_data->transform(function($i) {
+            $i->image_path = $i->partner_image->path;
             unset($i->created_at);
             unset($i->updated_at);
-            $i->image_path = $i->partner_image->path;
+            unset($i->partner_image);
             return $i;
         });
         return $all_data;
