@@ -45,7 +45,7 @@ p::first-letter {
             <p>Why butterflies? Butterflies are renowned for their enchanting beauty, their intricate life cycles, and their ecological significance. By studying butterflies, we can gain insights into the health of our environment, the impact of climate change, and the effectiveness of conservation efforts.</p>
         </div>
         <div class="section">
-            <h1>Partners</h1>
+            <partners />
         </div>
         <div class="section">
             <testimonials />
@@ -58,12 +58,14 @@ p::first-letter {
 
 <script>
 import { defineComponent } from 'vue'
+import Partners from './Partners.vue'
 import Testimonials from './Testimonials.vue'
 import PressLinks from './PressLinks.vue'
 
 export default defineComponent({
     name: "Home",
     components: {
+        Partners,
         Testimonials,
         PressLinks
     }
