@@ -30,7 +30,7 @@ export default {
         },
         async store({commit}, payload){
             try {
-                const { data } = await axios.post('/api/store_partner', payload)
+                const { data } = await axios.post('/api/store_partners', payload)
                 commit('ADD_DATA', data)
             } catch ({ response: { data: data_1 } }) {
                 console.log("error storing partner")
