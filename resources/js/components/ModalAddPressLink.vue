@@ -45,11 +45,11 @@
                                     :selected="option.value == 'newspaper_print'"
                                 />
                             </select>
-                            <input
+                            <file-upload-component
                                 v-else-if="question.type == 'file'"
                                 class="form-control"
                                 type="file"
-                            >
+                            />
                         </div>
                     </form>
                 </div>
@@ -69,6 +69,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { mapActions } from 'vuex'
+import FileUploadComponent from './FileUploadComponent.vue'
 
 export default defineComponent({
     name: 'ModalAddPressLink',
@@ -81,6 +82,9 @@ export default defineComponent({
             type: Object,
             default: {}
         }
+    },
+    components: {
+        FileUploadComponent
     },
     emits: ["close"],
     data(){
