@@ -29,7 +29,7 @@ export default {
                 const { data } = await axios.get('/api/press_links')
                 commit('SET_ALL_DATA', data)
             } catch ({ response: { data: data_1 } }) {
-                console.delete("error retreiving press_links")
+                console.error("error retreiving press_links")
             }
         },
         async store({commit}, payload){
@@ -37,7 +37,7 @@ export default {
                 const { data } = await axios.post('/api/store_press_link', payload)
                 commit('ADD_DATA', data)
             } catch ({ response: { data: data_1 } }) {
-                console.delete("error storing press_link")
+                console.error("error storing press_link")
             }
         },
         async delete({commit}, payload){
