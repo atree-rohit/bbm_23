@@ -25,6 +25,10 @@
         cursor: pointer;
     }
 
+    .press-link-image img{
+        width: 15rem;
+        height: auto;
+    }
     .press-link-tag{
         font-weight: 100;
         font-size: .8rem;
@@ -50,7 +54,7 @@
         >
             <div class="press-link-title h3">{{ press_link.title }}</div>
             <div class="press-link-image pt-4" v-if="press_link.image">
-                <img :src="press_link.image" alt="">
+                <img :src="press_link.press_link_image.path" alt="">
             </div>
             <div class="press-link-tags" v-if="press_link.tags">
                 <span

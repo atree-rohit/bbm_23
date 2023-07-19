@@ -49,6 +49,9 @@
                                 v-else-if="question.type == 'file'"
                                 class="form-control"
                                 type="file"
+                                :upload_file="upload_file_flag"
+                                :folder="`press_links`"
+                                @uploaded_file_id="handleUploadedFileId"
                             />
                         </div>
                     </form>
@@ -153,7 +156,8 @@ export default defineComponent({
                 description:"",
                 tags:"",
                 user: this.user
-            }
+            },
+            upload_file_flag: false,
         }
     },
     computed:{
@@ -165,9 +169,10 @@ export default defineComponent({
         closeModal(){
             this.$emit('close')
         },
-        async submit(){
+        handleUploadedFileId(file){
+            this.press_link.image = file.data.id
             try{
-                await this.store(this.press_link)
+                this.store(this.press_link)
                 this.closeModal()
                 this.press_link = {
                     title:"",
@@ -178,9 +183,13 @@ export default defineComponent({
                     tags:"",
                     user: this.user
                 }
+                this.upload_file_flag = false
             }catch(error){
                 console.error(error)
             }
+        },
+        submit(){
+            this.upload_file_flag = true
         }
     }
 })
