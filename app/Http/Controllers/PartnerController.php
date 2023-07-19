@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 
 class PartnerController extends Controller
 {
+    public function all_data()
+    {
+        $all_data = Partner::all();
+        $all_data->transform(function($i) {
+            unset($i->created_at);
+            unset($i->updated_at);
+            return $i;
+        });
+        return $all_data;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +38,27 @@ class PartnerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:100',
+            'partner_type' => 'required|in:ngo,research_organization,school,college,university,nature_club,social_media_group,other',
+        ]);
+
+        $partner = new Partner();
+        $partner->name = $request->name;
+        $partner->partner_type = $request->partner_type;
+        $partner->description = $request->description;
+        $partner->contact_person = $request->contact_person;
+        // $partner->logo = $request->logo;
+        $partner->link = $request->link;
+        $partner->added_by = $request->user["id"];
+        dd($request->all);
+        // $partner->save();
+
+        return response()->json([
+            'message' => 'Partner added successfully!',
+            'status' => 200,
+            'data' => $partner->toArray()
+        ]);
     }
 
     /**
