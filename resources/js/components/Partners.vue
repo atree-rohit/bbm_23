@@ -30,13 +30,30 @@
         transition: all var(--transition-time);        
     }
 
+    .card-delete{
+        content: '🗑';
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: .75rem;
+        opacity: 0;
+        transition: all var(--transition-time);
+    }
+
     .partner-card:hover{
         cursor: pointer;
         transform: scale(1.05);
         box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
     }
 
-    .partner-card:hover .card-badge{
+    .card-imag-top{
+        width: auto;
+        height: 10rem;
+        object-fit: contain;
+    }
+
+    .partner-card:hover .card-badge,
+    .partner-card:hover .card-delete{
         opacity: 1;
     }
 
@@ -60,16 +77,20 @@
             @click="gotoLink(partner.link)"
         >
             <img
-                :src="partner.partner_image.path"
+                :src="partner.image_path"
                 class="card-imag-top"
             >
             <div class="card-body">
                 <h5 class="card-title">{{ partner.name }}</h5>
-                <!-- <p class="card-text">
-                    {{ partner.contact_person }}
-                </p> -->
                 <span class="card-badge badge" :class="badgeColor(partner.partner_type)">
                     {{ partner.partner_type }}
+                </span>
+                <span
+                    class="card-delete badge bg-danger"
+                    v-if="user.user_type == 'super_admin'"
+                    @click.stop="deletePartner(partner.id)"
+                >
+                    X
                 </span>
             </div>
             <div class="card-div-tags" v-if="partner.tags">
@@ -137,6 +158,11 @@ export default defineComponent({
                     break
                 case 'other': return 'bg-danger'
                     break
+            }
+        },
+        deletePartner(id){
+            if(confirm('Are you sure you want to delete this partner?')){
+                store.dispatch('partners/delete', id)
             }
         }
     }

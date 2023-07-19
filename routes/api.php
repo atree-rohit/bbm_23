@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/logout', [UserController::class, 'logout']);
 Route::get('/partners', [PartnerController::class, 'all_data']);
 Route::post('/store_partners', [PartnerController::class, 'store']);
+Route::delete('/delete_partner/{id}', [PartnerController::class, 'delete']);
 Route::get('/testimonials', [TestimonialController::class, 'all_data']);
 Route::post('/store_testimonials', [TestimonialController::class, 'store']);
 Route::get('/press_links', [PressLinkController::class, 'all_data']);

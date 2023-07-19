@@ -13,6 +13,7 @@ class PartnerController extends Controller
         $all_data->transform(function($i) {
             unset($i->created_at);
             unset($i->updated_at);
+            $i->image_path = $i->partner_image->path;
             return $i;
         });
         return $all_data;
@@ -60,6 +61,21 @@ class PartnerController extends Controller
         ]);
     }
 
+    public function delete($partner_id){
+        $partner = Partner::find($partner_id);
+        if($partner){
+            $partner->delete();
+            return response()->json([
+                'message' => 'Partner deleted successfully!',
+                'status' => 200,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Partner not found!',
+                'status' => 404,
+            ]);
+        }
+    }
     /**
      * Display the specified resource.
      */
