@@ -3,9 +3,9 @@
 @section('title', 'Resources')
 
 @section('content')
-    <h1>Resources</h1>
+    <resources />
 @endsection
 
 @push('scripts')
-
+    @vite('resources/js/pages/resources.js')
 @endpush

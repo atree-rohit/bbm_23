@@ -49,7 +49,7 @@ class ResourceController extends Controller
     }
     
     public function delete($resource_id){
-        $resource = PressLink::find($resource_id);
+        $resource = Resource::find($resource_id);
         if($resource){
             $resource->delete();
             return response()->json([
