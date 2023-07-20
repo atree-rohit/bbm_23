@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function home(Request $request)
     {
         return view("welcome");

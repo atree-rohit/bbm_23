@@ -66,7 +66,7 @@
         @foreach($links as $link)
         <li @if($current_path == $link['link']) class='active' @endif>
             <a href="{{$link['link']}}">
-                {{$link["label"]}}
+                <span>{{$link["label"]}}</span>
             </a>
         </li>
         @endforeach

@@ -11,65 +11,56 @@ class DistrictCoordinatorController extends Controller
     {
         $all_data = DistrictCoordinator::with("district_coordinator_image")->get();
         $all_data->transform(function($i) {
+            $i->image_path = $i->district_coordinator_image->path;
             unset($i->created_at);
             unset($i->updated_at);
+            unset($i->district_coordinator_image);
             return $i;
         });
         return $all_data;
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:100',
+            'district' => 'required|max:100',
+            'state' => 'required|max:100'
+        ]);
+
+        $district_coordinator = new DistrictCoordinator();
+        $district_coordinator->name = $request->name;
+        $district_coordinator->designation = $request->designation;
+        $district_coordinator->district = $request->district;
+        $district_coordinator->state = $request->state;
+        $district_coordinator->coordinates = $request->coordinates;
+        $district_coordinator->email = $request->email;
+        $district_coordinator->phone = $request->phone;
+        $district_coordinator->image = $request->image;
+        $district_coordinator->added_by = $request->user["id"];
+        $district_coordinator->save();
+
+        return response()->json([
+            'message' => 'District Coordinator added successfully!',
+            'status' => 200,
+            'data' => $district_coordinator->toArray()
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(DistrictCoordinator $districtCoordinator)
-    {
-        //
+    public function delete($district_coordinator_id){
+        $district_coordinator = DistrictCoordinator::find($district_coordinator_id);
+        if($district_coordinator){
+            $district_coordinator->delete();
+            return response()->json([
+                'message' => 'District Coordinator deleted successfully!',
+                'status' => 200,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'District Coordinator not found!',
+                'status' => 404,
+            ]);
+        }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(DistrictCoordinator $districtCoordinator)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, DistrictCoordinator $districtCoordinator)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(DistrictCoordinator $districtCoordinator)
-    {
-        //
-    }
+    
 }
