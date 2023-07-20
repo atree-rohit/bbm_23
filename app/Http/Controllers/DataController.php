@@ -15,7 +15,6 @@ class DataController extends Controller
 {
     public function index()
     {
-        
         return view('pages.data');
     }
 }
