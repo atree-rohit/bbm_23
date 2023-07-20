@@ -16,13 +16,13 @@ use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
-    public function index_new()
+    public function index()
     {
         return view('pages.data');
     }
 
     //import old data
-    public function index()
+    public function import_data()
     {
         $saved = [];
         for($i = 0; $i < 6; $i++){
