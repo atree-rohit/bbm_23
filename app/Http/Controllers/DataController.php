@@ -22,7 +22,7 @@ class DataController extends Controller
     }
 
     //import old data
-    public function import_data()
+    public function import()
     {
         $saved = [];
         for($i = 0; $i < 6; $i++){
@@ -213,7 +213,7 @@ class DataController extends Controller
         $saved = ["added" => 0, "skipped" => 0];
         foreach($data["data"] as $row){
             $existingIFB = IFB::where('id', $row->id)->first();
-            if($existingIFB || $row->latitude == "" || $row->longitude == ""){
+            if($existingIFB || $row->latitude == "" || $row->longitude == "" || $row->species_name == ""){
                 $saved["skipped"]++;
             } else {
                 $taxa = Taxa::where('name', trim($row->species_name))->first();
@@ -224,6 +224,7 @@ class DataController extends Controller
                 $ifb->place = $row->location_name;
                 $ifb->state = $this->cleanStateDistrict($row->state);
                 $ifb->district = $this->cleanStateDistrict($row->district);
+                $ifb->species = $row->species_name;
                 if($taxa){
                     $ifb->taxa_id = $taxa->id;
                 }

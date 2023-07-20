@@ -19,6 +19,7 @@ use App\Http\Controllers\FileController;
 
 Route::get('/', [PageController::class, 'home']);
 Route::get('/data', [DataController::class, 'index']);
+Route::get('/data/import', [DataController::class, 'import']);
 Route::get('/about', [PageController::class, 'about']);
 Route::get('/participate', [PageController::class, 'participate']);
 Route::get('/registration', [PageController::class, 'registration']);
