@@ -24,4 +24,8 @@ class INat extends Model
         'inat_created_at',
         'inat_updated_at'
     ];
+
+    public function taxa(){
+        return $this->belongsTo(Taxa::class);
+    }
 }

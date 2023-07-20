@@ -35,4 +35,8 @@ class CountForm extends Model
         'original_filename',
         'status'
     ];
+
+    public function species_list(){
+        return $this->hasMany(CountSpecies::class);
+    }
 }

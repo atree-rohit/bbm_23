@@ -21,4 +21,12 @@ class CountSpecies extends Model
         'img_url',
         'status'
     ];
+
+    public function count_form(){
+        return $this->belongsTo(CountForm::class);
+    }
+
+    public function taxa(){
+        return $this->belongsTo(Taxa::class);
+    }
 }

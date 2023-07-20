@@ -22,4 +22,8 @@ class IBP extends Model
         'img_url',
         'ibp_created_at',
     ];
+
+    public function taxa(){
+        return $this->belongsTo(Taxa::class);
+    }
 }

@@ -24,4 +24,8 @@ class IFB extends Model
         'img_url',
         'ifb_created_at'
     ];
+
+    public function taxa(){
+        return $this->belongsTo(Taxa::class);
+    }
 }
