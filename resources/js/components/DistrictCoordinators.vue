@@ -95,21 +95,18 @@
     </div>
     
     <div class="main-container m-4">
-        <table class="table table-dark">
+        <table class="table table-primary">
             <thead>
                 <tr>
                     <th
                         v-for="header in headers"
                         :key="header.value"
                         v-text="header.label"
+                        class="bg-primary"
                         :class="headerSortClass(header.value)"
                         @click="headerClick(header.value)"
                     />
-                    
-                    
-                    
-                    
-                    <th v-if="auth">Actions</th>
+                    <th class="bg-warning  text-center" v-if="auth">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,7 +119,7 @@
                     <td v-text="getStateName(district_coordinator.state)"/>
                     <td v-text="getDistrictName(district_coordinator.district)"/>
                     <td class="table-image"><img :src="district_coordinator.image_path" alt=""></td>
-                    <td v-if="auth">
+                    <td v-if="auth" class="table-warning text-center">
                         <button
                             class="btn delete-btn badge btn-danger"
                             @click.stop="deleteDistrictCoordinator(district_coordinator.id)"
