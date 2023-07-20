@@ -23,13 +23,30 @@ class DataController extends Controller
 
     public function observations()
     {
-        $data = [
-            "counts" => CountForm::with("species_list")->get(),
-            "inats" => INat::all(),
-            "ibps" => IBP::all(),
-            "ifbs" => IFB::all()
+        $limit = 10;
+        $raw_data = [
+            "counts" => CountForm::with("species_list")->limit($limit)->get(),
+            "inats" => INat::limit($limit)->get(),
+            "ibps" => IBP::limit($limit)->get(),
+            "ifbs" => IFB::limit($limit)->get()
         ];
-        return $data;
+        $raw_data["counts"]->transform(function($i) {
+            $i->species_list->transform(function($j) {
+                unset($j->created_at);
+                unset($j->updated_at);
+                
+                return $j;
+            });
+        });
+        foreach(array_keys($raw_data) as $key){
+            $raw_data[$key]->transform(function($i) {
+                unset($i->created_at);
+                unset($i->updated_at);
+                
+                return $i;
+            });
+        }
+        return $raw_data;
     }
 
     public function taxa()
