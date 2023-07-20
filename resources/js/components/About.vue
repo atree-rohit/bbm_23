@@ -13,6 +13,15 @@
         justify-content: center;
         gap: 1rem;
     }
+
+    .section{
+        border: 1px solid #ccc;
+        border-radius: 1.5rem;
+        min-height: 50vh;
+        margin: 2.5rem 0;
+        padding: 2.5rem 0;
+        width: 100%;
+    }
     .card{
         width: 20rem;
         position: relative;
@@ -72,7 +81,12 @@
     
     <div class="main-container m-4">
         We are the Big Butterfly Monitoring Network, a consortium of conservation organizations working together to raise awareness on the sharp decline in butterfly populations and create widespread acceptance of the actions needed to reverse this trend.
-        <partners></partners>
+        <div class="section">
+            <partners />
+        </div>
+        <div class="section">
+            <district-coordinators />
+        </div>
     </div>
 </template>
 
@@ -80,11 +94,13 @@
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import Partners from './Partners.vue'
+import DistrictCoordinators from './DistrictCoordinators.vue'
 
 export default defineComponent({
     name: 'About',
     components: {
-        Partners
+        Partners,
+        DistrictCoordinators
     },
     data(){
         return {
@@ -98,6 +114,7 @@ export default defineComponent({
         }),
     },
     mounted(){
+        console.clear()
     },
     methods:{
         gotoLink(link){
