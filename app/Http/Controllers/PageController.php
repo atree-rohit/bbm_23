@@ -11,11 +11,6 @@ class PageController extends Controller
     {
         return view("welcome");
     }
-
-    public function data()
-    {
-        return view('pages.data');
-    }
     
     public function about()
     {
