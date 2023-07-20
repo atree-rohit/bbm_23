@@ -21,6 +21,23 @@ class DataController extends Controller
         return view('pages.data');
     }
 
+    public function observations()
+    {
+        $data = [
+            "counts" => CountForm::with("species_list")->get(),
+            "inats" => INat::all(),
+            "ibps" => IBP::all(),
+            "ifbs" => IFB::all()
+        ];
+        return $data;
+    }
+
+    public function taxa()
+    {
+        $data = Taxa::select("id", "name", "common_name", "rank", "ancestry")->get();
+        return $data;
+    }
+
     //import old data
     public function import()
     {
