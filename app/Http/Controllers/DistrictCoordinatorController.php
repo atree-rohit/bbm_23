@@ -11,8 +11,10 @@ class DistrictCoordinatorController extends Controller
     {
         $all_data = DistrictCoordinator::with("district_coordinator_image")->get();
         $all_data->transform(function($i) {
+            $i->image_path = $i->district_coordinator_image->path;
             unset($i->created_at);
             unset($i->updated_at);
+            unset($i->district_coordinator_image);
             return $i;
         });
         return $all_data;
@@ -46,7 +48,7 @@ class DistrictCoordinatorController extends Controller
     }
 
     public function delete($district_coordinator_id){
-        $district_coordinator = Partner::find($district_coordinator_id);
+        $district_coordinator = DistrictCoordinator::find($district_coordinator_id);
         if($district_coordinator){
             $district_coordinator->delete();
             return response()->json([

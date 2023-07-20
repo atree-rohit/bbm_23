@@ -13,6 +13,25 @@
         justify-content: center;
         gap: 1rem;
     }
+
+    .table td{
+        vertical-align: middle !important;
+    }
+    .table-image img{
+        max-height: 5rem;
+        border-radius: 1rem;
+        box-shadow: 0.1rem 0.1rem 0.33rem .1rem rgba(225,225,0,0.25);
+    }
+
+    th.sort-asc::after{
+        content: '▲';
+        padding-left: 0.25rem;
+    }
+    th.sort-desc::after{
+        content: '▼';
+        padding-left: 0.25rem;
+    }
+
     .card{
         width: 13rem;
         position: relative;
@@ -69,47 +88,54 @@
     <div class="header d-flex px-2">
         <div class="h1">District Coordinators</div>
         <div
-            v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
+            v-if="auth"
         >
             <button class="btn btn-lg btn-success mx-5" @click="show_modal = true">Add District Coordinator</button>
         </div>
     </div>
     
     <div class="main-container m-4">
-        <div
-            class="card"
-            v-for="partner in all_data"
-            :key="partner.id"
-            @click="gotoLink(partner.link)"
-        >
-            <img
-                :src="partner.image_path"
-                class="card-img-top"
-            >
-            <div class="card-body">
-                <h5 class="card-title">{{ partner.name }}</h5>
-                <span class="card-badge badge" :class="badgeColor(partner.partner_type)">
-                    {{ partner.partner_type }}
-                </span>
-                <span
-                    class="card-delete badge bg-danger"
-                    v-if="user.user_type == 'super_admin'"
-                    @click.stop="deletePartner(partner.id)"
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th
+                        v-for="header in headers"
+                        :key="header.value"
+                        v-text="header.label"
+                        :class="headerSortClass(header.value)"
+                        @click="headerClick(header.value)"
+                    />
+                    
+                    
+                    
+                    
+                    <th v-if="auth">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="district_coordinator in table_data"
+                    :key="district_coordinator.id"
                 >
-                    X
-                </span>
-            </div>
-            <div class="card-div-tags" v-if="partner.tags">
-                <span
-                    v-for="(tag, t) in get_tags(partner.tags)"
-                    :key="t"
-                    v-text="tag"
-                    class="card-div-tag badge rounded-pill bg-secondary me-2 px-3 py-2"
-                />
-            </div>
-        </div>
+                    <td v-text="district_coordinator.id"/>
+                    <td v-text="district_coordinator.name"/>
+                    <td v-text="getStateName(district_coordinator.state)"/>
+                    <td v-text="getDistrictName(district_coordinator.district)"/>
+                    <td class="table-image"><img :src="district_coordinator.image_path" alt=""></td>
+                    <td v-if="auth">
+                        <button
+                            class="btn delete-btn badge btn-danger"
+                            @click.stop="deleteDistrictCoordinator(district_coordinator.id)"
+                        >
+                            X
+                        </button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <modal-add-partner
+    <modal-add-district-coordinator
         :show="show_modal"
         @close="show_modal=false"
     />
@@ -119,55 +145,85 @@
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
-import ModalAddPartner from './ModalAddPartner.vue'
+import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
+import states from '../json/states.json'
+import districts from '../json/districts.json'
+
+
 export default defineComponent({
     name: 'DistrictCoordinators',
     components: {
-        ModalAddPartner
+        ModalAddDistrictCoordinator
     },
     data(){
         return {
             show_modal: false,
+            headers: [{
+                    value: 'id',
+                    label: "Sl. No.",
+                },{
+                    value: 'name',
+                    label: "Name",
+                },{
+                    value: 'state',
+                    label: "State",
+                },{
+                    value: 'district',
+                    label: "District",
+                },{
+                    value: 'image',
+                    label: "Image",
+                }],
+            sort_col: 'id',
+            sort_dir: 'asc'
         }
     },
     computed: {
         ...mapState({
             user: state => state.auth.user,
-            all_data: state => state.partners.all_data
+            all_data: state => state.district_coordinators.all_data
         }),
+        auth(){
+            return this.user && (this.user.user_type == 'super_admin' || this.user.user_type == 'admin')
+        },
+        table_data(){
+            return this.all_data.sort((a,b) => {
+                if(this.sort_dir == 'asc'){
+                    return a[this.sort_col] > b[this.sort_col] ? 1 : -1
+                }else{
+                    return a[this.sort_col] < b[this.sort_col] ? 1 : -1
+                }
+            })
+        }
     },
     mounted(){
         store.dispatch('district_coordinators/getAllData')
     },
     methods:{
-        gotoLink(link){
-            window.open(link, '_blank')
+        valueFromLabel(str){
+            return str.replace(/\s/g, '_').toLowerCase()
         },
-        get_tags(tags){
-            return tags.split(',').map((t) => t.trim())
+        getStateName(state_code){
+            return states.features.find((s) => this.valueFromLabel(s.properties.state) == state_code).properties.state
         },
-        badgeColor(type){
-            switch(type){
-                case 'ngo': return 'bg-info'
-                    break
-                case 'research_organization': return 'bg-info'
-                    break
-                case 'school': return 'bg-warning'
-                    break
-                case 'college': return 'bg-warning'
-                    break
-                case 'university': return 'bg-warning'
-                    break
-                case 'nature_club': return 'bg-success'
-                    break
-                case 'social_media_group': return 'bg-primary'
-                    break
-                case 'other': return 'bg-danger'
-                    break
+        getDistrictName(district_code){
+            return districts.features.find((s) => this.valueFromLabel(s.properties.district) == district_code).properties.district
+        },
+        headerSortClass(header){
+            if(header == this.sort_col){
+                return this.sort_dir == 'asc' ? 'sort-asc' : 'sort-desc'
             }
         },
-        deletePartner(id){
-            if(confirm('Are you sure you want to delete this partner?')){
+        headerClick(header){
+            if(header == this.sort_col){
+                this.sort_dir = this.sort_dir == 'asc' ? 'desc' : 'asc'
+            } else {
+                this.sort_col = header
+                this.sort_dir = 'asc'
+            }
+        },
+        deleteDistrictCoordinator(id){
+            if(confirm('Are you sure you want to delete this District Coordinator?')){
                 store.dispatch('district_coordinators/delete', id)
             }
         }
