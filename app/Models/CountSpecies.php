@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class CountSpecies extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'id',
+        'count_form_id',
+        'no',
+        'common_name',
+        'scientific_name',
+        'scientific_name_cleaned',
+        'taxa_id',
+        'individuals',
+        'remarks',
+        'img_url',
+        'status'
+    ];
 }

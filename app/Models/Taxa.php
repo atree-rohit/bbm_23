@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Taxa extends Model
 {
     use HasFactory;
+    
+    protected $fillable = [
+        'id',
+        'name',
+        'common_name',
+        'rank',
+        'ancestry'
+    ];
 }
