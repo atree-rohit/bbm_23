@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('place', 200)->nullable(true);
             $table->string('state', 100)->nullable(true);
             $table->string('district', 100)->nullable(true);
+            $table->string('species', 100)->nullable(true);
             $table->foreignId('taxa_id')->nullable(true)->constrained(
                 table: 'taxas', indexName: 'ifb_taxa_id'
             );

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('user_id', 100)->nullable(false);
             $table->string('user', 100)->nullable(false);
             $table->string('observed_on', 20)->nullable(true);
+            $table->string('place', 200)->nullable(true);
             $table->float('latitude', 10, 6)->nullable(true);
             $table->float('longitude', 10, 6)->nullable(true);
-            $table->string('place', 200)->nullable(true);
             $table->string('state', 100)->nullable(true);
             $table->string('district', 100)->nullable(true);
             $table->foreignId('taxa_id')->nullable(true)->constrained(
