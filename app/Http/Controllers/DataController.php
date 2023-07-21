@@ -266,8 +266,8 @@ class DataController extends Controller
                 $inat->observed_on = $this->cleanDate($row->observed_on);
                 $inat->latitude = $location[0];
                 $inat->longitude = $location[1];
-                $inat->state = $this->cleanStateDistrict($row->state);
-                $inat->district = $this->cleanStateDistrict($row->district);
+                $inat->state = $row->state;
+                $inat->district = $row->district;
                 $inat->user = $row->user_name;
                 $inat->place = $row->place_guess;
                 $inat->save();
@@ -292,8 +292,8 @@ class DataController extends Controller
                 $ibp->latitude = $row->locationLat;
                 $ibp->longitude = $row->locationLon;
                 $ibp->place = $row->placeName;
-                $ibp->state = $this->cleanStateDistrict($row->state);
-                $ibp->district = $this->cleanStateDistrict($row->district);
+                $ibp->state = $row->state;
+                $ibp->district = $row->district;
                 $ibp->img_url = $row->associatedMedia;
                 $ibp->ibp_created_at = $this->cleanDate($row->createdOn);
                 $ibp->save();
@@ -318,8 +318,8 @@ class DataController extends Controller
                 $ifb->ifb_id = $row->boi_id;
                 $ifb->observed_on = $this->cleanDate($row->observed_date);
                 $ifb->place = $row->location_name;
-                $ifb->state = $this->cleanStateDistrict($row->state);
-                $ifb->district = $this->cleanStateDistrict($row->district);
+                $ifb->state = $row->state;
+                $ifb->district = $row->district;
                 $ifb->species = $row->species_name;
                 if($taxa){
                     $ifb->taxa_id = $taxa->id;

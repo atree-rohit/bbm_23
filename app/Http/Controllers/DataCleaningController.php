@@ -11,155 +11,251 @@ use App\Models\IFB;
 
 class DataCleaningController extends Controller
 {
-    public function clean(){
-        $districts = json_decode(file_get_contents(public_path('/json/districts.json')));        
+    public function clean()
+    {
+        ini_set('max_execution_time', 300);
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));        
+        $limit = -1;
         $result = [
-            'counts' => $this->clean_counts($districts),
-            'inat' => [],
-            'ibp' => [],
-            'ifb' => [],
+            'counts' => $this->clean_counts($districts, $limit),
+            'inat' => $this->clean_inat($districts, $limit),
+            'ibp' => $this->clean_ibp($districts, $limit),
+            'ifb' => $this->clean_ifb($districts, $limit)
         ];
+        $fields = ["cleaned", "validated", "skipped", "unmatched", "time"];
+        $result["total"]["cleaned"] = array_reduce($result, function($carry, $item){
+            return $carry + $item["cleaned"];
+        });
+        $result["total"]["validated"] = array_reduce($result, function($carry, $item){
+            if(!isset($item["validated"]))
+                return $carry;
+            return $carry + $item["validated"];
+        });
+        $result["total"]["skipped"] = array_reduce($result, function($carry, $item){
+            if(!isset($item["skipped"]))
+                return $carry;
+            return $carry + $item["skipped"];
+        });
+        $result["total"]["unmatched"] = array_reduce($result, function($carry, $item){
+            if(!isset($item["unmatched"]))
+                return $carry;
+            return $carry + $item["unmatched"];
+        });
+        $result["total"]["time"] = array_reduce($result, function($carry, $item){
+            if(!isset($item["time"]))
+                return $carry;
+            return $carry + $item["time"];
+        });
+        // foreach($fields as $f){
+        // }
+        dd($result);
     }
         
 
-    public function clean_counts($districts){
-        $counts = INat::limit(100)->get();
-        $cleaned = [];
-        foreach($counts as $count){
-            $lat = $count->latitude;
-            $lon = $count->longitude;
-            $district = null;
-            $state = null;
+    public function clean_counts($districts, $limit)
+    {
+        $startTime = microtime(true);
+        $all_data = CountForm::where('validated', false)->orWhere('validated', null)->limit($limit)->get();
+        $cleaned = ["cleaned" => 0, "validated" => 0, "skipped" => 0, "unmatched" => 0, "time" => 0];
+        foreach($all_data as $data){
+            $lat = $data->latitude;
+            $lon = $data->longitude;
             $result = null;
+            $flag = true;
             foreach($districts->features as $district){
                 foreach($district->geometry->coordinates as $polygon){
-                    $result = $this->pointInPolygon($lat, $lon, $polygon);
-                    // if(strtolower($district->properties->state) == $count->state){
-                    //     dd($lat, $lon, $district);
-                    // }
+                    $result = $this->pointInPolygon($lon, $lat, $polygon);
                     if($result){
-                        dd($result);
-                        $district = $district->properties->DISTRICT;
-                        $state = $district->properties->STATE;
+                        $flag = false;
+                        if($data->state != $district->properties->state || $data->district != $district->properties->district){
+                            $data->state = $district->properties->state;
+                            $data->district = $district->properties->district;
+                            $data->validated = true;
+                            $data->save();
+                            $cleaned["cleaned"]++;
+                        } else {
+                            if(!$data->validated){
+                                $data->validated = true;
+                                $data->save();
+                                $cleaned["validated"]++;
+                            } else {
+                                $cleaned["skipped"]++;
+                            }
+                        }
                         break;
                     }
                 }
-
             }
-            echo $count->state . ", " . $count->district. "->" . $result . "<br>";
+            if($flag){
+                $cleaned["unmatched"]++;
+            }
         }
+        $endTime = microtime(true);
+        $cleaned["time"] = $endTime - $startTime;
+
         return $cleaned;
     }
 
-    function pointInPolygon($x, $y, $polygon) {
+    public function clean_inat($districts, $limit)
+    {
+        $startTime = microtime(true);
+        $all_data = INat::where('validated', false)->orWhere('validated', null)->limit($limit)->get();
+        $cleaned = ["cleaned" => 0, "validated" => 0, "skipped" => 0, "unmatched" => 0, "time" => 0];
+        foreach($all_data as $data){
+            $lat = $data->latitude;
+            $lon = $data->longitude;
+            $result = null;
+            $flag = true;
+            foreach($districts->features as $district){
+                foreach($district->geometry->coordinates as $polygon){
+                    $result = $this->pointInPolygon($lon, $lat, $polygon);
+                    if($result){
+                        $flag = false;
+                        if($data->state != $district->properties->state || $data->district != $district->properties->district){
+                            $data->state = $district->properties->state;
+                            $data->district = $district->properties->district;
+                            $data->validated = true;
+                            $data->save();
+                            $cleaned["cleaned"]++;
+                        } else {
+                            if(!$data->validated){
+                                $data->validated = true;
+                                $data->save();
+                                $cleaned["validated"]++;
+                            } else {
+                                $cleaned["skipped"]++;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            if($flag == true){
+                $cleaned["unmatched"]++;
+            }
+        }
+        $endTime = microtime(true);
+        $cleaned["time"] = $endTime - $startTime;
+
+        return $cleaned;
+    }
+
+    public function clean_ibp($districts, $limit)
+    {
+        $startTime = microtime(true);
+        $all_data = IBP::where('validated', false)->orWhere('validated', null)->limit($limit)->get();
+        $cleaned = ["cleaned" => 0, "validated" => 0, "skipped" => 0, "unmatched" => 0, "time" => 0];
+        foreach($all_data as $data){
+            $lat = $data->latitude;
+            $lon = $data->longitude;
+            $result = null;
+            $flag = true;
+            foreach($districts->features as $district){
+                foreach($district->geometry->coordinates as $polygon){
+                    $result = $this->pointInPolygon($lon, $lat, $polygon);
+                    if($result){
+                        $flag = false;
+                        if($data->state != $district->properties->state || $data->district != $district->properties->district){
+                            $data->state = $district->properties->state;
+                            $data->district = $district->properties->district;
+                            $data->validated = true;
+                            $data->save();
+                            $cleaned["cleaned"]++;
+                        } else {
+                            if(!$data->validated){
+                                $data->validated = true;
+                                $data->save();
+                                $cleaned["validated"]++;
+                            } else {
+                                $cleaned["skipped"]++;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            if($flag){
+                $cleaned["unmatched"]++;
+            }
+        }
+        $endTime = microtime(true);
+        $cleaned["time"] = $endTime - $startTime;
+
+        return $cleaned;
+    }
+
+    public function clean_ifb($districts, $limit)
+    {
+        $startTime = microtime(true);
+        $all_data = IFB::where('validated', false)->orWhere('validated', null)->limit($limit)->get();
+        $cleaned = ["cleaned" => 0, "validated" => 0, "skipped" => 0, "unmatched" => 0, "time" => 0];
+        foreach($all_data as $data){
+            $lat = $data->latitude;
+            $lon = $data->longitude;
+            $result = null;
+            $flag = true;
+            foreach($districts->features as $district){
+                foreach($district->geometry->coordinates as $polygon){
+                    $result = $this->pointInPolygon($lon, $lat, $polygon);
+                    if($result){
+                        $flag = false;
+                        if($data->state != $district->properties->state || $data->district != $district->properties->district){
+                            $data->state = $district->properties->state;
+                            $data->district = $district->properties->district;
+                            $data->validated = true;
+                            $data->save();
+                            $cleaned["cleaned"]++;
+                        } else {
+                            if(!$data->validated){
+                                $data->validated = true;
+                                $data->save();
+                                $cleaned["validated"]++;
+                            } else {
+                                $cleaned["skipped"]++;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            if($flag){
+                $cleaned["unmatched"]++;
+            }
+        }
+        $endTime = microtime(true);
+        $cleaned["time"] = $endTime - $startTime;
+
+        return $cleaned;
+    }
+
+
+
+    private function pointInPolygon($lon, $lat, $polygon) {
         $intersections = 0;
-    
-        for ($i = 0, $j = count($polygon) - 1; $i < count($polygon); $j = $i++) {
-            $xi = $polygon[$i][1];
-            $yi = $polygon[$i][0];
-            $xj = $polygon[$j][1];
-            $yj = $polygon[$j][0];
-    
-            // Check if the point is on an edge of the polygon
-            if (($yi == $y && $yj == $y && (($xi <= $x && $x <= $xj) || ($xj <= $x && $x <= $xi))) ||
-                ($xi == $x && $xj == $x && (($yi <= $y && $y <= $yj) || ($yj <= $y && $y <= $yi)))) {
-                return true; // Point is on the edge
-            }
-    
-            // Check for an intersection with the polygon edge
-            if (($yi > $y) !== ($yj > $y) && $x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi) {
-                $intersections++;
-            }
-        }
-    
-        return $intersections % 2 !== 0; // Point is inside the polygon if the number of intersections is odd
-    }
-    
 
-    function pointInPolygon2($x, $y, $polygon) {
-        $wn = 0; // Winding number
-    
-        for ($i = 0, $j = count($polygon) - 1; $i < count($polygon); $j = $i++) {
-            $xi = $polygon[$i][0];
-            $yi = $polygon[$i][1];
-            $xj = $polygon[$j][0];
-            $yj = $polygon[$j][1];
-    
-            // Check if the point is on an edge of the polygon
-            if (($yi == $y && $yj == $y && (($xi <= $x && $x <= $xj) || ($xj <= $x && $x <= $xi))) ||
-                ($xi == $x && $xj == $x && (($yi <= $y && $y <= $yj) || ($yj <= $y && $y <= $yi)))) {
-                return true; // Point is on the edge
-            }
-    
-            // Check if the point is above the current edge and to the left
-            if ($yi < $y && $yj >= $y && ($xj - $xi) * ($y - $yi) - ($yj - $yi) * ($x - $xi) > 0) {
-                $wn++;
-            }
-    
-            // Check if the point is below the current edge and to the right
-            if ($yi >= $y && $yj < $y && ($xj - $xi) * ($y - $yi) - ($yj - $yi) * ($x - $xi) < 0) {
-                $wn--;
-            }
-        }
-        return $wn !== 0; // Point is inside the polygon if winding number is non-zero
-    }
-    
-
-
-
-    function pointInPolygon1($lat, $lon, $polygon) {
-        $x = $lon;
-        $y = $lat;
-        $n = count($polygon);
-        $inside = false;
-    
-        for ($i = 0, $j = $n - 1; $i < $n; $j = $i++) {
-            $xi = $polygon[$i][1];
-            $yi = $polygon[$i][0];
-            $xj = $polygon[$j][1];
-            $yj = $polygon[$j][0];
-    
-            $intersect = (($yi > $y) !== ($yj > $y)) &&
-                ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi);
-            if ($intersect) {
-                $inside = !$inside;
-            }
-        }
-    
-        return $inside;
-    }
-    
-
-    /*
-
-    private function isWithinBounds($lon, $lat, $polygon) {
-        // dd($lon, $lat, $polygon);
-        $intersections = 0;
-    
         $vertices = count($polygon);
         for ($i = 0; $i < $vertices; $i++) {
             $j = ($i + 1) % $vertices;
-    
+
             if ($polygon[$i][1] == $polygon[$j][1]) {
                 continue;
             }
-    
+
             if ($lat < min($polygon[$i][1], $polygon[$j][1])) {
                 continue;
             }
-    
+
             if ($lat >= max($polygon[$i][1], $polygon[$j][1])) {
                 continue;
             }
-    
+
             $x = ($lat - $polygon[$i][1]) * ($polygon[$j][0] - $polygon[$i][0]) / ($polygon[$j][1] - $polygon[$i][1]) + $polygon[$i][0];
-    
+
             if ($x > $lon) {
                 $intersections++;
             }
         }
-    
+
         return ($intersections % 2) == 1;
     }
-    */
 }
