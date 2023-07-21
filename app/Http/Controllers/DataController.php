@@ -23,36 +23,95 @@ class DataController extends Controller
 
     public function observations()
     {
-        $limit = 10;
-        $raw_data = [
-            "counts" => CountForm::with("species_list")->limit($limit)->get(),
-            "inats" => INat::limit($limit)->get(),
-            "ibps" => IBP::limit($limit)->get(),
-            "ifbs" => IFB::limit($limit)->get()
+        $limit = -1;
+        $data = [
+            "counts" => $this->get_counts_data($limit),
+            "inats" => $this->get_inat_data($limit),
+            "ibps" => $this->get_ibp_data($limit),
+            "ifbs" => $this->get_ifb_data($limit)
         ];
-        $raw_data["counts"]->transform(function($i) {
-            $i->species_list->transform(function($j) {
-                unset($j->created_at);
-                unset($j->updated_at);
-                
-                return $j;
-            });
-        });
-        foreach(array_keys($raw_data) as $key){
-            $raw_data[$key]->transform(function($i) {
-                unset($i->created_at);
-                unset($i->updated_at);
-                
-                return $i;
-            });
-        }
-        return $raw_data;
+        
+        return $data;
     }
 
     public function taxa()
     {
         $data = Taxa::select("id", "name", "common_name", "rank", "ancestry")->get();
         return $data;
+    }
+
+
+    public function get_counts_data($limit)
+    {
+        $data = CountForm::with("species_list")->limit($limit)->get();
+        $op = [];
+        foreach($data as $form){
+            $row = [
+                "id" => -1,
+                "taxa" => -1,
+                "user" => $form->name,
+                "date" => $form->date_cleaned,
+                "state" => $form->state,
+                "district" => $form->district
+            ];
+            foreach($form->species_list as $species){
+                $row["id"] = $species->id;
+                $row["taxa"] = $species->taxa_id;
+                $op[] = $row;
+            }            
+        }
+        return array_map('array_values', $op);
+    }
+
+    public function get_inat_data($limit)
+    {
+        $data = INat::limit($limit)->get();
+        $op = [];
+        foreach($data as $row){
+            $op[] = [
+                "id" => $row->id,
+                "taxa" => $row->taxa_id,
+                "user" => $row->user,
+                "date" => $row->observed_on,
+                "state" => $row->state,
+                "district" => $row->district
+            ];
+        }
+        return array_map('array_values', $op);
+    }
+
+    public function get_ibp_data($limit)
+    {
+        $data = IBP::limit($limit)->get();
+        $op = [];
+        foreach($data as $row){
+            $op[] = [
+                "id" => $row->id,
+                "taxa" => $row->taxa_id,
+                "user" => $row->user,
+                "date" => $row->observed_on,
+                "state" => $row->state,
+                "district" => $row->district
+            ];
+        }
+        return array_map('array_values', $op);
+    }
+
+    public function get_ifb_data($limit)
+    {
+        $data = IFB::limit($limit)->get();
+        $op = [];
+        foreach($data as $row){
+            $op[] = [
+                "id" => $row->id,
+                "taxa" => $row->taxa_id,
+                "user" => $row->user,
+                "date" => $row->observed_on,
+                "state" => $row->state,
+                "district" => $row->district
+            ];
+        }
+        return array_map('array_values', $op);
     }
 
     //import old data
