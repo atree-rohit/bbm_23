@@ -27,6 +27,7 @@ return new class extends Migration
             $table->text('remarks')->nullable(true);
             $table->string('img_url', 500)->nullable(true);
             $table->enum('status', ['pending', 'approved', 'duplicate', 'rejected'])->default('approved');
+            $table->boolean('validated')->nullable(true)->default(null);
             $table->timestamps();
         });
     }

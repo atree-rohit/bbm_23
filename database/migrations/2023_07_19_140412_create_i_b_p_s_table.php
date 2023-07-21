@@ -25,6 +25,7 @@ return new class extends Migration
             );
             $table->string('img_url', 500)->nullable(true);
             $table->string('ibp_created_at', 100)->nullable(false);
+            $table->boolean('validated')->nullable(true)->default(null);
             $table->timestamps();
         });
     }
