@@ -5,6 +5,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\DataCleaningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ use App\Http\Controllers\FileController;
 Route::get('/', [PageController::class, 'home']);
 Route::get('/data', [DataController::class, 'index']);
 Route::get('/data/import', [DataController::class, 'import']);
+Route::get('/data/clean', [DataCleaningController::class, 'clean']);
 Route::get('/about', [PageController::class, 'about']);
 Route::get('/participate', [PageController::class, 'participate']);
 Route::get('/registration', [PageController::class, 'registration']);

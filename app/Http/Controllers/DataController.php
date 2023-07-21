@@ -261,8 +261,11 @@ class DataController extends Controller
             if($existingINat){
                 $saved["skipped"]++;
             } else {
+                $location = explode(",", $row->location);
                 $inat = new INat((array) $row);
                 $inat->observed_on = $this->cleanDate($row->observed_on);
+                $inat->latitude = $location[0];
+                $inat->longitude = $location[1];
                 $inat->state = $this->cleanStateDistrict($row->state);
                 $inat->district = $this->cleanStateDistrict($row->district);
                 $inat->user = $row->user_name;
