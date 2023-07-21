@@ -26,7 +26,6 @@ export default {
         async getAllData({commit}){
             try {
                 const { data }  = await axios.get('/api/data/observations')
-                console.log(data)
                 commit('SET_OBSERVATIONS', data)
             } catch (response) {
                 console.error("error retreiving Observations", response)
