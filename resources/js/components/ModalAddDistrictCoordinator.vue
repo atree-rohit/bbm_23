@@ -70,9 +70,6 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <pre style="font-size:.75rem">
-                        {{ form_data }}
-                    </pre>
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
                     <button type="button" class="btn btn-success" @click="submit">Save changes</button>
                 </div>
