@@ -25,12 +25,14 @@ export default {
             state.states = value
         },
         SET_DISTRICTS(state, value){
-            console.log("value")
+            console.log("value", value)
             state.districts = value
         },
     },
     actions: {
         async getAllData({commit, dispatch}){
+            localStorage.clear(); // Clear LocalStorage
+            sessionStorage.clear(); // Clear SessionStorage
             // await dispatch('getRegions')
             // await dispatch('getStates')
             await dispatch('getDistricts')

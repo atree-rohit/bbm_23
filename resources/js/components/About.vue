@@ -114,7 +114,7 @@ export default defineComponent({
         }),
     },
     mounted(){
-        console.clear()
+        // console.clear()
     },
     methods:{
         gotoLink(link){

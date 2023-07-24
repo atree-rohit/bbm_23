@@ -90,7 +90,7 @@
         <div
             v-if="auth"
         >
-            <button class="btn btn-lg btn-success mx-5" @click="show_modal = true">Add District Coordinator</button>
+            <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true">Add District Coordinator</button>
         </div>
     </div>
     
@@ -113,6 +113,7 @@
                 <tr
                     v-for="district_coordinator in table_data"
                     :key="district_coordinator.id"
+                    @click="showViewModal(district_coordinator)"
                 >
                     <td v-text="district_coordinator.id"/>
                     <td v-text="district_coordinator.name"/>
@@ -131,11 +132,16 @@
                 </tr>
             </tbody>
         </table>
-        <map-district-coordinator />
+        <map-district-coordinator @polygon-clicked="polygonClick"/>
+        <modal-view-district-coordinators
+            :show="show_view_modal"
+            :data="selected_district_coordinator"
+            @close="show_view_modal=false"
+        />
     </div>
     <modal-add-district-coordinator
-        :show="show_modal"
-        @close="show_modal=false"
+        :show="show_add_modal"
+        @close="show_add_modal=false"
     />
 </template>
 
@@ -144,6 +150,7 @@ import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
 import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
+import ModalViewDistrictCoordinators from './ModalViewDistrictCoordinators.vue'
 import MapDistrictCoordinator from './MapDistrictCoordinator.vue'
 import states from '../json/states.json'
 import districts from '../json/districts.json'
@@ -153,11 +160,13 @@ export default defineComponent({
     name: 'DistrictCoordinators',
     components: {
         ModalAddDistrictCoordinator,
+        ModalViewDistrictCoordinators,
         MapDistrictCoordinator
     },
     data(){
         return {
-            show_modal: false,
+            show_add_modal: false,
+            show_view_modal: false,
             headers: [{
                     value: 'id',
                     label: "Sl. No.",
@@ -175,7 +184,8 @@ export default defineComponent({
                     label: "Image",
                 }],
             sort_col: 'id',
-            sort_dir: 'asc'
+            sort_dir: 'asc',
+            selected_district_coordinator: null
         }
     },
     computed: {
@@ -196,18 +206,32 @@ export default defineComponent({
             })
         }
     },
-    mounted(){
+    created(){
         store.dispatch('district_coordinators/getAllData')
-        store.dispatch('maps/getAllData')
     },
     methods:{
+        polygonClick(polygon){
+            let district_coordinators = this.all_data.filter((d) => d.state == this.valueFromLabel(polygon.name) || d.district == this.valueFromLabel(polygon.name))
+            this.selected_district_coordinator = district_coordinators
+            this.show_view_modal = true
+        },
+        showViewModal(district_coordinator){
+            this.selected_district_coordinator = [district_coordinator]
+            this.show_view_modal = true
+        },
         valueFromLabel(str){
             return str.replace(/\s/g, '_').toLowerCase()
         },
         getStateName(state_code){
+            if(state_code == -1){
+                return ''
+            }
             return states.features.find((s) => this.valueFromLabel(s.properties.state) == state_code).properties.state
         },
         getDistrictName(district_code){
+            if(district_code == -1){
+                return ''
+            }
             return districts.features.find((s) => this.valueFromLabel(s.properties.district) == district_code).properties.district
         },
         headerSortClass(header){
