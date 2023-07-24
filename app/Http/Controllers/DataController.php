@@ -23,7 +23,7 @@ class DataController extends Controller
 
     public function observations()
     {
-        $limit = 100;
+        $limit = -1;
         $data = [
             "counts" => $this->get_counts_data($limit),
             "inats" => $this->get_inat_data($limit),

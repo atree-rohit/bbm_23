@@ -18,28 +18,24 @@
             "label" => "How to Participate",
             "link" => "/participate"
         ],[
-            "id" => 5,
-            "label" => "Registration",
-            "link" => "/registration"
-        ],[
             "id" => 6,
             "label" => "Resources",
             "link" => "/resources"
         ],[
-            "id" => 7,
+            "id" => 6,
             "label" => "Calendar",
             "link" => "/calendar"
         ]
     ];
     if(auth()->user()){
         $links[] = [
-            "id" => 8,
+            "id" => 7,
             "label" => "Logout",
             "link" => "/logout"
         ];
     } else {
         $links[] = [
-            "id" => 8,
+            "id" => 7,
             "label" => "Login",
             "link" => "/login"
         ];

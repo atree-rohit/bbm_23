@@ -8,11 +8,8 @@ use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\PressLinkController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\DistrictCoordinatorController;
-<<<<<<< HEAD
 use App\Http\Controllers\MapsController;
-=======
 use App\Http\Controllers\DataController;
->>>>>>> participate
 
 /*
 |--------------------------------------------------------------------------
