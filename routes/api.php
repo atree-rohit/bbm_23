@@ -8,7 +8,11 @@ use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\PressLinkController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\DistrictCoordinatorController;
+<<<<<<< HEAD
 use App\Http\Controllers\MapsController;
+=======
+use App\Http\Controllers\DataController;
+>>>>>>> participate
 
 /*
 |--------------------------------------------------------------------------
@@ -47,3 +51,7 @@ Route::post('/store_district_coordinator', [DistrictCoordinatorController::class
 Route::delete('/delete_district_coordinator/{id}', [DistrictCoordinatorController::class, 'delete']);
 
 Route::get('/maps/{slug}', [MapsController::class, 'index']);
+
+
+Route::get('/data/observations', [DataController::class, 'observations']);
+Route::get('/data/taxa', [DataController::class, 'taxa']);

@@ -62,7 +62,7 @@
     <div class="logo">
         <img src="./img/bbm_logo.png" alt="">
     </div>
-    <ul>
+    <ul class="navigation">
         @foreach($links as $link)
         <li @if($current_path == $link['link']) class='active' @endif>
             <a href="{{$link['link']}}">

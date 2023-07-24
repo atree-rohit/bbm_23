@@ -22,3 +22,23 @@ Models
 
 
 Auth based on https://techvblogs.com/blog/spa-authentication-laravel-sanctum-vuejs
+
+
+Data Stats
+Raw
+	40: 	48Kb	23ms
+	400:	605Kb	133ms
+	4000:	4.2Mb	825ms
+	all: 	28Mb	4.2s
+
+New {}
+	40:		14Kb	11ms
+	400:	178Kb	31ms
+	4000:	1.28Mb	148ms
+	all:	7.1Mb	761ms
+
+new []
+	40:		9.2Kb	10ms
+	400:	108Kb	36ms
+	4000:	786Kb	148ms
+	all: 	4.4Mb	739ms

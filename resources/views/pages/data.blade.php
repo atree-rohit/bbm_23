@@ -3,9 +3,9 @@
 @section('title', 'Data')
 
 @section('content')
-    <h1>Data</h1>
+    <data-component />
 @endsection
 
 @push('scripts')
-
+@vite('resources/js/pages/data.js')
 @endpush

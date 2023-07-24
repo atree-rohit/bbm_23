@@ -33,7 +33,7 @@ nav .logo{
     align-items: center;
 }
 
-nav ul{
+nav ul.navigation{
     margin: 0;
 }
 .logo{
@@ -45,58 +45,58 @@ nav ul{
     max-height: 60px;
 }
 
-ul{
+ul.navigation{
     max-width: 65rem;
     list-style: none;
     display:flex;
     justify-content: space-around;
     align-items:baseline;
 }
-ul li{
+ul.navigation li{
     border-radius: .33rem;
     padding: .25rem 1rem;
     margin: auto 0.125rem;
     transition: all var(--transition-time);
 }
-ul li a{
+ul.navigation li a{
     text-decoration: none;
     color: var(--primary-text);
     white-space: nowrap;
     transition: all var(--transition-time);
 }
 
-ul li a::before, 
-ul li a::after{
+ul.navigation li a::before, 
+ul.navigation li a::after{
     content: "";
     display:block;
     height: 0rem;
 }
 
-ul li.active a{
+ul.navigation li.active a{
     color: var(--active-clr);
 }
-ul li.active a::before, 
-ul li.active a::after,
-ul li:hover a::before,
-ul li:hover a::after
+ul.navigation li.active a::before, 
+ul.navigation li.active a::after,
+ul.navigation li:hover a::before,
+ul.navigation li:hover a::after
 {
     width: 100%;
     height: .1rem;
     margin: 0.5rem 0;
     transition: all var(--transition-time);
 }
-ul li.active a::before, 
-ul li.active a::after{
+ul.navigation li.active a::before, 
+ul.navigation li.active a::after{
     background-color: var(--active-clr);
 }
 
-ul li:hover a{
+ul.navigation li:hover a{
     color: yellow;
 }
-ul li a span{
+ul.navigation li a span{
     padding: 1rem 0.125rem;
 }
-ul li:hover a::before,
-ul li:hover a::after{
+ul.navigation li:hover a::before,
+ul.navigation li:hover a::after{
     background-color: yellow;
 }

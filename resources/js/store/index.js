@@ -8,6 +8,7 @@ import press_links from './press_links'
 import resources from './resources'
 import district_coordinators from './district_coordinators'
 import maps from './maps'
+import data from './data'
 
 const store = createStore({
     plugins: [
@@ -20,6 +21,7 @@ const store = createStore({
         press_links,
         resources,
         district_coordinators,
+        data,
         maps
     }
 })

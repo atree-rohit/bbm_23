@@ -16,7 +16,6 @@
         <div class="app-container">
             @include('layouts.nav')
             <div id="app">
-                <nav></nav>
                 @yield('content')
             </div>
         </div>

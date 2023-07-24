@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Participate')
+@section('title', 'How to Participate')
 
 @section('content')
-    <h1>Participate</h1>
+    <how-to-participate />
 @endsection
 
 @push('scripts')
-
+@vite('resources/js/pages/how_to_participate.js')
 @endpush
