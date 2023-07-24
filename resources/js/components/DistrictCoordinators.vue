@@ -131,6 +131,7 @@
                 </tr>
             </tbody>
         </table>
+        <map-district-coordinator />
     </div>
     <modal-add-district-coordinator
         :show="show_modal"
@@ -143,6 +144,7 @@ import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
 import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
+import MapDistrictCoordinator from './MapDistrictCoordinator.vue'
 import states from '../json/states.json'
 import districts from '../json/districts.json'
 
@@ -150,7 +152,8 @@ import districts from '../json/districts.json'
 export default defineComponent({
     name: 'DistrictCoordinators',
     components: {
-        ModalAddDistrictCoordinator
+        ModalAddDistrictCoordinator,
+        MapDistrictCoordinator
     },
     data(){
         return {
@@ -195,6 +198,7 @@ export default defineComponent({
     },
     mounted(){
         store.dispatch('district_coordinators/getAllData')
+        store.dispatch('maps/getAllData')
     },
     methods:{
         valueFromLabel(str){

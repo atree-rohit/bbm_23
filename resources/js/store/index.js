@@ -7,6 +7,7 @@ import testimonials from './testimonials'
 import press_links from './press_links'
 import resources from './resources'
 import district_coordinators from './district_coordinators'
+import maps from './maps'
 
 const store = createStore({
     plugins: [
@@ -18,7 +19,8 @@ const store = createStore({
         partners,
         press_links,
         resources,
-        district_coordinators
+        district_coordinators,
+        maps
     }
 })
 

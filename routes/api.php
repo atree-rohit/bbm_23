@@ -8,6 +8,7 @@ use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\PressLinkController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\DistrictCoordinatorController;
+use App\Http\Controllers\MapsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,3 +45,5 @@ Route::delete('/delete_resource/{id}', [ResourceController::class, 'delete']);
 Route::get('/district_coordinators', [DistrictCoordinatorController::class, 'all_data']);
 Route::post('/store_district_coordinator', [DistrictCoordinatorController::class, 'store']);
 Route::delete('/delete_district_coordinator/{id}', [DistrictCoordinatorController::class, 'delete']);
+
+Route::get('/maps/{slug}', [MapsController::class, 'index']);
