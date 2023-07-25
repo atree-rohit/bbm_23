@@ -85,6 +85,7 @@ export default {
                 this.signIn()
                 window.location.href = window.location.origin + '/login'
             }).catch((data)=>{
+                console.log(data, this.user)
                 alert(data)
             }).finally(()=>{
                 this.processing = false
