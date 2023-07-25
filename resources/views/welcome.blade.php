@@ -10,7 +10,7 @@
     </head>
     <body>
         <div id="app" />
-        @vite('resources/js/app.js')+
+        @vite('resources/js/app.js')
         <script>
             window.page = @json($page);
         </script>
