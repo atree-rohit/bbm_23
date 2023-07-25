@@ -84,8 +84,8 @@ export default {
             await axios.post('/register',this.user).then(response=>{
                 this.signIn()
                 window.location.href = window.location.origin + '/login'
-            }).catch(({response:{data}})=>{
-                alert(data.message)
+            }).catch((data)=>{
+                alert(data)
             }).finally(()=>{
                 this.processing = false
             })
