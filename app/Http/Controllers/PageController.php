@@ -2,79 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Page;
 use Illuminate\Http\Request;
 
 
 class PageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function home(Request $request)
     {
-        $page = "home";
-        $fullUrl = $request->url();
-        $url_parts = explode("//", $fullUrl);
-        $url_without_protocol = $url_parts[1];
-        $url_parts_1 = explode("/", $url_without_protocol);
-        if(count($url_parts_1)> 1){
-            $url_slug = $url_parts_1[1];
-        } else {
-            $url_slug = "home";
-        }
-        return view("welcome")->with("page", "$url_slug");
+        return view("welcome");
     }
-    public function index()
+    
+    public function about()
     {
-        //
+        return view('pages.about');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function participate()
     {
-        //
+        return view('pages.participate');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function registration()
     {
-        //
+        return view('pages.registration');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Page $page)
+    public function resources()
     {
-        //
+        return view('pages.resources');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Page $page)
+    public function calendar()
     {
-        //
+        return view('pages.calendar');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Page $page)
+    public function register()
     {
-        //
+        return view('pages.auth.register');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Page $page)
+    public function login()
     {
-        //
+        return view('pages.auth.login');
+    }
+
+    public function logout()
+    {
+        return view('pages.auth.logout');
     }
 }
