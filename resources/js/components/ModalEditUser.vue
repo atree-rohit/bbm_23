@@ -11,38 +11,44 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLiveLabel">View District Coordinator</h3>
+                    <h3 class="modal-title" id="exampleModalLiveLabel">Edit User Details</h3>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="btn-group d-block text-center" v-if="data.length >= 1">
-                        <button
-                            class="btn btn-secondary mx-3"
-                            v-if="current_district_coordinator_id > 0"
-                            @click="current_district_coordinator_id--"
-                        >
-                            &lt;
-                        </button>
-                        {{ current_district_coordinator_id }}
-                        <button
-                            class="btn btn-secondary mx-3"
-                            v-if="current_district_coordinator_id < data.length - 1"
-                            @click="current_district_coordinator_id++"
-                        >
-                            &gt;
-                        </button>
-                    </div>
-                    <table class="table">
-                        <tbody>
-                            <tr
-                                v-for="question in form_questions"
-                                :key="question.name"
+                    <form action="javascript:void(0)" @submit="submit" class="row" method="post">
+                        <div v-for="question in form_questions" :key="question.name" class="form-group col-12">
+                            <label :for="question.name" class="font-weight-bold" v-text="question.label" />
+                            <input
+                                type="text"
+                                v-if="question.type == 'text'"
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control"
                             >
-                                <td>{{ question.label }}</td>
-                                <td>{{ data[current_district_coordinator_id][question.name] }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <input
+                                type="number"
+                                v-if="question.type == 'number'"
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control"
+                            >
+                            <select
+                                v-else-if="question.type == 'select'"
+                                v-model="form_data[question.name]"
+                                class="form-select"
+                                :disabled="(auth_user.user_type != 'super_admin' || auth_user.id == data.id )"
+                            >
+                                <option>Select Link Type</option>
+                                <option
+                                    v-for="option in question.options"
+                                    :key="option.value"
+                                    :value="option.value"
+                                    v-text="option.label"
+                                    :selected="option.value == 'newspaper_print'"
+                                />
+                            </select>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
@@ -56,6 +62,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { mapState, mapActions } from 'vuex'
 
 export default defineComponent({
     name: 'ModalEditUser',
@@ -65,8 +72,8 @@ export default defineComponent({
             default: false
         },
         data: {
-            type: Array,
-            default: () => []
+            type: Object,
+            default: () => {}
         }
     },
     emits: ["close"],
@@ -80,50 +87,39 @@ export default defineComponent({
                     required: true
                 },{
                     type: 'text',
-                    label: 'Organization / Designation',
-                    name: 'designation',
-                    required: false
-                },{
-                    type: 'select',
-                    label: 'State',
-                    name: 'state',
-                    required: true,
-                    options: []
-                },{
-                    type: 'select',
-                    label: 'District',
-                    name: 'district',
-                    required: true,
-                    options: []
-                },{
-                    type: 'text',
-                    label: 'Coordinates (Latitude, Longitude)',
-                    name: 'coordinates',
-                    required: false
-                },{
-                    type: 'text',
                     label: 'Email',
                     name: 'email',
-                    required: false
+                    required: true
                 },{
-                    type: 'text',
-                    label: 'Phone Number',
-                    name: 'phone',
-                    required: false
-                },{
-                    type: 'file',
-                    label: 'Image',
-                    name: 'image',
-                    required: false
+                    type: 'select',
+                    label: 'User Type',
+                    name: 'user_type',
+                    required: true,
+                    options: [
+                        {
+                            label: 'User',
+                            value: 'user'
+                        },{
+                            label: 'Admin',
+                            value: 'admin'
+                        },{
+                            label: 'Super Admin',
+                            value: 'super_admin'
+                        }
+                    ]
                 }
             ],
-            current_district_coordinator_id: 0,
+            form_data: {}
         }
     },
-    created(){
+    computed:{
+        ...mapState({
+            auth_user: state => state.auth.user
+        })
     },
     watch:{
         show(newVal){
+            this.form_data = this.data
             let body = document.querySelector('body')
             if(newVal == true){
                 body.classList.add('modal-open')
@@ -133,8 +129,19 @@ export default defineComponent({
         }
     },
     methods:{
+        ...mapActions({
+            update:'manage_users/update'
+        }),
         valueFromLabel(str){
             return str.replace(/\s/g, '_').toLowerCase()
+        },
+        submit(){
+            let payload = {
+                form_data: this.form_data,
+                user: this.auth_user
+            }
+            this.update(payload)
+            this.closeModal()
         },
         closeModal(){
             this.$emit('close')

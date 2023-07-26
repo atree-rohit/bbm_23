@@ -85,6 +85,7 @@
                 <tr
                     v-for="user in all_data"
                     :key="user.id"
+                    @click="showModal(user)"
                 >
                     <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
@@ -111,6 +112,11 @@
         <div class="bg-danger p-5 h1 text-light w-100" v-else>
             You Need to be an Admin or Super-Admin to view this page
         </div>
+        <modal-edit-user
+            :show="show_modal"
+            :data="modal_data"
+            @close="show_modal=false"
+        />
     </div>
 </template>
 
@@ -118,13 +124,17 @@
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
+import ModalEditUser from './ModalEditUser.vue'
+
 export default defineComponent({
     name: 'ManageUsers',
     components: {
+        ModalEditUser
     },
     data(){
         return {
             show_modal: false,
+            modal_data: {}
         }
     },
     computed: {
@@ -139,6 +149,10 @@ export default defineComponent({
         store.dispatch('manage_users/getAllData')
     },
     methods:{
+        showModal(user){
+            this.modal_data = user
+            this.show_modal = true
+        },
         deleteUser(id){
             if(confirm('Are you sure you want to delete this user?')){
                 store.dispatch('manage_users/delete', id)
