@@ -9,6 +9,7 @@ import resources from './resources'
 import district_coordinators from './district_coordinators'
 import maps from './maps'
 import data from './data'
+import manage_users from './manage_users'
 
 const store = createStore({
     plugins: [
@@ -22,7 +23,8 @@ const store = createStore({
         resources,
         district_coordinators,
         data,
-        maps
+        maps,
+        manage_users
     }
 })
 
