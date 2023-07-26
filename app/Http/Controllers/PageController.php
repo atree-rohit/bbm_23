@@ -47,6 +47,11 @@ class PageController extends Controller
         return view('pages.auth.login');
     }
 
+    public function manage()
+    {
+        return view('pages.auth.manage-users');
+    }
+
     public function logout()
     {
         return view('pages.auth.logout');

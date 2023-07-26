@@ -5,6 +5,9 @@
     .modal textarea{
         min-height: 10rem;
     }
+    .btn-group> *{
+        margin: 0 1rem;
+    }
 </style>
 <template>
     <div v-if="show" class="modal fade show" aria-modal="true" role="dialog">
@@ -15,22 +18,26 @@
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="btn-group d-block text-center" v-if="data.length >= 1">
-                        <button
-                            class="btn btn-secondary mx-3"
-                            v-if="current_district_coordinator_id > 0"
-                            @click="current_district_coordinator_id--"
-                        >
-                            &lt;
-                        </button>
-                        {{ current_district_coordinator_id }}
-                        <button
-                            class="btn btn-secondary mx-3"
-                            v-if="current_district_coordinator_id < data.length - 1"
-                            @click="current_district_coordinator_id++"
-                        >
-                            &gt;
-                        </button>
+                    <div class="btn-group mx-auto d-flex justify-content-center" v-if="data.length >= 1">
+                        <div>
+                            <button
+                                class="btn btn-outline-secondary"
+                                @click="current_district_coordinator_id--"
+                                v-if="current_district_coordinator_id > 0"
+                            >
+                                &lt;
+                            </button>
+                        </div>
+                        <div class="my-0 mx-5 h3">{{ current_district_coordinator_id }}</div>
+                        <div>
+                            <button
+                                class="btn btn-outline-secondary"
+                                v-if="current_district_coordinator_id < data.length - 1"
+                                @click="current_district_coordinator_id++"
+                            >
+                                &gt;
+                            </button>
+                        </div>
                     </div>
                     <table class="table">
                         <tbody>

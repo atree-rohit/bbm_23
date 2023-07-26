@@ -33,12 +33,6 @@
             "label" => "Logout",
             "link" => "/logout"
         ];
-    } else {
-        $links[] = [
-            "id" => 7,
-            "label" => "Login",
-            "link" => "/login"
-        ];
     }
     $current_path = "/";
     foreach($links as $link){

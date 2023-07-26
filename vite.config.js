@@ -4,18 +4,23 @@ import vue from '@vitejs/plugin-vue';
  
 export default defineConfig({
     plugins: [
-        laravel([
-            'resources/css/app.css',
-            'resources/js/app.js',
-            'resources/js/pages/about.js',
-            'resources/js/pages/data.js',
-            'resources/js/pages/home.js',
-            'resources/js/pages/how_to_participate.js',
-            'resources/js/pages/login.js',
-            'resources/js/pages/logout.js',
-            'resources/js/pages/register.js',
-            'resources/js/pages/resources.js'
-        ]),
+        laravel({
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+                'resources/js/pages/about.js',
+                'resources/js/pages/data.js',
+                'resources/js/pages/home.js',
+                'resources/js/pages/how_to_participate.js',
+                'resources/js/pages/login.js',
+                'resources/js/pages/logout.js',
+                'resources/js/pages/register.js',
+                'resources/js/pages/resources.js',
+                'resources/js/pages/manage_users.js',
+
+            ],
+            refresh: true,
+        }),
         vue({
             template: {
                 transformAssetUrls: {
