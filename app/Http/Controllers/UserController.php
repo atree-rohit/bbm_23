@@ -33,9 +33,30 @@ class UserController extends Controller
         return redirect('/');
     }
 
+    public function get_all_users(){
+        $users = User::select("id", "name", "email", "user_type")->get();
+        return $users;
+    }
+
     public function logout()
     {
         Auth::logout();
         return redirect('/');
+    }
+
+    public function delete($user_id){
+        $user = User::find($user_id);
+        if($user){
+            $user->delete();
+            return response()->json([
+                'message' => 'User deleted successfully!',
+                'status' => 200,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'User not found!',
+                'status' => 404,
+            ]);
+        }
     }
 }
