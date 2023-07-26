@@ -14,10 +14,6 @@ export default {
         SET_ALL_DATA(state, value){
             state.all_data = value
         },
-        UPDATA_DATA(state, value){
-            let { created_at, updated_at, ...data} = value.data
-            state.all_data.push(data)
-        },
         REMOVE_DATA(state, value){
             let index = state.all_data.findIndex(item => item.id === value)
             state.all_data.splice(index, 1)
@@ -32,10 +28,11 @@ export default {
                 console.error("error retreiving Users")
             }
         },
-        async update({commit}, payload){
+        async update({dispatch}, payload){
             try {
                 const { data } = await axios.post('/api/update_user', payload)
-                commit('UPDATA_DATA', data)
+                await dispatch('getAllData')
+                console.log("update_user", data)
             } catch ({ response: { data: data_1 } }) {
                 console.error("error updating User")
             }
