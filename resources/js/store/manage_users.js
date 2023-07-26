@@ -26,7 +26,7 @@ export default {
     actions: {
         async getAllData({commit}){
             try {
-                const { data } = await axios.get('/api/manage_users')
+                const { data } = await axios.get('/api/get_all_users')
                 commit('SET_ALL_DATA', data)
             } catch ({ response: { data: data_1 } }) {
                 console.error("error retreiving Users")
