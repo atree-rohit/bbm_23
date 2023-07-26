@@ -71,37 +71,45 @@
     </div>
     
     <div class="main-container m-4">
-        <div
-            class="card"
-            v-for="partner in all_data"
-            :key="partner.id"
-            @click="gotoLink(partner.link)"
-        >
-            <img
-                :src="partner.image_path"
-                class="card-img-top"
-            >
-            <div class="card-body">
-                <h5 class="card-title">{{ partner.name }}</h5>
-                <span class="card-badge badge" :class="badgeColor(partner.partner_type)">
-                    {{ partner.partner_type }}
-                </span>
-                <span
-                    class="card-delete badge bg-danger"
-                    v-if="user.user_type == 'super_admin'"
-                    @click.stop="deletePartner(partner.id)"
+        <table class="table table-bordered table-hoverable" v-if="is_admin || is_super_admin">
+            <thead class="bg-info">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>User Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="user in all_data"
+                    :key="user.id"
                 >
-                    X
-                </span>
-            </div>
-            <div class="card-div-tags" v-if="partner.tags">
-                <span
-                    v-for="(tag, t) in get_tags(partner.tags)"
-                    :key="t"
-                    v-text="tag"
-                    class="card-div-tag badge rounded-pill bg-secondary me-2 px-3 py-2"
-                />
-            </div>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.user_type }}</td>
+                    <td class="text-center d-flex justify-content-around">
+                        <span
+                            class="btn btn-primary badge"
+                            v-if="(auth_user.id == user.id || is_super_admin)"
+                        >
+                            &#x270E;
+                        </span>
+                        <span
+                            class="btn btn-danger badge"
+                            v-if="(auth_user.id != user.id && is_super_admin)"
+                            @click="deleteUser(user.id)"
+                        >
+                            X
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="bg-danger p-5 h1 text-light w-100" v-else>
+            You Need to be an Admin or Super-Admin to view this page
         </div>
     </div>
 </template>
@@ -121,43 +129,19 @@ export default defineComponent({
     },
     computed: {
         ...mapState({
-            user: state => state.auth.user,
-            all_data: state => state.partners.all_data
+            auth_user: state => state.auth.user,
+            is_admin: state => state.auth.is_admin,
+            is_super_admin: state => state.auth.is_super_admin,
+            all_data: state => state.manage_users.all_data
         }),
     },
     mounted(){
-        store.dispatch('partners/getAllData')
+        store.dispatch('manage_users/getAllData')
     },
     methods:{
-        gotoLink(link){
-            window.open(link, '_blank')
-        },
-        get_tags(tags){
-            return tags.split(',').map((t) => t.trim())
-        },
-        badgeColor(type){
-            switch(type){
-                case 'ngo': return 'bg-info'
-                    break
-                case 'research_organization': return 'bg-info'
-                    break
-                case 'school': return 'bg-warning'
-                    break
-                case 'college': return 'bg-warning'
-                    break
-                case 'university': return 'bg-warning'
-                    break
-                case 'nature_club': return 'bg-success'
-                    break
-                case 'social_media_group': return 'bg-primary'
-                    break
-                case 'other': return 'bg-danger'
-                    break
-            }
-        },
-        deletePartner(id){
-            if(confirm('Are you sure you want to delete this partner?')){
-                store.dispatch('partners/delete', id)
+        deleteUser(id){
+            if(confirm('Are you sure you want to delete this user?')){
+                store.dispatch('manage_users/delete', id)
             }
         }
     }
