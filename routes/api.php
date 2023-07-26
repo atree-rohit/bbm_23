@@ -52,3 +52,7 @@ Route::get('/maps/{slug}', [MapsController::class, 'index']);
 
 Route::get('/data/observations', [DataController::class, 'observations']);
 Route::get('/data/taxa', [DataController::class, 'taxa']);
+
+
+Route::get('/get_all_users', [UserController::class, 'get_all_users']);
+Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
