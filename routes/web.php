@@ -30,7 +30,7 @@ Route::get('/calendar', [PageController::class, 'calendar']);
 Route::get('/register', [PageController::class, 'register']);
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/login', [PageController::class, 'login'])->name('login');
-Route::get('/manage', [PageController::class, 'manage'])->name('manage-users');
+Route::get('/manage-users', [PageController::class, 'manage'])->name('manage-users');
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/logout', [PageController::class, 'logout']);
 Route::get('/fileupload', [FileController::class, 'index']);
