@@ -55,5 +55,5 @@ Route::get('/data/taxa', [DataController::class, 'taxa']);
 
 
 Route::get('/get_all_users', [UserController::class, 'get_all_users']);
-Route::post('/update_user', [UserController::class, 'store']);
+Route::post('/update_user', [UserController::class, 'update']);
 Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
