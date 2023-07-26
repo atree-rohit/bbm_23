@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use Spatie\Activitylog\Models\Activity;
+
 class UserController extends Controller
 {
     public function register(Request $request)
@@ -63,6 +65,12 @@ class UserController extends Controller
             ]);
         }
         $user->save();
+        activity()
+            ->causedBy($uploading_user)
+            ->performedOn($user)
+            ->withProperties(['attributes' => $user->getChanges()])
+            ->event('updated')
+            ->log('updated');
         return response()->json([
             'message' => 'User updated successfully!',
             'status' => 200,

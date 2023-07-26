@@ -13,56 +13,10 @@
         justify-content: center;
         gap: 1rem;
     }
-    .card{
-        width: 13rem;
-        position: relative;
-        transition: all var(--transition-time);
-        box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
-        border-radius: 0.67rem;
-    }
 
-    
-    .card .card-body{
-        display: grid;
-        align-items: end;
+    .table-sm{
+        font-size: 0.75rem;
     }
-    .card .card-badge{
-        position: absolute;
-        font-size: .75rem;
-        bottom: 0;
-        right: 0;
-        font-weight: 300;
-        opacity: 0;
-        transition: all var(--transition-time);        
-    }
-
-    .card-delete{
-        content: '🗑';
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: .75rem;
-        opacity: 0;
-        transition: all var(--transition-time);
-    }
-
-    .card:hover{
-        cursor: pointer;
-        transform: scale(1.05);
-        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
-    }
-
-    .card-img-top{
-        width: auto;
-        height: 10rem;
-        object-fit: contain;
-    }
-
-    .card:hover .card-badge,
-    .card:hover .card-delete{
-        opacity: 1;
-    }
-
 </style>
 
 <template>
@@ -70,8 +24,8 @@
         <div class="h1">Manage Users</div>
     </div>
     
-    <div class="main-container m-4">
-        <table class="table table-bordered table-hoverable" v-if="is_admin || is_super_admin">
+    <div class="main-container m-4" v-if="is_admin || is_super_admin">
+        <table class="table table-bordered table-hover">
             <thead class="bg-info">
                 <tr>
                     <th>ID</th>
@@ -83,7 +37,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="user in all_data"
+                    v-for="user in all_users"
                     :key="user.id"
                     @click="showModal(user)"
                 >
@@ -109,14 +63,42 @@
                 </tr>
             </tbody>
         </table>
-        <div class="bg-danger p-5 h1 text-light w-100" v-else>
-            You Need to be an Admin or Super-Admin to view this page
+        <div class="w-100">
+            <table class="table table-sm table-hover">
+                <thead class="bg-secondary text-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Subject ID</th>
+                        <th>Causer ID</th>
+                        <th>Properties</th>
+                        <th>Log Type</th>
+                    </tr>
+                </thead>
+                <tbody class="table-secondary">
+                    <tr
+                        v-for="log in log_table_data"
+                        :key="log.id"
+                    >
+                        <td v-text="log.id" />
+                        <td v-text="log.subject_type" />
+                        <td v-text="log.subject_id" />
+                        <td v-text="getUserName(log.causer_id)" />
+                        <td class='text-small' v-text="log.properties" />
+                        <td v-text="log.event" />
+                    </tr>
+
+                </tbody>
+            </table>
         </div>
         <modal-edit-user
             :show="show_modal"
             :data="modal_data"
             @close="show_modal=false"
         />
+    </div>
+    <div class="main-container bg-danger p-5 h1 text-light w-100" v-else>
+        You Need to be an Admin or Super-Admin to view this page
     </div>
 </template>
 
@@ -142,16 +124,41 @@ export default defineComponent({
             auth_user: state => state.auth.user,
             is_admin: state => state.auth.is_admin,
             is_super_admin: state => state.auth.is_super_admin,
-            all_data: state => state.manage_users.all_data
+            all_users: state => state.manage_users.all_data,
+            all_logs: state => state.logs.all_data,
         }),
+        log_table_data(){
+            let op = []
+            for(let log of this.all_logs){
+                op.push({
+                    id: log.id,
+                    subject_type: log.subject_type.replace("App\\Models\\", ""),
+                    subject_id: log.subject_id,
+                    causer_id: log.causer_id,
+                    event: log.event,
+                    properties: log.properties.attributes,
+                    created_at: log.created_at,
+                    updated_at: log.updated_at,
+                })
+            }
+            return op
+        }
     },
     mounted(){
         store.dispatch('manage_users/getAllData')
+        store.dispatch('logs/getAllData')
     },
     methods:{
         showModal(user){
             this.modal_data = user
             this.show_modal = true
+        },
+        getUserName(id){
+            let user = this.all_users.find(user => user.id == id)
+            if(user){
+                return user.name
+            }
+            return "Unknown"
         },
         deleteUser(id){
             if(confirm('Are you sure you want to delete this user?')){

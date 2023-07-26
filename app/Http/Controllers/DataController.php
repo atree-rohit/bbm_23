@@ -11,6 +11,8 @@ use App\Models\IBP;
 use App\Models\IFB;
 use App\Models\Taxa;
 
+use Spatie\Activitylog\Models\Activity;
+
 
 use Illuminate\Http\Request;
 
@@ -355,5 +357,8 @@ class DataController extends Controller
     }
 
 
-
+    public function get_all_logs()
+    {
+        return response()->json(Activity::all());
+    }
 }
