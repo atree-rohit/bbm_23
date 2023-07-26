@@ -79,7 +79,7 @@
         <div class="h1">About Us</div>
     </div>
     
-    <div class="main-container m-4">
+    <div class="main-container m-1">
         We are the Big Butterfly Monitoring Network, a consortium of conservation organizations working together to raise awareness on the sharp decline in butterfly populations and create widespread acceptance of the actions needed to reverse this trend.
         <div class="section">
             <partners />

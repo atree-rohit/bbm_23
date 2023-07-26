@@ -90,7 +90,7 @@
         <div
             v-if="auth"
         >
-            <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true">Add District Coordinator</button>
+            <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true">+</button>
         </div>
     </div>
     
