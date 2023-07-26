@@ -1,0 +1,1 @@
+import{h as t,e,_ as n,c as s,o as a,g as c,s as p}from"./_plugin-vue_export-helper-644e73f6.js";const u=t({name:"Logout",methods:{...e({signOut:"auth/logout"})},mounted(){this.signOut()}});function r(i,_,g,l,d,f){return a(),s("h1",null,"Logout")}const m=n(u,[["render",r]]),o=c({});o.component("logout",m);o.use(p);o.mount("#app");
