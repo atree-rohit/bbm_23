@@ -20,9 +20,6 @@
                                     {{ processing ? "Please wait" : "Login" }}
                                 </button>
                             </div>
-                            <div class="col-12 text-center">
-                                <label>Don't have an account? <a href="./register">Register Now!</a></label>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -59,6 +56,7 @@ export default {
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/login',this.auth).then(({data})=>{
                 this.signIn()
+                window.location.href = window.location.origin
             }).catch(({response:{data}})=>{
                 alert(data.message)
             }).finally(()=>{
