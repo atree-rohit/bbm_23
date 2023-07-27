@@ -162,9 +162,6 @@ export default defineComponent({
         mode(newVal){
             this.$emit('mode-change', newVal)
         },
-        geojson(){
-            this.init()
-        },
     },
     computed:{
         mapData(){
@@ -177,13 +174,14 @@ export default defineComponent({
 				.on('zoom', this.handleZoom)
         },
     },
-    mounted(){
-        this.init()
-    },
+    updated(){
+		console.log("updated: re-initializing")
+		this.init()
+	},
     methods: {
         init(){
+			console.log("init")
             if(this.geojson.features){
-                console.clear()
                 this.init_variables()
                 this.init_legend()
                 this.init_svg()
@@ -204,19 +202,26 @@ export default defineComponent({
 				this.projection = d3.geoMercator().scale(1000).center([80, 27.5])
 			}
 			this.path = d3.geoPath().projection(this.projection)
-            this.tooltip = d3.select('body')
-							    .append('div')
-							    .attr('class', 'd3-tooltip')
-							    .style('position', 'absolute')
-							    .style('top', '0')
-							    .style('z-index', '10')
-							    .style('visibility', 'hidden')
-							    .style('padding', '10px')
-							    .style('background', 'rgba(0,0,0,0.75)')
-							    .style('border-radius', '4px')
-							    .style('color', '#fff')
-							    .text('a simple tooltip')
+            this.tooltip = this.init_tooltip()
         },
+		init_tooltip(){
+			if (!d3.select("body .d3-tooltip").empty()) {
+				d3.select("body .d3-tooltip").remove()
+			}
+
+			return d3.select('body')
+						.append('div')
+						.attr('class', 'd3-tooltip')
+						.style('position', 'absolute')
+						.style('top', '0')
+						.style('z-index', '10')
+						.style('visibility', 'hidden')
+						.style('padding', '10px')
+						.style('background', 'rgba(0,0,0,0.75)')
+						.style('border-radius', '4px')
+						.style('color', '#fff')
+						.text('a simple tooltip')
+		},
         init_legend(){
             this.colors = {}
             this.legend = {}
