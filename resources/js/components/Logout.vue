@@ -14,6 +14,7 @@ export default defineComponent({
     },
     mounted(){
         this.signOut()
+        window.location.href = window.location.origin
     }
 })
 </script>
