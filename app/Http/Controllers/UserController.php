@@ -40,12 +40,6 @@ class UserController extends Controller
         return $users;
     }
 
-    public function logout()
-    {
-        Auth::logout();
-        return redirect('/');
-    }
-
     public function update(Request $request){
         $uploading_user = User::find($request->user["id"]);
         if($uploading_user->user_type == "user"){
