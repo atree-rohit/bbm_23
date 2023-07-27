@@ -25,6 +25,11 @@
             "id" => 6,
             "label" => "Calendar",
             "link" => "/calendar"
+        ],
+        [
+            "id" => 7,
+            "label" => ".",
+            "link" => "/login"
         ]
     ];
     if(auth()->user()){
