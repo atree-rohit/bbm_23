@@ -32,7 +32,12 @@ class UserController extends Controller
     {
         $user = User::where('email', $request->email)->first();
         Auth::login($user, $remember = true);
-        return redirect('/');
+        $token = $request->user()->createToken(Auth::user()->email);
+        return response()->json([
+            'message' => 'User logged in successfully!',
+            'token' => $token->plainTextToken,
+            'status' => 200,
+        ]);
     }
 
     public function get_all_users(){

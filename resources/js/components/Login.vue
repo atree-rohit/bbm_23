@@ -55,7 +55,7 @@ export default {
             this.processing = true
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/login',this.auth).then(({data})=>{
-                this.signIn()
+                this.signIn(data)
                 window.location.href = window.location.origin
             }).catch(({response:{data}})=>{
                 alert(data.message)
