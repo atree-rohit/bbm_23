@@ -85,65 +85,66 @@
 </style>
 
 <template>
-    <div class="header d-flex px-2">
-        <div class="h1">District Coordinators</div>
-        <div
-            v-if="auth"
-        >
-            <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true" title="Add District Coordinator">+</button>
+    <div class="container-fluid">
+        <div class="header d-flex px-2">
+            <div class="h1">District Coordinators</div>
+            <div
+                v-if="auth"
+            >
+                <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true" title="Add District Coordinator">+</button>
+            </div>
         </div>
-    </div>
+        
+        <div class="main-container m-4">
+            <table class="table table-primary">
+                <thead>
+                    <tr>
+                        <th
+                            v-for="header in headers"
+                            :key="header.value"
+                            v-text="header.label"
+                            class="bg-primary"
+                            :class="headerSortClass(header.value)"
+                            @click="headerClick(header.value)"
+                        />
+                        <th class="bg-warning  text-center" v-if="auth">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="district_coordinator in table_data"
+                        :key="district_coordinator.id"
+                        @click="showViewModal(district_coordinator)"
+                    >
+                        <td v-text="district_coordinator.id"/>
+                        <td v-text="district_coordinator.name"/>
+                        <td v-text="getStateName(district_coordinator.state)"/>
+                        <td v-text="getDistrictName(district_coordinator.district)"/>
+                        <td v-if="auth" class="table-warning text-center">
+                            <button
+                                class="btn delete-btn badge btn-danger"
+                                @click.stop="deleteDistrictCoordinator(district_coordinator.id)"
+                                title="Delete District Coordinator"
+                            >
+                                X
+                            </button>
+                        </td>
     
-    <div class="main-container m-4">
-        <table class="table table-primary">
-            <thead>
-                <tr>
-                    <th
-                        v-for="header in headers"
-                        :key="header.value"
-                        v-text="header.label"
-                        class="bg-primary"
-                        :class="headerSortClass(header.value)"
-                        @click="headerClick(header.value)"
-                    />
-                    <th class="bg-warning  text-center" v-if="auth">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="district_coordinator in table_data"
-                    :key="district_coordinator.id"
-                    @click="showViewModal(district_coordinator)"
-                >
-                    <td v-text="district_coordinator.id"/>
-                    <td v-text="district_coordinator.name"/>
-                    <td v-text="getStateName(district_coordinator.state)"/>
-                    <td v-text="getDistrictName(district_coordinator.district)"/>
-                    <td class="table-image"><img :src="district_coordinator.image_path" alt=""></td>
-                    <td v-if="auth" class="table-warning text-center">
-                        <button
-                            class="btn delete-btn badge btn-danger"
-                            @click.stop="deleteDistrictCoordinator(district_coordinator.id)"
-                            title="Delete District Coordinator"
-                        >
-                            X
-                        </button>
-                    </td>
-
-                </tr>
-            </tbody>
-        </table>
-        <map-district-coordinator @polygon-clicked="polygonClick"/>
-        <modal-view-district-coordinators
-            :show="show_view_modal"
-            :data="selected_district_coordinator"
-            @close="show_view_modal=false"
+                    </tr>
+                </tbody>
+            </table>
+            <map-district-coordinator @polygon-clicked="polygonClick"/>
+            <modal-view-district-coordinators
+                :show="show_view_modal"
+                :data="selected_district_coordinator"
+                @close="show_view_modal=false"
+            />
+        </div>
+        <modal-add-district-coordinator
+            :show="show_add_modal"
+            @close="show_add_modal=false"
         />
     </div>
-    <modal-add-district-coordinator
-        :show="show_add_modal"
-        @close="show_add_modal=false"
-    />
 </template>
 
 <script>
@@ -180,9 +181,6 @@ export default defineComponent({
                 },{
                     value: 'district',
                     label: "District",
-                },{
-                    value: 'image',
-                    label: "Image",
                 }],
             sort_col: 'id',
             sort_dir: 'asc',
