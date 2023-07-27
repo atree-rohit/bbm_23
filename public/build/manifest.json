@@ -103,14 +103,14 @@
     "src": "resources/js/pages/home.js"
   },
   "resources/js/pages/how_to_participate.css": {
-    "file": "assets/how_to_participate-a1c11c18.css",
+    "file": "assets/how_to_participate-231c134f.css",
     "src": "resources/js/pages/how_to_participate.css"
   },
   "resources/js/pages/how_to_participate.js": {
     "css": [
-      "assets/how_to_participate-a1c11c18.css"
+      "assets/how_to_participate-231c134f.css"
     ],
-    "file": "assets/how_to_participate-38bcb8d7.js",
+    "file": "assets/how_to_participate-06d2946c.js",
     "imports": [
       "__plugin-vue_export-helper-bf2d4590.js",
       "_DistrictCoordinators-aa076974.js",

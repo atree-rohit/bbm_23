@@ -305,7 +305,7 @@ export default defineComponent({
                     ]
                 }
             ],
-            show_section: 2,
+            show_section: 0,
         }
     },
     computed: {
