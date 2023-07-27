@@ -23,7 +23,7 @@ Models
 
 Auth based on https://techvblogs.com/blog/spa-authentication-laravel-sanctum-vuejs
 
-Big butterfly month is an annual citizen science event where participants are required to contribute observations of butterflies 
+Big Butterfly Month is a citizen science event held in the month of September. Each year participants go out and document butterflies around them and contribute them to one of three websites, inaturalist, india biodiversity portal and indian foundation for butterflies. Participants can also make a checklist of butterflies they observe along with the abundance of each species and contribute it to the website as either an excel file or using the app on the website
 
 
 Data Stats
