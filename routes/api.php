@@ -25,7 +25,6 @@ use App\Http\Controllers\DataController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/logout', [UserController::class, 'logout']);
 
 Route::get('/partners', [PartnerController::class, 'all_data']);
 Route::post('/store_partners', [PartnerController::class, 'store']);
