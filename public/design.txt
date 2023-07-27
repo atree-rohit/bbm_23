@@ -23,6 +23,8 @@ Models
 
 Auth based on https://techvblogs.com/blog/spa-authentication-laravel-sanctum-vuejs
 
+Big butterfly month is an annual citizen science event where participants are required to contribute observations of butterflies 
+
 
 Data Stats
 Raw
