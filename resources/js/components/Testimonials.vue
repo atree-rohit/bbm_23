@@ -40,7 +40,7 @@
             :key="testimonial.id"
         >
             <div class="testimonial-text fst-italic">{{ testimonial.text }}</div>
-            <div class="testimonial-attribution pt-4">-- {{ testimonial.name }} <span>( {{ testimonial.designation }} )</span></div>
+            <div class="testimonial-attribution pt-4">-- {{ testimonial.name }} <span v-if="testimonial.designation">( {{ testimonial.designation }} )</span></div>
         </div>
     </div>
     <modal-add-testimonial
