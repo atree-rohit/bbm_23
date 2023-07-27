@@ -41,7 +41,6 @@ export default {
                 } else if(data.user_type === "super_admin"){
                     commit('SET_IS_SUPER_ADMIN', true)
                 }
-                window.location.href = window.location.origin
             } catch ({ response: { data: data_1 } }) {
                 dispatch('reset_auth')
             }
@@ -52,14 +51,8 @@ export default {
             commit('SET_IS_ADMIN', false)
             commit('SET_IS_SUPER_ADMIN', false)
         },
-        async logout({dispatch}){
-            try {
-                const { data } = await axios.get('/api/logout')
-                dispatch('reset_auth')
-                window.location.href = window.location.origin
-            } catch ({ response: { data: data_1 } }) {
-                console.error("error logging out")
-            }
+        logout({dispatch}){
+            dispatch('reset_auth')
         }
     }
 }
