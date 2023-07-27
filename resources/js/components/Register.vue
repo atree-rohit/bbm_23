@@ -23,20 +23,6 @@
                                 <label for="password_confirmation" class="font-weight-bold">Confirm Password</label>
                                 <input type="password_confirmation" name="password_confirmation" v-model="user.password_confirmation" id="password_confirmation" placeholder="Enter Password" class="form-control">
                             </div>
-                            <div class="form-group col-12">
-                                <label for="form-select" class="font-weight-bold">User Type</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option>Select User Type</option>
-                                    <option
-                                        v-for="user_type in user_types"
-                                        :key="user_type.id"
-                                        :value="user_type.id"
-                                        v-text="user_type.name"
-                                        :disabled="user_type.disabled"
-                                        :selected="user_type.id == 'user'"
-                                    />
-                                </select>
-                            </div>
                             <div class="col-12 mb-2">
                                 <button type="submit" :disabled="processing" class="btn btn-primary btn-block">
                                     {{ processing ? "Please wait" : "Register" }}
@@ -65,13 +51,8 @@ export default {
                 email:"",
                 password:"",
                 password_confirmation:"",
-                user_type:""
+                user_type:"user"
             },
-            user_types:[
-                {id:"super_admin",name:"Super Admin", disabled:true},
-                {id:"admin",name:"Admin", disabled:true},
-                {id:"user",name:"User", disabled:false}
-            ],
             processing:false
         }
     },
