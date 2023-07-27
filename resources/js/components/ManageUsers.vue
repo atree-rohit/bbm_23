@@ -20,11 +20,11 @@
 </style>
 
 <template>
-    <div class="header d-flex px-2">
-        <div class="h1">Manage Users</div>
-    </div>
     
     <div class="main-container m-4" v-if="is_admin || is_super_admin">
+        <div class="header d-flex px-2">
+            <div class="h1">Manage Users</div>
+        </div>
         <table class="table table-bordered table-hover">
             <thead class="bg-info">
                 <tr>
@@ -99,8 +99,8 @@
             @close="show_modal=false"
         />
     </div>
-    <div class="main-container bg-danger p-5 h1 text-light w-100" v-else>
-        You Need to be an Admin or Super-Admin to view this page
+    <div class="main-container btn-danger d-flex justify-content-center align-items-center" style="height: 20rem; font-size: 3.5vw; font-weight: 100;" v-else>
+        You Need to be Logged In to View This Page
     </div>
 </template>
 
