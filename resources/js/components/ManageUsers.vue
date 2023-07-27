@@ -45,10 +45,11 @@
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.user_type }}</td>
-                    <td class="text-center d-flex justify-content-around">
+                    <td class="text-center d-flex justify-content-around h4">
                         <span
                             class="btn btn-primary badge"
                             v-if="(auth_user.id == user.id || is_super_admin)"
+                            title="Edit User"
                         >
                             &#x270E;
                         </span>
@@ -56,6 +57,7 @@
                             class="btn btn-danger badge"
                             v-if="(auth_user.id != user.id && is_super_admin)"
                             @click="deleteUser(user.id)"
+                            title="Delete User"
                         >
                             X
                         </span>

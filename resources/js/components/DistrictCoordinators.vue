@@ -90,7 +90,7 @@
         <div
             v-if="auth"
         >
-            <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true">+</button>
+            <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true" title="Add District Coordinator">+</button>
         </div>
     </div>
     
@@ -124,6 +124,7 @@
                         <button
                             class="btn delete-btn badge btn-danger"
                             @click.stop="deleteDistrictCoordinator(district_coordinator.id)"
+                            title="Delete District Coordinator"
                         >
                             X
                         </button>
