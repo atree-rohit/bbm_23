@@ -74,7 +74,6 @@
 
 <template>
     <div class="header d-flex px-2">
-        {{ selectedPartner }}
         <div class="h1">Partners</div>
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"

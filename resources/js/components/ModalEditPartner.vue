@@ -141,6 +141,7 @@ export default defineComponent({
     },
     watch:{
         show(newVal){
+            this.initFormData()
             let body = document.querySelector('body')
             if(newVal == true){
                 body.classList.add('modal-open')
