@@ -19,6 +19,7 @@
         transition: all var(--transition-time);
         box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
         border-radius: 0.67rem;
+        margin: 0.5rem;
     }
 
     
@@ -29,24 +30,30 @@
     .card .card-badge{
         position: absolute;
         font-size: .75rem;
-        bottom: 0;
-        right: 0;
+        bottom: 0.5rem;
+        right: 0.5rem;
         font-weight: 300;
         opacity: 0;
         transition: all var(--transition-time);        
     }
 
-    .card-delete{
-        content: '🗑';
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: .75rem;
+    .hover-btns{
         opacity: 0;
+        transition: all var(--transition-time);
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: .95rem;
+        display: flex;
+        gap: 0.25rem;
+    }
+
+    .hover-btns .badge{
         transition: all var(--transition-time);
     }
 
-    .card:hover{
+    .card:hover,
+    .hover-btns .badge:hover{
         cursor: pointer;
         transform: scale(1.05);
         box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
@@ -59,7 +66,7 @@
     }
 
     .card:hover .card-badge,
-    .card:hover .card-delete{
+    .card:hover .hover-btns{
         opacity: 1;
     }
 
@@ -71,7 +78,7 @@
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
-            <button class="btn btn-lg btn-success mx-5" @click="show_modal = true" title="Add Partner">+</button>
+            <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Partner">+</button>
         </div>
     </div>
     
@@ -91,13 +98,22 @@
                 <span class="card-badge badge" :class="badgeColor(partner.partner_type)">
                     {{ partner.partner_type }}
                 </span>
-                <span
-                    class="card-delete badge bg-danger"
-                    v-if="user.user_type == 'super_admin'"
-                    @click.stop="deletePartner(partner.id)"
-                >
-                    X
-                </span>
+                <div class="hover-btns">
+                    <span
+                        class="card-edit badge bg-primary"
+                        v-if="user.user_type == 'super_admin'"
+                        @click.stop="editPartner(partner.id)"
+                        title="Edit Partner"
+                        v-text="'✎'"
+                    />
+                    <span
+                        class="card-delete badge bg-danger"
+                        v-if="user.user_type == 'super_admin'"
+                        @click.stop="deletePartner(partner.id)"
+                        title="Delete Partner"
+                        v-text="'X'"
+                    />
+                </div>
             </div>
             <div class="card-div-tags" v-if="partner.tags">
                 <span
@@ -110,9 +126,20 @@
         </div>
     </div>
     <modal-add-partner
-        :show="show_modal"
-        @close="show_modal=false"
+        :show="show_modal.add"
+        @close="show_modal.add=false"
     />
+    <template
+        v-for="partner in all_data"
+        :key="partner.id"
+    >
+        <modal-edit-partner
+            :show="show_modal.edit"
+            :data="partner"
+            @close="show_modal.edit=false"
+        />
+    </template>
+    
 </template>
 
 <script>
@@ -120,20 +147,28 @@ import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
 import ModalAddPartner from './ModalAddPartner.vue'
+import ModalEditPartner from './ModalEditPartner.vue'
+
 export default defineComponent({
     name: 'Partners',
     components: {
-        ModalAddPartner
+        ModalAddPartner,
+        ModalEditPartner,
     },
     data(){
         return {
-            show_modal: false,
+            show_modal: {
+                add: false,
+                edit: false,
+            },
         }
     },
     computed: {
         ...mapState({
             user: state => state.auth.user,
-            all_data: state => state.partners.all_data
+            all_data: state => state.partners.all_data,
+            is_admin: state => state.auth.is_admin,
+            is_super_admin: state => state.auth.is_super_admin,
         }),
     },
     mounted(){
@@ -141,7 +176,14 @@ export default defineComponent({
     },
     methods:{
         gotoLink(link){
-            window.open(link, '_blank')
+            if(!link) return
+            if(this.is_admin || this.is_super_admin){
+                if(confirm('Do you want to visit the partner URL?')){
+                    window.open(link, '_blank')
+                }
+            } else {
+                window.open(link, '_blank')
+            }
         },
         get_tags(tags){
             return tags.split(',').map((t) => t.trim())
@@ -166,11 +208,14 @@ export default defineComponent({
                     break
             }
         },
+        editPartner(id){
+            this.show_modal.edit = true
+        },
         deletePartner(id){
             if(confirm('Are you sure you want to delete this partner?')){
                 store.dispatch('partners/delete', id)
             }
-        }
+        },
     }
 })
 </script>

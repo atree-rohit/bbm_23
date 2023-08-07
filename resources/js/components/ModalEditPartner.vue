@@ -138,7 +138,6 @@ export default defineComponent({
     },
     created(){
         this.initFormData()
-        console.log("tD", this.data)  
     },
     watch:{
         show(newVal){
@@ -157,10 +156,11 @@ export default defineComponent({
     },
     methods:{
         ...mapActions({
-            store:'partners/store'
+            update:'partners/update'
         }),
         initFormData(){
             this.form_data = {
+                id: this.data.id,
                 name: this.data.name,
                 partner_type: this.data.partner_type,
                 description: this.data.description,
@@ -174,19 +174,14 @@ export default defineComponent({
         closeModal(){
             this.$emit('close')
         },
-        handleUploadedFileId(file){
-            this.form_data.image = file.data.id
+        submit(){
             try{
-                this.store(this.form_data)
+                this.update(this.form_data)
                 this.initFormData()
                 this.closeModal()
-                this.upload_file_flag = false
             }catch(error){
                 console.error(error)
             }
-        },
-        submit(){
-            this.upload_file_flag = true
         }
     }
 })

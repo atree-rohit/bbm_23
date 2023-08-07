@@ -43,6 +43,22 @@ class PartnerController extends Controller
         ]);
     }
 
+    public function update($partner_id, Request $request){
+        $partner = Partner::find($partner_id);
+        $partner->name = $request->name;
+        $partner->partner_type = $request->partner_type;
+        $partner->description = $request->description;
+        $partner->contact_person = $request->contact_person;
+        $partner->link = $request->link;
+        $partner->save();
+
+        return response()->json([
+            'message' => 'Partner updated successfully',
+            'status' => 200,
+            'data' => $partner->toArray()
+        ]);
+    }
+
     public function delete($partner_id){
         $partner = Partner::find($partner_id);
         if($partner){
