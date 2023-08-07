@@ -74,6 +74,7 @@
 
 <template>
     <div class="header d-flex px-2">
+        {{ selectedPartner }}
         <div class="h1">Partners</div>
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
@@ -129,17 +130,11 @@
         :show="show_modal.add"
         @close="show_modal.add=false"
     />
-    <template
-        v-for="partner in all_data"
-        :key="partner.id"
-    >
-        <modal-edit-partner
-            :show="show_modal.edit"
-            :data="partner"
-            @close="show_modal.edit=false"
-        />
-    </template>
-    
+    <modal-edit-partner
+        :show="show_modal.edit"
+        :data="selectedPartner"
+        @close="show_modal.edit=false"
+    />    
 </template>
 
 <script>
@@ -161,6 +156,7 @@ export default defineComponent({
                 add: false,
                 edit: false,
             },
+            selectedPartner: {},
         }
     },
     computed: {
@@ -209,6 +205,7 @@ export default defineComponent({
             }
         },
         editPartner(id){
+            this.selectedPartner = this.all_data.find((p) => p.id == id)
             this.show_modal.edit = true
         },
         deletePartner(id){

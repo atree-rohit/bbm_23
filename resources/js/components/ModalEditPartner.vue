@@ -63,7 +63,7 @@ import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
 
 export default defineComponent({
-    name: 'ModalAddPartner',
+    name: 'ModalEditPartner',
     props: {
         show:{
             type: Boolean,
