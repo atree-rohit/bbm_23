@@ -46,7 +46,7 @@ class FileController extends Controller
     {
         dd($request);
         $request->validate([
-            'file' => 'required|mimes:jpg, jpeg, png|max:15000',
+            'file' => 'required|mimes:jpg,jpeg,png|max:15000',
         ]);
 
         $file = new FileUpload();
