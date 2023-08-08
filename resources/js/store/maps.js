@@ -19,47 +19,45 @@ export default {
     },
     mutations: {
         SET_REGIONS(state, value){
-            state.regions = value
+            state.regions = JSON.parse(value)
         }, 
         SET_STATES(state, value){
-            state.states = value
+            state.states = JSON.parse(value)
         },
         SET_DISTRICTS(state, value){
-            console.log("value", value)
-            state.districts = value
+            state.districts = JSON.parse(value)
         },
     },
     actions: {
         async getAllData({commit, dispatch}){
             localStorage.clear(); // Clear LocalStorage
             sessionStorage.clear(); // Clear SessionStorage
-            // await dispatch('getRegions')
-            // await dispatch('getStates')
+            await dispatch('getRegions')
+            await dispatch('getStates')
             await dispatch('getDistricts')
         },
         async getRegions({commit}){
             try {
                 const { data } = await axios.get('/api/maps/regions')
                 commit('SET_REGIONS', data)
-            } catch ({ response: { data: data_1 } }) {
-                console.error("error retreiving partners")
+            } catch (response) {
+                console.error("error retreiving Regions", response)
             }
         },
         async getStates({commit}){
             try {
                 const { data } = await axios.get('/api/maps/states')
                 commit('SET_STATES', data)
-            } catch ({ response: { data: data_1 } }) {
-                console.error("error retreiving partners")
+            } catch (response) {
+                console.error("error retreiving States", response)
             }
         },
         async getDistricts({commit}){
             try {
                 const { data } = await axios.get('/api/maps/districts')
                 commit('SET_DISTRICTS', data)
-            } catch (x) {
-                console.error("error retreiving partners")
-                console.log(x)
+            } catch (response) {
+                console.error("error retreiving Districts", response)
             }
         },
         
