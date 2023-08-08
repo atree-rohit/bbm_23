@@ -108,7 +108,6 @@
 </style>
 
 <template>
-    ++{{ loading }}++
     <div class="data-container">
         <div class="filters">
             <div class="expand-btn"> >> </div>
@@ -174,6 +173,7 @@
             </div>
         </div>
     </div>
+    {{ loading }}
 </template>
 
 <script>
