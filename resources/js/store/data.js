@@ -11,9 +11,13 @@ export default {
         boundaries:{
             states: {},
             districts: {},
-        }
+        },
+        loading: null,
     },
     mutations: {
+        SET_LOADING(state, value){
+            state.loading = value
+        },
         SET_DISTRICTS(state, value){
             state.boundaries.districts = JSON.parse(value)
         },
@@ -22,23 +26,23 @@ export default {
         },
         SET_OBSERVATIONS(state, value){
             const place_names = state.boundaries.districts.features.map((d) => d.properties)
-            let op = {}
-            console.log(place_names)
+            let op = []
             Object.keys(value).forEach((portal) => {
                 op[portal] = value[portal].map((d) => {
                     const user = state.users[portal][d[2]]
                     const district = state.districts[d[4]]
                     const state_name = place_names.find((d) => d.district == district)
-                    return {
-                        user: user,
-                        taxa: d[1],
-                        date: d[3],
-                        district: district,
-                        state: state_name?.state
-                    }
+                    return [
+                        user,
+                        d[1],
+                        d[3],
+                        district,
+                        state_name?.state
+                    ]
                 })
             })
-            console.log("op", op)            
+            console.log(op)
+            state.observations = op      
         },
         SET_USERS(state, value){
             state.users = value
@@ -51,18 +55,21 @@ export default {
         }
     },
     actions: {
-        async getAllData({dispatch}){
+        async getAllData({commit, dispatch}){
+            commit('SET_LOADING', 'Getting District Boundaries')
             await dispatch('getDistricts')
+            commit('SET_LOADING', 'Getting Observations')
             await dispatch('getObservations')
+            commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
+            commit('SET_LOADING', null)
         },
         async getDistricts({commit}){
             try {
                 const { data } = await axios.get('/api/maps/districts')
                 commit('SET_DISTRICTS', data)
-            } catch (x) {
-                console.error("error retreiving partners")
-                console.log(x)
+            } catch (response) {
+                console.error("error retreiving Districts", response)
             }
         },
         async getObservations({commit}){
@@ -80,8 +87,8 @@ export default {
             try {
                 const { data } = await axios.get('/api/data/taxa')
                 commit('SET_TAXA', data)
-            } catch ({ response: { data: data_1 } }) {
-                console.error("error retreiving Taxa")
+            } catch (response) {
+                console.error("error retreiving Taxa", response)
             }
         }
     }
