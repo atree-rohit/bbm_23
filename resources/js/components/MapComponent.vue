@@ -174,6 +174,10 @@ export default defineComponent({
 				.on('zoom', this.handleZoom)
         },
     },
+	mounted(){
+		console.log("mounted: initializing")
+		this.init()
+	},
     updated(){
 		console.log("updated: re-initializing")
 		this.init()
