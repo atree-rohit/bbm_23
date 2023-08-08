@@ -225,13 +225,13 @@ export default defineComponent({
             if(state_code == -1){
                 return ''
             }
-            return states.features.find((s) => this.valueFromLabel(s.properties.state) == state_code).properties.state
+            return states.features.find((s) => this.valueFromLabel(s.properties.state) == state_code)?.properties.state
         },
         getDistrictName(district_code){
             if(district_code == -1){
                 return ''
             }
-            return districts.features.find((s) => this.valueFromLabel(s.properties.district) == district_code).properties.district
+            return districts.features.find((s) => this.valueFromLabel(s.properties.district) == district_code)?.properties.district
         },
         headerSortClass(header){
             if(header == this.sort_col){
