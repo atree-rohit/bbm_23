@@ -108,6 +108,7 @@
 </style>
 
 <template>
+    ++{{ loading }}++
     <div class="data-container">
         <div class="filters">
             <div class="expand-btn"> >> </div>
@@ -222,6 +223,7 @@ export default defineComponent({
     },
     computed: {
         ...mapState({
+            loading: state => state.data.loading,
             observations: state => state.data.observations,
             taxa: state => state.data.taxa
         }),
