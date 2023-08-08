@@ -1,4 +1,5 @@
 import axios from "axios"
+import * as d3 from "d3"
 
 export default {
     namespaced: true,
@@ -13,6 +14,18 @@ export default {
             districts: {},
         },
         loading: null,
+        map_data: {
+            states: [],
+            districts: []
+        }
+    },
+    getters:{
+        mapData(state){
+            return {
+                states: d3.groups(state.observations, (d) => d[4]),
+                districts: d3.groups(state.observations, (d) => d[3])
+            }            
+        }
     },
     mutations: {
         SET_LOADING(state, value){
@@ -21,8 +34,17 @@ export default {
         SET_DISTRICTS(state, value){
             state.boundaries.districts = JSON.parse(value)
         },
+        SET_TAXA(state, value){
+            state.taxa = value
+        },
         SET_HEADERS(state, value){
             state.headers = value
+        },
+        SET_USERS(state, value){
+            state.users = value
+        },
+        SET_DISTRICTS_LIST(state, value){
+            state.districts = value
         },
         SET_OBSERVATIONS(state, value){
             const place_names = state.boundaries.districts.features.map((d) => d.properties)
@@ -44,24 +66,35 @@ export default {
             console.log(op)
             state.observations = op      
         },
-        SET_USERS(state, value){
-            state.users = value
-        },
-        SET_DISTRICTS_LIST(state, value){
-            state.districts = value
-        },
-        SET_TAXA(state, value){
-            state.taxa = value
+        SET_MAP_DATA(state){
+            state.map_data = {
+                state: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[4]).map((p) => {
+                    return {
+                        name: p[0],
+                        value: p[1]
+                    }
+                }),
+                district: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[3]).map((p) => {
+                    return {
+                        name: p[0],
+                        value: p[1]
+                    }
+                }),
+            }            
         }
+
     },
     actions: {
         async getAllData({commit, dispatch}){
             commit('SET_LOADING', 'Getting District Boundaries')
             await dispatch('getDistricts')
-            commit('SET_LOADING', 'Getting Observations')
-            await dispatch('getObservations')
             commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
+            commit('SET_LOADING', 'Getting Observations')
+            await dispatch('getObservations')
+            commit('SET_LOADING', 'Setting Map Data')
+            commit('SET_MAP_DATA')
+            
             commit('SET_LOADING', null)
         },
         async getDistricts({commit}){
