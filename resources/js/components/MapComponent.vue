@@ -140,7 +140,11 @@ export default defineComponent({
         modes:{
             type: Array,
             required: true
-        }
+        },
+		tooltip_third_row_label: {
+			type: String,
+			default: ""
+		},
     },
     emits: ['mode-change', 'polygon-clicked'],
     data() {
@@ -176,7 +180,9 @@ export default defineComponent({
     },
 	mounted(){
 		console.log("mounted: initializing")
-		this.init()
+		if(this.geojson){
+			this.init()
+		}
 	},
     updated(){
 		console.log("updated: re-initializing")
@@ -231,8 +237,8 @@ export default defineComponent({
             this.legend = {}
             this.max = d3.max(this.mapData, (d) => d.value) 
             this.colors = d3.scaleLinear()
-                .domain([0,1, this.max])
-                .range(["#000", "#ff0", "#0f0"])
+                .domain([0,1, this.max/3, this.max])
+                .range(["#a20", "#520", "#05c", "#0d0"])
                 .clamp(true)
             this.legend = d3Legend.legendColor()
 								.shapeHeight(20)
@@ -404,7 +410,7 @@ export default defineComponent({
         hover_text(properties){
             
 			let op = ["state", "district"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
-            op.push(`<tr><td>Coordinator(/s)</td><td>${this.mapData.find((d) => d.name == properties[this.mode])?.value || 0}</td></tr>`)
+            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.mapData.find((d) => d.name == properties[this.mode])?.value || 0}</td></tr>`)
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			
 		},
