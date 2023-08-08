@@ -15,25 +15,46 @@
     width: 3.5rem;
     margin: 0.5rem;
     padding: 0.5rem;
-    height: calc(100% - 1rem);
+    /* height: calc(100% - 1rem); */
+    height: 3.5rem;
     transition: all 350ms;
     overflow:hidden;
 }
 .filters:hover{
-/* .filters{ */
     z-index: 10;
     width: calc(50% + 2rem);
+    height: calc(100% - 1rem);
 }
 
 .filters > ul{
     background: rgba(50, 50, 50, 1);
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: stretch;
     justify-content: start;
     height: calc(100% - 7.5rem);
     margin-top: 7.5rem;
     border-radius: 2rem;
+}
+
+.filters > .expand-btn{
+    height: 100%;
+    width: 100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    transition: all 50ms;
+}
+.filters:hover > ul{
+    display: flex;
+}
+
+.filters:hover > .expand-btn{
+    font-size: 0;
+    width: 0;
+    height: 0;
+    transform: rotate(180deg);
 }
 
 .filters > ul > li {
@@ -84,15 +105,12 @@
     gap: 1rem;
 }
 
-.canvas .taxa .card{
-    border: 1px solid red;
-}
-
 </style>
 
 <template>
     <div class="data-container">
         <div class="filters">
+            <div class="expand-btn"> >> </div>
             <ul class="filter-list">
                 <li
                     v-for="filter in filters"
@@ -106,34 +124,52 @@
         </div>
         <div class="canvas">
             <div class="observations">
-                <div class="card"
-                    v-for="(card, key) in observation_stats"
-                    :key="key"
-                >
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            {{ key }}
-                        </h5>
-                        <p class="card-text">Observations: {{ card.observations }}</p>
-                        <p class="card-text">Users: {{ card.users }}</p>
-                        <p class="card-text">States: {{ card.states }}</p>
-                        <p class="card-text">Districts: {{ card.districts }}</p>
-                    </div>
-                </div>
+                
+                <table class="table table-sm">
+                    <thead  class="bg-info">
+                        <tr>
+                            <th scope="col">Portal</th>
+                            <th scope="col">Observations</th>
+                            <th scope="col">Users</th>
+                            <th scope="col">States</th>
+                            <th scope="col">Districts</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-info">
+                        <tr
+                            v-for="(row, key) in observation_table_stats"
+                            :key="key"
+                        >
+                            <td>{{ row.portal }}</td>
+                            <td>{{ row.observations }}</td>
+                            <td>{{ row.users }}</td>
+                            <td>{{ row.states }}</td>
+                            <td>{{ row.districts }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-sm">
+                    <thead class="bg-danger text-light">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Count</th>
+                            <th>Unique</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-danger">
+                        <tr
+                            v-for="(row, key) in taxa_stats"
+                            :key="key"
+                        >
+                            <td>{{ row.rank }}</td>
+                            <td>{{ row.count }}</td>
+                            <td>{{ row.unique }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="taxa">
-                <div class="card"
-                    v-for="card in taxa_stats"
-                    :key="card.rank"
-                >
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            {{ card.rank }}
-                        </h5>
-                        <p class="card-text">Count: {{ card.count }}</p>
-                        <p class="card-text">Unique: {{ card.unique }}</p>
-                    </div>
-                </div>
+                <MapBBMData />
             </div>
         </div>
     </div>
@@ -145,10 +181,14 @@ import { mapState } from 'vuex'
 import store from '../store'
 
 import * as d3 from 'd3'
+import MapBBMData from './MapBBMData.vue'
 
 
 export default defineComponent({
     name: "DataComponent",
+    components: {
+        MapBBMData
+    },
     data() {
         return {
             filters: [
@@ -182,38 +222,52 @@ export default defineComponent({
     },
     computed: {
         ...mapState({
-            // user: state => state.auth.user,
             observations: state => state.data.observations,
             taxa: state => state.data.taxa
         }),
         observation_stats(){
-            console.log("this.observations", typeof(this.observations),this.observations)
             if(Object.keys(this.observations).length === 0) {
                 console.log("no observations")
                 return {}
             }
             let op = {
-                total: this.observationStats([].concat(...Object.values(this.observations))),
                 counts: this.observationStats(this.observations.counts),
                 inat: this.observationStats(this.observations.inats),
                 ibp: this.observationStats(this.observations.ibps),
                 ifb: this.observationStats(this.observations.ifbs),
+                total: this.observationStats([].concat(...Object.values(this.observations))),
+            }
+            
+            return op
+        },
+        observation_table_stats(){
+            let op = []
+            for(let [key, value] of Object.entries(this.observation_stats)){
+                op.push({
+                    portal: key,
+                    observations: value.observations,
+                    users: value.users,
+                    states: value.states,
+                    districts: value.districts,
+                })
             }
             
             return op
         },
         taxa_stats(){
+            const all_observations = Object.values(this.observations).flat()
             let op = d3.groups(this.taxa, d => d.rank).map((group) => {
                 return {
                     rank: group[0],
-                    count: group[1].length,
+                    count: all_observations.filter((o) => group[1].map((o) => o.id).includes(o[1])).length,
                     unique: this.countUnique(group[1].map(x => x.name))
                 }
             })
-            return op
+            return op.filter((t) => t.count > 0)
         }
     },
     mounted(){
+        // console.clear()
         store.dispatch('data/getAllData')
     },
     methods: {
@@ -226,6 +280,17 @@ export default defineComponent({
             }
             
             return op
+        },
+        getObservationsCount(data){
+            let observations = 0
+            data.map((d) => {
+                Object.keys(this.observations).forEach((portal) => {
+                    observations += this.observations[portal].filter((o) => {
+                        return o[1] == d.id
+                    }).length
+                })
+            })
+            return observations
         },
         countUnique(arr){
             return [...new Set(arr)].length
