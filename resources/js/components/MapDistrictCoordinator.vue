@@ -10,6 +10,7 @@
             :geojson='geojson[mode]'
             :data='map_data'
             :modes="['state', 'district']"
+            tooltip_third_row_label="Coordinator(/s)"
             @mode-change="mode = $event"
             @polygon-clicked="polygonClick"
         />
