@@ -10,6 +10,7 @@
             :geojson='geojson[mode]'
             :data='map_data'
             :modes="['state', 'district']"
+            tooltip_third_row_label="Observations"
             @mode-change="mode = $event"
             @polygon-clicked="polygonClick"
         />
@@ -18,7 +19,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { mapActions, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import MapComponent from './MapComponent.vue'
 import districts from '../json/districts.json'
 import states from '../json/states.json'
@@ -40,41 +41,18 @@ export default defineComponent({
     },
     computed:{
         ...mapState({
-            district_coordinators: state => state.district_coordinators.all_data
+            district_coordinators: state => state.district_coordinators.all_data,
+            map_data: state => state.data.map_data
         }),
-        map_data(){
-            let all = {
-                states: this.geojson.state.features.map(f => f.properties.state),
-                districts: this.geojson.district.features.map(f => f.properties.district),
-            }
-            let op = {
-                state: all.states.map((s) => {
-                    return {
-                        name: s,
-                        value: 0
-                    }
-                }),
-                district: all.districts.map((d) => {
-                    return {
-                        name: d,
-                        value: 0
-                    }
-                })
-            }
-            this.district_coordinators.forEach((d) => {
-                op.state.find((s, i) => d.state == this.valueFromLabel(s.name)).value += 1
-                op.district.forEach((s) => {
-                    if(d.district == this.valueFromLabel(s.name)){
-                        s.value += 1
-                    }
-                })
-            })
-            
-            return op
-        }
     },
     mounted(){
         console.log("MapBBMData mounted")
+    },
+    watch: {
+        map_data(newVal){
+            console.log("mapData changed")
+            console.log(newVal)
+        }
     },
     methods:{
         valueFromLabel(str){
