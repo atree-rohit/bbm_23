@@ -3,20 +3,20 @@ import axios from "axios"
 export default {
     namespaced: true,
     state: {
+        headers: [],
         observations: [],
+        users: [],
         taxa: [],
     },
-    getters:{
-        observations(state){
-            return state.observations
-        },
-        taxa(state){
-            return state.taxa
-        }
-    },
     mutations: {
+        SET_HEADERS(state, value){
+            state.headers = value
+        },
         SET_OBSERVATIONS(state, value){
             state.observations = value
+        },
+        SET_USERS(state, value){
+            state.users = value
         },
         SET_TAXA(state, value){
             state.taxa = value
@@ -26,7 +26,9 @@ export default {
         async getAllData({commit}){
             try {
                 const { data }  = await axios.get('/api/data/observations')
-                commit('SET_OBSERVATIONS', data)
+                commit('SET_HEADERS', data.headers)
+                commit('SET_OBSERVATIONS', data.observations)
+                commit('SET_USERS', data.users)
             } catch (response) {
                 console.error("error retreiving Observations", response)
             }
