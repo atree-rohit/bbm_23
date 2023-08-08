@@ -25,12 +25,41 @@ class DataController extends Controller
 
     public function observations()
     {
-        $limit = -1;
+        $limit = -10;
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
+        $district_names = [];
+        foreach($districts->features as $district){
+            $district_exists = false;
+            foreach($district_names as $dn){
+                if($dn == $district->properties->district){
+                    $district_exists = true;
+                }
+            }
+            if(!$district_exists){
+                $district_names[] = $district->properties->district;
+            }
+        }
+        $get = [
+            "counts" => $this->get_counts_data($limit, $district_names),
+            "inats" => $this->get_inat_data($limit, $district_names),
+            "ibps" => $this->get_ibp_data($limit, $district_names),
+            "ifbs" => $this->get_ifb_data($limit, $district_names)
+        ];
         $data = [
-            "counts" => $this->get_counts_data($limit),
-            "inats" => $this->get_inat_data($limit),
-            "ibps" => $this->get_ibp_data($limit),
-            "ifbs" => $this->get_ifb_data($limit)
+            "headers" => ["id", "taxa", "user", "date", "district"],
+            "observations" => [
+                "counts" => $get["counts"]["observations"],
+                "inats" => $get["inats"]["observations"],
+                "ibps" => $get["ibps"]["observations"],
+                "ifbs" => $get["ifbs"]["observations"],
+            ],
+            "users" => [
+                "counts" => $get["counts"]["users"],
+                "inats" => $get["inats"]["users"],
+                "ibps" => $get["ibps"]["users"],
+                "ifbs" => $get["ifbs"]["users"],
+            ],
+            "districts" => $district_names,
         ];
         
         return $data;
@@ -43,77 +72,117 @@ class DataController extends Controller
     }
 
 
-    public function get_counts_data($limit)
+    public function get_counts_data($limit, $district_names)
     {
-        $data = CountForm::with("species_list")->limit($limit)->get();
+        $data = CountForm::where("validated", 1)->with("species_list")->limit($limit)->get();
         $op = [];
+        $users = [];
         foreach($data as $form){
+            $user_id = -1;
+            if(!in_array($form->name, $users)){
+                $users[] = $form->name;
+            } 
+            $user_id = array_search($form->name, $users);
+            $district_id = array_search($form->district, $district_names);
             $row = [
                 "id" => -1,
                 "taxa" => -1,
-                "user" => $form->name,
+                "user" => $user_id,
                 "date" => $form->date_cleaned,
-                "state" => $form->state,
-                "district" => $form->district
+                "district" => $district_id,
             ];
             foreach($form->species_list as $species){
                 $row["id"] = $species->id;
                 $row["taxa"] = $species->taxa_id;
                 $op[] = $row;
-            }            
+            }
         }
-        return array_map('array_values', $op);
+        $return_data = [
+            "observations" => array_map('array_values', $op),
+            "users" => $users
+        ];
+        return $return_data;
     }
 
-    public function get_inat_data($limit)
+    public function get_inat_data($limit, $district_names)
     {
-        $data = INat::limit($limit)->get();
+        $data = INat::where("validated", 1)->limit($limit)->get();
         $op = [];
+        $users = [];
         foreach($data as $row){
+            $user_id = -1;
+            if(!in_array($row->user, $users)){
+                $users[] = $row->user;
+            } 
+            $user_id = array_search($row->user, $users);
+            $district_id = array_search($row->district, $district_names);
             $op[] = [
                 "id" => $row->id,
                 "taxa" => $row->taxa_id,
-                "user" => $row->user,
+                "user" => $user_id,
                 "date" => $row->observed_on,
-                "state" => $row->state,
-                "district" => $row->district
+                "district" => $district_id,
             ];
         }
-        return array_map('array_values', $op);
+        $return_data = [
+            "observations" => array_map('array_values', $op),
+            "users" => $users
+        ];
+        return $return_data;
     }
 
-    public function get_ibp_data($limit)
+    public function get_ibp_data($limit, $district_names)
     {
-        $data = IBP::limit($limit)->get();
+        $data = IBP::limit($limit)->where('validated',1)->get();
         $op = [];
+        $users = [];
         foreach($data as $row){
+            $user_id = -1;
+            if(!in_array($row->user, $users)){
+                $users[] = $row->user;
+            } 
+            $user_id = array_search($row->user, $users);
+            $district_id = array_search($row->district, $district_names);
             $op[] = [
                 "id" => $row->id,
                 "taxa" => $row->taxa_id,
-                "user" => $row->user,
+                "user" => $user_id,
                 "date" => $row->observed_on,
-                "state" => $row->state,
-                "district" => $row->district
+                "district" => $district_id
             ];
         }
-        return array_map('array_values', $op);
+        $return_data = [
+            "observations" => array_map('array_values', $op),
+            "users" => $users
+        ];
+        return $return_data;
     }
 
-    public function get_ifb_data($limit)
+    public function get_ifb_data($limit, $district_names)
     {
-        $data = IFB::limit($limit)->get();
+        $data = IFB::where("validated",1)->limit($limit)->get();
         $op = [];
+        $users = [];
         foreach($data as $row){
+            $user_id = -1;
+            if(!in_array($row->user, $users)){
+                $users[] = $row->user;
+            } 
+            $user_id = array_search($row->user, $users);
+            $district_id = array_search($row->district, $district_names);
             $op[] = [
                 "id" => $row->id,
                 "taxa" => $row->taxa_id,
-                "user" => $row->user,
+                "user" => $user_id,
                 "date" => $row->observed_on,
-                "state" => $row->state,
-                "district" => $row->district
+                "district" => $district_id
             ];
         }
-        return array_map('array_values', $op);
+        $return_data = [
+            "observations" => array_map('array_values', $op),
+            "users" => $users
+        ];
+        return $return_data;
     }
 
     //import old data
