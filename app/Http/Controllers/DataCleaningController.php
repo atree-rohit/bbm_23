@@ -11,7 +11,7 @@ use App\Models\IFB;
 
 class DataCleaningController extends Controller
 {
-    public function clean()
+    public function clean_x()
     {
         ini_set('max_execution_time', 300);
         $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));        
@@ -50,7 +50,352 @@ class DataCleaningController extends Controller
         // }
         dd($result);
     }
-        
+
+    public function clean(){
+        ini_set('max_execution_time', 300);
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));        
+        $names = [
+            "states" => [],
+            "districts" => []
+        ];
+        foreach($districts->features as $district){
+            if(!in_array($district->properties->state, $names["states"])){
+                array_push($names["states"], $district->properties->state);
+            }
+            if(!in_array($district->properties->district, $names["districts"])){
+                array_push($names["districts"], $district->properties->district);
+            }
+        }
+        $limit = -1;
+        $result = [
+            'counts' => $this->fix_counts_places($districts, $names),
+            'inat' => $this->fix_inat_places($districts, $names),
+            'ibp' => $this->fix_ibp_places($districts, $names),
+            'ifb' => $this->fix_ifb_places($districts, $names)
+        ];
+        dd($result);
+    }
+
+    public function fix_counts_places($districts, $names){
+        $data = CountForm::get();
+        $counts = [
+            "corrected" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            $name_matches = true;
+            if(!in_array($d->state, $names["states"])){
+                $name_matches = false;
+                echo "state: " . $d->state;
+            }
+            if(!in_array($d->district, $names["districts"])){
+                $name_matches = false;
+                echo "district: " . $d->district;
+            }
+            if($name_matches){
+                $counts["skipped"]++;
+                continue;
+            } else {
+                $counts["corrected"]++;
+                dd($d);
+                // $d->state = $d->district = null;
+                // $d->save();
+            }
+
+        }
+        // dd($counts, $d->toArray());
+        return $counts;
+    }
+
+    public function fix_inat_places($districts, $names){
+        $data = INat::get();
+        $counts = [
+            "corrected" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            $name_matches = true;
+            if(!in_array($d->state, $names["states"])){
+                $name_matches = false;
+                echo "<br>state: " . $d->state;
+            }
+            if(!in_array($d->district, $names["districts"])){
+                $name_matches = false;
+                echo "<br>district: " . $d->district;
+            }
+            if($name_matches){
+                $counts["skipped"]++;
+                continue;
+            } else {
+                $fixed_name = [
+                    "state" => ucwords(str_replace("_", " ", $d->state)),
+                    "district" => ucwords(str_replace("_", " ", $d->district))
+                ];
+                if($fixed_name["state"] == "Andaman And Nicobar"){
+                    $fixed_name["state"] = "Andaman and Nicobar";
+                }
+                if(in_array($fixed_name["state"], $names["states"]) && in_array($fixed_name["district"], $names["districts"])){
+                    $d->state = $fixed_name["state"];
+                    $d->district = $fixed_name["district"];
+                    $d->save();
+                    $counts["corrected"]++;
+                } else {
+                    dd($fixed_name, $d->toArray());
+                    // $counts["skipped"]++;
+                }
+            }
+
+        }
+        return $counts;
+    }
+
+    public function fix_ibp_places($districts, $names){
+        $data = IBP::all();
+        $counts = [
+            "corrected" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            $names_match = true;
+            if(!in_array($d->state, $names["states"])){
+                $names_match = false;
+                echo "<br>state: " . $d->state;
+            }
+            if(!in_array($d->district, $names["districts"])){
+                $names_match = false;
+                echo "<br>district: " . $d->district;
+            }
+            if($names_match){
+                $counts["skipped"]++;
+            } else {
+                $fixed_name = [
+                    "state" => ucwords(str_replace("_", " ", $d->state)),
+                    "district" => ucwords(str_replace("_", " ", $d->district))
+                ];
+                if($fixed_name["state"] == "Andaman And Nicobar"){
+                    $fixed_name["state"] = "Andaman and Nicobar";
+                }
+                if(in_array($fixed_name["state"], $names["states"]) && in_array($fixed_name["district"], $names["districts"])){
+                    $d->state = $fixed_name["state"];
+                    $d->district = $fixed_name["district"];
+                    $d->save();
+                    $counts["corrected"]++;
+                } else {
+                    dd($fixed_name, $d->toArray());
+                    // $counts["skipped"]++;
+                }
+            }
+        }
+        return $counts;
+    }
+
+    public function fix_ifb_places($districts, $names){
+        $data = IFB::all();
+        $counts = [
+            "corrected" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            $names_match = true;
+            if(!in_array($d->state, $names["states"])){
+                $names_match = false;
+                echo "<br>state: " . $d->state;
+            }
+            if(!in_array($d->district, $names["districts"])){
+                $names_match = false;
+                echo "<br>district: " . $d->district;
+            }
+            if($names_match){
+                $counts["skipped"]++;
+            } else {
+                $fixed_name = [
+                    "state" => ucwords(str_replace("_", " ", $d->state)),
+                    "district" => ucwords(str_replace("_", " ", str_replace("_district", "", $d->district)))
+                ];
+                if($fixed_name["state"] == "Andaman And Nicobar" || $fixed_name["state"] == "Andaman & Nicobar"){
+                    $fixed_name["state"] = "Andaman and Nicobar";
+                }
+                if(in_array($fixed_name["state"], $names["states"]) && in_array($fixed_name["district"], $names["districts"])){
+                    $d->state = $fixed_name["state"];
+                    $d->district = $fixed_name["district"];
+                    $d->save();
+                    $counts["corrected"]++;
+                } else {
+                    // dd($fixed_name, $d->toArray());
+                    $counts["skipped"]++;
+                }
+            }
+        }
+        return $counts;
+    }
+
+    public function clean_validate(){
+        $inat = $this->inat_validate();
+        $counts = $this->counts_validate();
+        $ibp = $this->ibp_validate();
+        $ifb = $this->ifb_validate();
+    }
+
+    public function inat_validate(){
+        $data = INat::where('validated', null)->get();
+        $counts = [
+            "validated" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            $valid = true;
+            //date
+            $date = $d->observed_on;
+            $date = explode("-", $date);
+            if((int)$date[1] != 9 || (int)$date[0] < 2020 || (int)$date[0] > 2022){
+                $valid = false;
+                echo "date: " . $d->observed_on;
+            }
+            
+            //place
+            if($d->state == null || $d->district == null){
+                $valid = false;
+                echo "location: " . $d->state . ", " . $d->district ;
+            }
+            //taxa_id
+            if($d->taxa_id == null){
+                $valid = false;
+                echo "taxa_id: " . $d->taxa_id;
+            }
+            if($valid){
+                $d->validated = true;
+                $d->save();
+                $counts["validated"]++;
+            } else {
+                $d->validated = false;
+                $d->save();
+                $counts["skipped"]++;
+            }
+
+        }
+        return $counts;
+    }
+
+    public function counts_validate(){
+        $data = CountForm::where('validated', null)->with("species_list")->get();
+        $counts = [
+            "validated" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            echo "<br>";
+            $valid = true;
+            //date
+            $date = $d->date_cleaned;
+            $date = explode("-", $date);
+            if((int)$date[1] != 9 || (int)$date[2] < 2020 || (int)$date[2] > 2022){
+                $valid = false;
+                echo "date: " . $d->date_cleaned;
+            }
+            
+            //place
+            if($d->state == null || $d->district == null){
+                $valid = false;
+                echo "location: " . $d->state . ", " . $d->district ;
+            }
+            //taxa_id
+            if($d->species_list->count() == 0){
+                $valid = false;
+                echo "taxa_id: " . $d->species_list->count();
+            }
+            if($valid){
+                $d->validated = true;
+                $d->save();
+                $counts["validated"]++;
+            } else {
+                $d->validated = false;
+                $d->save();
+                $counts["skipped"]++;
+            }
+            
+        }
+        return $counts;
+    }
+    
+    public function ibp_validate(){
+        $data = IBP::where('validated', null)->get();
+        $count = [
+            "validated" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            echo "<br>";
+            $valid = true;
+            //dates are september from 2020 to 2022
+            $date = $d->observed_on;
+            $date = explode("-", $date);
+            if((int)$date[1] != 9 || (int)$date[0] < 2020 || (int)$date[0] > 2022){
+                $valid = false;
+                echo "date: " . $d->observed_on;
+                continue;
+            }
+
+            //state and district are set
+            if($d->state == null || $d->district == null){
+                $valid = false;
+                echo "location: " . $d->state . ", " . $d->district ;
+                continue;
+            }
+            //species is set
+            if($d->taxa_id == null){
+                $valid = false;
+                echo "taxa_id: " . $d->taxa_id;
+                continue;
+            }
+            if($valid){
+                $d->validated = true;
+                $d->save();
+                $count["validated"]++;
+            } else {
+                $count["skipped"]++;
+            }
+        }
+        return $count;
+    }
+
+    public function ifb_validate(){
+        $data = IFB::where('validated', null)->get();
+        $counts = [
+            "validated" => 0,
+            "skipped" => 0
+        ];
+        foreach($data as $d){
+            echo "<br>";
+            $valid = true;
+            //date
+            $date = $d->observed_on;
+            $date = explode("-", $date);
+            if((int)$date[1] != 9 || (int)$date[0] < 2020 || (int)$date[0] > 2022){
+                $valid = false;
+                echo "date: " . $d->observed_on;
+            }
+            //location
+            if($d->state == null || $d->district == null){
+                $valid = false;
+                echo "location: " . $d->state . ", " . $d->district ;
+            }
+            //taxa_id
+            if($d->taxa_id == null){
+                $valid = false;
+                echo "taxa_id: " . $d->taxa_id;
+            }
+            if($valid){
+                $d->validated = true;
+                $d->save();
+                $counts["validated"]++;
+            } else {
+                $d->validated = false;
+                $d->save();
+                $counts["skipped"]++;
+            }
+        }
+        dd($counts, $data->toArray());
+    }
 
     public function clean_counts($districts, $limit)
     {
