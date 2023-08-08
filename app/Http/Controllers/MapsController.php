@@ -16,7 +16,7 @@ class MapsController extends Controller
                 $data = file_get_contents(public_path('maps/states.json'));
                 break;
             case 'districts':
-                $data = file_get_contents(public_path('maps/districts.json'));
+                $data = file_get_contents(public_path('maps/districts_1.json'));
                 break;
             default:
                 $data = [];
