@@ -53,7 +53,7 @@ class DataCleaningController extends Controller
 
     public function clean(){
         ini_set('max_execution_time', 300);
-        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));        
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
         $names = [
             "states" => [],
             "districts" => []
@@ -73,7 +73,9 @@ class DataCleaningController extends Controller
             'ibp' => $this->fix_ibp_places($districts, $names),
             'ifb' => $this->fix_ifb_places($districts, $names)
         ];
-        dd($result);
+        echo "<pre>";
+        print_r($result);
+        dd();
     }
 
     public function fix_counts_places($districts, $names){
@@ -86,18 +88,25 @@ class DataCleaningController extends Controller
             $name_matches = true;
             if(!in_array($d->state, $names["states"])){
                 $name_matches = false;
-                echo "state: " . $d->state;
             }
             if(!in_array($d->district, $names["districts"])){
                 $name_matches = false;
-                echo "district: " . $d->district;
             }
             if($name_matches){
                 $counts["skipped"]++;
                 continue;
             } else {
                 $counts["corrected"]++;
-                dd($d);
+                foreach($districts->features as $district){
+                    foreach($district->geometry->coordinates as $polygon){
+                        $result = $this->pointInPolygon($d->longitude, $d->latitude, $polygon);
+                        // dd($result);
+                        if($result){
+                            dd($result, $d->toArray(), $polygon);
+                        }
+                    }
+                }
+                // dd($d, $result);
                 // $d->state = $d->district = null;
                 // $d->save();
             }
@@ -117,31 +126,32 @@ class DataCleaningController extends Controller
             $name_matches = true;
             if(!in_array($d->state, $names["states"])){
                 $name_matches = false;
-                echo "<br>state: " . $d->state;
             }
             if(!in_array($d->district, $names["districts"])){
                 $name_matches = false;
-                echo "<br>district: " . $d->district;
             }
             if($name_matches){
                 $counts["skipped"]++;
                 continue;
             } else {
-                $fixed_name = [
-                    "state" => ucwords(str_replace("_", " ", $d->state)),
-                    "district" => ucwords(str_replace("_", " ", $d->district))
-                ];
-                if($fixed_name["state"] == "Andaman And Nicobar"){
-                    $fixed_name["state"] = "Andaman and Nicobar";
-                }
-                if(in_array($fixed_name["state"], $names["states"]) && in_array($fixed_name["district"], $names["districts"])){
-                    $d->state = $fixed_name["state"];
-                    $d->district = $fixed_name["district"];
-                    $d->save();
-                    $counts["corrected"]++;
+                if(in_array($d->state, $names["states"]) && in_array($d->district, $names["districts"])){
+                    // $d->state = $fixed_name["state"];
+                    // $d->district = $fixed_name["district"];
+                    // $d->save();
+                    $counts["skipped"]++;
                 } else {
-                    dd($fixed_name, $d->toArray());
-                    // $counts["skipped"]++;
+                    foreach($districts->features as $district){
+                        foreach($district->geometry->coordinates as $polygon){
+                            $result = $this->pointInPolygon($d->longitude, $d->latitude, $polygon);
+                            if($result){
+                                $d->state = $district->properties->state;
+                                $d->district = $district->properties->district;
+                                $d->save();
+                                $counts["corrected"]++;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -159,30 +169,17 @@ class DataCleaningController extends Controller
             $names_match = true;
             if(!in_array($d->state, $names["states"])){
                 $names_match = false;
-                echo "<br>state: " . $d->state;
             }
             if(!in_array($d->district, $names["districts"])){
                 $names_match = false;
-                echo "<br>district: " . $d->district;
             }
             if($names_match){
                 $counts["skipped"]++;
             } else {
-                $fixed_name = [
-                    "state" => ucwords(str_replace("_", " ", $d->state)),
-                    "district" => ucwords(str_replace("_", " ", $d->district))
-                ];
-                if($fixed_name["state"] == "Andaman And Nicobar"){
-                    $fixed_name["state"] = "Andaman and Nicobar";
-                }
-                if(in_array($fixed_name["state"], $names["states"]) && in_array($fixed_name["district"], $names["districts"])){
-                    $d->state = $fixed_name["state"];
-                    $d->district = $fixed_name["district"];
-                    $d->save();
-                    $counts["corrected"]++;
+                if(in_array($d->state, $names["states"]) && in_array($d->district, $names["districts"])){
+                    $counts["skipped"]++;
                 } else {
-                    dd($fixed_name, $d->toArray());
-                    // $counts["skipped"]++;
+                    $counts["corrected"]++;
                 }
             }
         }
@@ -199,30 +196,28 @@ class DataCleaningController extends Controller
             $names_match = true;
             if(!in_array($d->state, $names["states"])){
                 $names_match = false;
-                echo "<br>state: " . $d->state;
             }
             if(!in_array($d->district, $names["districts"])){
                 $names_match = false;
-                echo "<br>district: " . $d->district;
             }
             if($names_match){
                 $counts["skipped"]++;
             } else {
-                $fixed_name = [
-                    "state" => ucwords(str_replace("_", " ", $d->state)),
-                    "district" => ucwords(str_replace("_", " ", str_replace("_district", "", $d->district)))
-                ];
-                if($fixed_name["state"] == "Andaman And Nicobar" || $fixed_name["state"] == "Andaman & Nicobar"){
-                    $fixed_name["state"] = "Andaman and Nicobar";
-                }
-                if(in_array($fixed_name["state"], $names["states"]) && in_array($fixed_name["district"], $names["districts"])){
-                    $d->state = $fixed_name["state"];
-                    $d->district = $fixed_name["district"];
-                    $d->save();
-                    $counts["corrected"]++;
-                } else {
-                    // dd($fixed_name, $d->toArray());
+                if(in_array($d->state, $names["states"]) && in_array($d->district, $names["districts"])){
                     $counts["skipped"]++;
+                } else {
+                    foreach($districts->features as $district){
+                        foreach($district->geometry->coordinates as $polygon){
+                            $result = $this->pointInPolygon($d->longitude, $d->latitude, $polygon);
+                            if($result){
+                                $d->state = $district->properties->state;
+                                $d->district = $district->properties->district;
+                                // $d->save();
+                                $counts["corrected"]++;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -575,32 +570,68 @@ class DataCleaningController extends Controller
 
 
 
-    private function pointInPolygon($lon, $lat, $polygon) {
+    private function pointInPolygon($longitude, $latitude, $polygonVertices) {
         $intersections = 0;
-
-        $vertices = count($polygon);
-        for ($i = 0; $i < $vertices; $i++) {
-            $j = ($i + 1) % $vertices;
-
-            if ($polygon[$i][1] == $polygon[$j][1]) {
+        $vertexCount = count($polygonVertices);
+        
+        for ($i = 0; $i < $vertexCount; $i++) {
+            $j = ($i + 1) % $vertexCount;
+    
+            $vertexI = $polygonVertices[$i];
+            $vertexJ = $polygonVertices[$j];
+            
+            if ($vertexI[1] == $vertexJ[1]) {
+                // Skip horizontal edges
                 continue;
             }
-
-            if ($lat < min($polygon[$i][1], $polygon[$j][1])) {
+    
+            if ($latitude < min($vertexI[1], $vertexJ[1])) {
+                // Skip if point is below the edge
                 continue;
             }
-
-            if ($lat >= max($polygon[$i][1], $polygon[$j][1])) {
+    
+            if ($latitude >= max($vertexI[1], $vertexJ[1])) {
+                // Skip if point is above the edge
                 continue;
             }
-
-            $x = ($lat - $polygon[$i][1]) * ($polygon[$j][0] - $polygon[$i][0]) / ($polygon[$j][1] - $polygon[$i][1]) + $polygon[$i][0];
-
-            if ($x > $lon) {
+    
+            $xIntersect = ($latitude - $vertexI[1]) * ($vertexJ[0] - $vertexI[0]) / ($vertexJ[1] - $vertexI[1]) + $vertexI[0];
+    
+            if ($xIntersect > $longitude) {
                 $intersections++;
             }
         }
-
+    
         return ($intersections % 2) == 1;
     }
+    
+
+    // private function pointInPolygon($lon, $lat, $polygon) {
+    //     $intersections = 0;
+
+    //     $vertices = count($polygon);
+    //     for ($i = 0; $i < $vertices; $i++) {
+    //         $j = ($i + 1) % $vertices;
+
+    //         if ($polygon[$i][1] == $polygon[$j][1]) {
+    //             continue;
+    //         }
+
+    //         if ($lat < min($polygon[$i][1], $polygon[$j][1])) {
+    //             continue;
+    //         }
+
+    //         if ($lat >= max($polygon[$i][1], $polygon[$j][1])) {
+    //             continue;
+    //         }
+
+    //         $x = ($lat - $polygon[$i][1]) * ($polygon[$j][0] - $polygon[$i][0]) / ($polygon[$j][1] - $polygon[$i][1]) + $polygon[$i][0];
+
+    //         if ($x > $lon) {
+    //             $intersections++;
+    //         }
+    //     }
+
+    //     return ($intersections % 2) == 1;
+    // }
 }
