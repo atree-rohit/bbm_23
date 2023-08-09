@@ -31,15 +31,13 @@ class DataController extends Controller
         ini_set('memory_limit', '256M');
 
         $cacheKey = 'observations_data';
-        $cacheDuration = now()->addHours(24);
+        $cacheDuration = now()->addSeconds(24);
 
         $cachedData = Cache::get($cacheKey);
 
         if ($cachedData) {
             return response()->json($cachedData);
         }
-
-
 
         $limit = -1;
         $district_names = $this->get_district_names();
@@ -75,7 +73,7 @@ class DataController extends Controller
     public function taxa()
     {
         $data = Taxa::select("id", "name", "common_name", "rank", "ancestry")->get();
-        return $data;
+        return response()->json($data);
     }
 
     public function get_district_names()
