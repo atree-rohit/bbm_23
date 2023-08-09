@@ -55,12 +55,11 @@
     }
 
     .logo-container img{
-        min-height: 7rem;
+        min-height: 4rem;
         max-width: 8rem;
         border: 2px solid rgba(0,0,0,0.25);
         border-radius: 0.5rem;
         padding: .25rem;
-        aspect-ratio: 1;
     }
     .footer{
         display: flex;
