@@ -25,6 +25,7 @@ class DataController extends Controller
 
     public function observations()
     {
+        ini_set('memory_limit', '256M');
         $limit = -1;
         $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
         $district_names = [];
