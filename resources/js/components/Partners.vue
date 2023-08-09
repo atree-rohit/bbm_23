@@ -78,9 +78,9 @@
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
-        <button class="btn btn-lg btn-primary mx-5" @click="show_modal.poster = true" title="Show Partner Poster">Partner Poster</button>
             <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Partner">+</button>
         </div>
+        <button class="btn btn-lg btn-primary mx-5" @click="show_modal.poster = true" title="Show Partner Poster">Partner Poster</button>
     </div>
     
     <div class="main-container m-4">
