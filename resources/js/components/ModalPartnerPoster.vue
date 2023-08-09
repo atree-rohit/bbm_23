@@ -78,7 +78,7 @@
                     <div class="logo">
                         <img src="/img/mormon.jpg" alt="">
                     </div>
-                    <h1 class="modal-title" id="exampleModalLiveLabel">Big Buttefly Month</h1>
+                    <h1 class="modal-title" id="exampleModalLiveLabel">Big Butterfly Month</h1>
                     
                 </div>
                 <div class="modal-body">
