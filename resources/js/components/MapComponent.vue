@@ -238,7 +238,7 @@ export default defineComponent({
             this.max = d3.max(this.mapData, (d) => d.value) 
             this.colors = d3.scaleLinear()
                 .domain([0,1, this.max/3, this.max])
-                .range(["#a20", "#520", "#05c", "#0d0"])
+                .range(["#c33", "#488", "#fd0", "#24ff00"])
                 .clamp(true)
             this.legend = d3Legend.legendColor()
 								.shapeHeight(20)
