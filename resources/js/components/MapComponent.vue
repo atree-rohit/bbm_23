@@ -105,6 +105,7 @@
 </style>
 
 <template>
+	{{ JSON.stringify(data).length }}
     <div class="switcher switcher-sm text-center py-2 bg-dark">
         <button
             class="btn mx-1"
@@ -166,6 +167,10 @@ export default defineComponent({
         mode(newVal){
             this.$emit('mode-change', newVal)
         },
+		data(newVal){
+			console.log("data changed")
+			this.init()
+		}
     },
     computed:{
         mapData(){
@@ -238,7 +243,7 @@ export default defineComponent({
             this.max = d3.max(this.mapData, (d) => d.value) 
             this.colors = d3.scaleLinear()
                 .domain([0,1, this.max/3, this.max])
-                .range(["#a20", "#520", "#05c", "#0d0"])
+                .range(["#c33", "#488", "#fd0", "#24ff00"])
                 .clamp(true)
             this.legend = d3Legend.legendColor()
 								.shapeHeight(20)
@@ -336,13 +341,41 @@ export default defineComponent({
 			return op
 		},
         clicked(polygon_details) {
-			let polygon_data = this.mapData.find((d) => d.name == polygon_details.properties[this.mode])
-            if(polygon_data.value > 0){
-				this.$emit('polygon-clicked', polygon_data)
-            } else {
-            }
+			let op = {
+				name: polygon_details.properties[this.mode],
+				value: 0,
+				mode: this.mode
+			}
+			let polygon_data = this.mapData.find((d) => d.name == op.name)
+			op.value = polygon_data ? polygon_data.value : 0
+			this.$emit('polygon-clicked', op)
+			// Call the zoomToPolygon function with the polygon_details
+			this.zoomToPolygon(polygon_details)
 		},
+		zoomToPolygon(polygon_details) {
+			// Get the selected polygon element using its data
+			const polygon_id = this.getPolygonId(polygon_details.properties)
+			const polygonElement = d3.select(`#${polygon_id}`);
 
+			// Calculate the bounding box of the polygon
+			const bbox = polygonElement.node().getBBox();
+
+			// Calculate the scale to fit the polygon into the viewport
+			const scale = Math.min(
+				this.width / bbox.width,
+				this.height / bbox.height
+			);
+
+			// Calculate the translation to center the polygon
+			const translateX = this.width / 2 - bbox.x - bbox.width / 2;
+			const translateY = this.height / 2 - bbox.y - bbox.height / 2;
+
+			// Apply the zoom transform
+			this.svg.transition().duration(750).call(
+				this.zoom.transform,
+				d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+			);
+		},
 
         drawPolygonBoundary(polygon){
 			this.polygons.append("g")
