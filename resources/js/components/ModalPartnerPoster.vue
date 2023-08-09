@@ -21,10 +21,8 @@
         z-index: 10;
     }
 
-    .modal-header .logo{
-        flex: 1 1 0;
-    }
     .modal-header h1.modal-title{
+        margin-left: 7.5rem;
         font-family: 'Times New Roman', Times, serif;
         flex: 2 1 0;
         font-size: 5rem;
@@ -105,9 +103,8 @@
                     <span>bigbutterflymonth@gmail.com</span>
                     <span>bigbutterflymonth.in</span>
                 </div>
-                <div class="modal-footer d-flex justify-content-center bg-secondary">
-                    <button type="button" class="btn btn-dark" @click="closeModal">Close</button>
-                    <button type="button" class="btn btn-success" @click="download">Download</button>
+                <div class="modal-footer d-flex justify-content-center bg-secondary p-0">
+                    <button type="button" class="btn btn-dark btn-sm" @click="closeModal">Close</button>
                 </div>
             </div>
         </div>
