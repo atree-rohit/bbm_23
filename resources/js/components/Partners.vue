@@ -78,6 +78,7 @@
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
+        <button class="btn btn-lg btn-primary mx-5" @click="show_modal.poster = true" title="Show Partner Poster">Partner Poster</button>
             <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Partner">+</button>
         </div>
     </div>
@@ -133,7 +134,12 @@
         :show="show_modal.edit"
         :data="selectedPartner"
         @close="show_modal.edit=false"
-    />    
+    />
+    <modal-partner-poster
+        :show="show_modal.poster"
+        @close="show_modal.poster=false"
+    />
+    
 </template>
 
 <script>
@@ -142,18 +148,21 @@ import { mapState } from 'vuex'
 import store from '../store'
 import ModalAddPartner from './ModalAddPartner.vue'
 import ModalEditPartner from './ModalEditPartner.vue'
+import ModalPartnerPoster from './ModalPartnerPoster.vue'
 
 export default defineComponent({
     name: 'Partners',
     components: {
         ModalAddPartner,
         ModalEditPartner,
+        ModalPartnerPoster,
     },
     data(){
         return {
             show_modal: {
                 add: false,
                 edit: false,
+                poster: false,
             },
             selectedPartner: {},
         }
