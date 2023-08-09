@@ -73,7 +73,7 @@
 <template>
     <div v-if="show" class="modal fade show" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
+            <div class="modal-content" id="partner-poster">
                 <div class="modal-header">
                     <div class="logo">
                         <img src="/img/mormon.jpg" alt="">
@@ -103,10 +103,11 @@
                     <span>bigbutterflymonth@gmail.com</span>
                     <span>bigbutterflymonth.in</span>
                 </div>
-                <div class="modal-footer d-flex justify-content-center bg-secondary p-0">
-                    <button type="button" class="btn btn-dark btn-sm" @click="closeModal">Close</button>
-                </div>
             </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center bg-secondary p-0">
+            <button type="button" class="btn btn-dark btn-sm" @click="closeModal">Close</button>
+            <button type="button" class="btn btn-success btn-sm" @click="download">Download</button>
         </div>
     </div>
     <div class="modal-backdrop fade show" v-if="show"></div>
@@ -115,6 +116,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
+import html2canvas from 'html2canvas'
 
 export default defineComponent({
     name: 'ModalPartnerPoster',
@@ -149,8 +151,24 @@ export default defineComponent({
             this.$emit('close')
         },
         download(){
-            // this.upload_file_flag = true
+            const div = document.getElementById('partner-poster');
+            html2canvas(div).then(canvas => {
+                // Convert the canvas to a data URL (JPG format)
+                const dataUrl = canvas.toDataURL('image/jpeg');
+
+                // Create a temporary anchor element to trigger the download
+                const anchor = document.createElement('a');
+                anchor.href = dataUrl;
+                anchor.download = 'poster.jpg';
+
+                // Programmatically click the anchor to initiate the download
+                anchor.click();
+
+                // Clean up
+                anchor.remove();
+            })
         }
+
     }
 })
 </script>
