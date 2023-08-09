@@ -228,7 +228,11 @@ export default defineComponent({
         init_legend(){
             this.colors = {}
             this.legend = {}
-            this.max = d3.max(this.mapData, (d) => d.value) 
+			let data = this.mapData
+			if(this.selected != null){
+				data = this.data.district
+			}
+            this.max = d3.max(data, (d) => d.value) 
             this.colors = d3.scaleLinear()
                 .domain([0,1, this.max/3, this.max])
                 .range(["#c33", "#488", "#fd0", "#24ff00"])
