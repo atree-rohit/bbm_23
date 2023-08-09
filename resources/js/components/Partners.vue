@@ -75,12 +75,12 @@
 <template>
     <div class="header d-flex px-2">
         <div class="h1">Partners</div>
+        <button class="btn btn-lg btn-primary mx-5" @click="show_modal.poster = true" title="Show Partner Poster">Partner Poster</button>
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
             <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Partner">+</button>
         </div>
-        <button class="btn btn-lg btn-primary mx-5" @click="show_modal.poster = true" title="Show Partner Poster">Partner Poster</button>
     </div>
     
     <div class="main-container m-4">
