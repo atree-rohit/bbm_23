@@ -11,6 +11,9 @@ use App\Models\IBP;
 use App\Models\IFB;
 use App\Models\Taxa;
 
+use Illuminate\Support\Facades\Cache;
+
+
 use Spatie\Activitylog\Models\Activity;
 
 
@@ -26,20 +29,21 @@ class DataController extends Controller
     public function observations()
     {
         ini_set('memory_limit', '256M');
-        $limit = -1;
-        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
-        $district_names = [];
-        foreach($districts->features as $district){
-            $district_exists = false;
-            foreach($district_names as $dn){
-                if($dn == $district->properties->district){
-                    $district_exists = true;
-                }
-            }
-            if(!$district_exists){
-                $district_names[] = $district->properties->district;
-            }
+
+        $cacheKey = 'observations_data';
+        $cacheDuration = now()->addHours(24);
+
+        $cachedData = Cache::get($cacheKey);
+
+        if ($cachedData) {
+            return response()->json($cachedData);
         }
+
+
+
+        $limit = -1;
+        $district_names = $this->get_district_names();
+        
         $get = [
             "counts" => $this->get_counts_data($limit, $district_names),
             "inats" => $this->get_inat_data($limit, $district_names),
@@ -62,14 +66,34 @@ class DataController extends Controller
             ],
             "districts" => $district_names,
         ];
+
+        Cache::put($cacheKey, $data, $cacheDuration);
         
-        return $data;
+        return response()->json($data);
     }
 
     public function taxa()
     {
         $data = Taxa::select("id", "name", "common_name", "rank", "ancestry")->get();
         return $data;
+    }
+
+    public function get_district_names()
+    {
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
+        $district_names = [];
+        foreach($districts->features as $district){
+            $district_exists = false;
+            foreach($district_names as $dn){
+                if($dn == $district->properties->district){
+                    $district_exists = true;
+                }
+            }
+            if(!$district_exists){
+                $district_names[] = $district->properties->district;
+            }
+        }
+        return $district_names;
     }
 
 
