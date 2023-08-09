@@ -9,10 +9,6 @@ export default {
         users: [],
         taxa: [],
         districts: [],
-        boundaries:{
-            states: {},
-            districts: {},
-        },
         loading: null,
         map_data: {
             states: [],
@@ -30,9 +26,6 @@ export default {
     mutations: {
         SET_LOADING(state, value){
             state.loading = value
-        },
-        SET_DISTRICTS(state, value){
-            state.boundaries.districts = JSON.parse(value)
         },
         SET_TAXA(state, value){
             state.taxa = value
@@ -84,9 +77,6 @@ export default {
     },
     actions: {
         async getAllData({commit, dispatch}){
-            commit('SET_LOADING', 'Getting District Boundaries')
-            await dispatch('getDistricts')
-            
             commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
             
@@ -97,14 +87,6 @@ export default {
             commit('SET_MAP_DATA')
             
             commit('SET_LOADING', null)
-        },
-        async getDistricts({commit}){
-            try {
-                const { data } = await axios.get('/api/maps/districts')
-                commit('SET_DISTRICTS', data)
-            } catch (response) {
-                console.error("error retreiving Districts", response)
-            }
         },
         async getObservations({commit}){
             try {
