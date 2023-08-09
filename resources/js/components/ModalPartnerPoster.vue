@@ -60,7 +60,7 @@
         border: 2px solid rgba(0,0,0,0.25);
         border-radius: 0.5rem;
         padding: .25rem;
-        object-fit: contain;
+        aspect-ratio: 1;
     }
     .footer{
         display: flex;
@@ -152,22 +152,44 @@ export default defineComponent({
             this.$emit('close')
         },
         download(){
-            const div = document.getElementById('partner-poster');
+            const div = document.getElementById('partner-poster')
+            const divWidth = div.offsetWidth
+            const divHeight = div.offsetHeight
+
+            const canvas = document.createElement('canvas')
+            canvas.width = divWidth
+            canvas.height = divHeight
+            const context = canvas.getContext('2d')
+
             html2canvas(div).then(canvas => {
-                // Convert the canvas to a data URL (JPG format)
+                context.drawImage(canvas, 0, 0, divWidth, divHeight);
+                
+                // Convert the canvas to a data URL
                 const dataUrl = canvas.toDataURL('image/jpeg');
 
-                // Create a temporary anchor element to trigger the download
+                // Create a temporary anchor
                 const anchor = document.createElement('a');
                 anchor.href = dataUrl;
                 anchor.download = 'poster.jpg';
-
-                // Programmatically click the anchor to initiate the download
+                
+                // Click the anchor to trigger the download
                 anchor.click();
+                
+                // Remove the anchor after the download
+                document.body.removeChild(anchor);
+            }).catch(error => {
+                console.error('Error capturing content:', error);
+                // Handle the error if needed
+            });
 
-                // Clean up
-                anchor.remove();
-            })
+            // html2canvas(div).then(canvas => {
+            //     const dataUrl = canvas.toDataURL('image/jpeg')
+            //     const anchor = document.createElement('a')
+            //     anchor.href = dataUrl
+            //     anchor.download = 'poster.jpg'
+            //     anchor.click()
+            //     anchor.remove()
+            // })
         }
 
     }
