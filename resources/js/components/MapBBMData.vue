@@ -8,7 +8,7 @@
     {{ selected }}
     <div class="map-container border border-danger rounded">
         <loading-data />
-        <map-component
+        <map-data
             :geojson='geojson[mode]'
             :data='filtered_map_data'
             :modes="['state', 'district']"
@@ -20,17 +20,16 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
-import MapComponent from './MapComponent.vue'
+import MapData from './MapData.vue'
 import LoadingData from './LoadingData.vue'
 import districts from '../json/districts.json'
 import states from '../json/states.json'
 
-export default defineComponent({
+export default {
     name: "MapBBMData",
     components: {
-        MapComponent,
+        MapData,
         LoadingData
     },
     // emits: ["polygon-clicked"],
@@ -79,5 +78,5 @@ export default defineComponent({
             this.selected[data.mode === 'state' ? 'district' : 'state'] = null;
         }
     }
-})
+}
 </script>
