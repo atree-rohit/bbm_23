@@ -51,11 +51,10 @@ export default {
             let op = []
             Object.keys(value).forEach((portal) => {
                 op[portal] = value[portal].map((d) => {
-                    const user = state.users[portal][d[2]]
                     const district = state.districts[d[4]]
                     const state_name = place_names_map.get(district)
                     return [
-                        user,
+                        state.users[portal][d[2]],
                         d[1],
                         d[3],
                         district,
@@ -63,7 +62,6 @@ export default {
                     ]
                 })
             })
-            console.log(op)
             state.observations = op      
         },
         SET_MAP_DATA(state){
@@ -80,7 +78,7 @@ export default {
                         value: p[1]
                     }
                 }),
-            }            
+            }
         }
 
     },
@@ -88,10 +86,13 @@ export default {
         async getAllData({commit, dispatch}){
             commit('SET_LOADING', 'Getting District Boundaries')
             await dispatch('getDistricts')
+            
             commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
+            
             commit('SET_LOADING', 'Getting Observations')
             await dispatch('getObservations')
+            
             commit('SET_LOADING', 'Setting Map Data')
             commit('SET_MAP_DATA')
             
