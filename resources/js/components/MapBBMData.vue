@@ -75,8 +75,9 @@ export default {
             return str.replace(/\s/g, '_').toLowerCase()
         },
         polygonClick(data){
-            this.selected[data.mode] = this.selected[data.mode] === data.name ? null : data.name;
-            this.selected[data.mode === 'state' ? 'district' : 'state'] = null;
+            this.selected[data.mode] = this.selected[data.mode] === data.name ? null : data.name
+            this.selected[data.mode === 'state' ? 'district' : 'state'] = null
+            this.$emit('state-selected', this.selected)
         }
     }
 }

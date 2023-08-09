@@ -132,67 +132,117 @@
         </div>
         <div class="canvas">
             <div class="observations">
+                <template v-if="!selected">
+                    <table class="table table-sm">
+                        <thead  class="bg-info">
+                            <tr>
+                                <th scope="col">Portal</th>
+                                <th scope="col">Observations</th>
+                                <th scope="col">Users</th>
+                                <th scope="col">States</th>
+                                <th scope="col">Districts</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-info">
+                            <tr
+                                v-for="(row, key) in observation_table_stats"
+                                :key="key"
+                            >
+                                <td>{{ row.portal }}</td>
+                                <td>{{ row.observations }}</td>
+                                <td>{{ row.users }}</td>
+                                <td>{{ row.states }}</td>
+                                <td>{{ row.districts }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm">
+                        <thead class="bg-danger text-light">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Count</th>
+                                <th>Unique</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-danger">
+                            <tr
+                                v-for="(row, key) in taxa_stats"
+                                :key="key"
+                            >
+                                <td>{{ row.rank }}</td>
+                                <td>{{ row.count }}</td>
+                                <td>{{ row.unique }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </template>
+                <template v-else>
+                    <table class="table table-sm">
+                        <thead  class="bg-info">
+                            <tr>
+                                <th scope="col">Portal</th>
+                                <th scope="col">Observations</th>
+                                <th scope="col">Users</th>
+                                <th scope="col">States</th>
+                                <th scope="col">Districts</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-info">
+                            <tr
+                                v-for="(row, key) in state_table_data.portals"
+                                :key="key"
+                            >
+                                <td>{{ row.portal }}</td>
+                                <td>{{ row.observations }}</td>
+                                <td>{{ row.users }}</td>
+                                <td>{{ row.states }}</td>
+                                <td>{{ row.districts }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm">
+                        <thead  class="bg-danger">
+                            <tr>
+                                <th scope="col">Portal</th>
+                                <th scope="col">Observations</th>
+                                <th scope="col">Users</th>
+                                <th scope="col">States</th>
+                                <th scope="col">Districts</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-danger">
+                            <tr
+                                v-for="(row, key) in state_table_data.districts"
+                                :key="key"
+                            >
+                                <td>{{ row.district }}</td>
+                                <td>{{ row.observations }}</td>
+                                <td>{{ row.users }}</td>
+                                <td>{{ row.taxa }}</td>
+                                <td>{{ row.districts }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </template>
                 
-                <table class="table table-sm">
-                    <thead  class="bg-info">
-                        <tr>
-                            <th scope="col">Portal</th>
-                            <th scope="col">Observations</th>
-                            <th scope="col">Users</th>
-                            <th scope="col">States</th>
-                            <th scope="col">Districts</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-info">
-                        <tr
-                            v-for="(row, key) in observation_table_stats"
-                            :key="key"
-                        >
-                            <td>{{ row.portal }}</td>
-                            <td>{{ row.observations }}</td>
-                            <td>{{ row.users }}</td>
-                            <td>{{ row.states }}</td>
-                            <td>{{ row.districts }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-sm">
-                    <thead class="bg-danger text-light">
-                        <tr>
-                            <th>Rank</th>
-                            <th>Count</th>
-                            <th>Unique</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-danger">
-                        <tr
-                            v-for="(row, key) in taxa_stats"
-                            :key="key"
-                        >
-                            <td>{{ row.rank }}</td>
-                            <td>{{ row.count }}</td>
-                            <td>{{ row.unique }}</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
             <div class="taxa">
-                <MapBBMData />
+                <MapBBMData @state-selected="stateSelected"/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
+import districts from '../json/districts.json'
 
 import * as d3 from 'd3'
 import MapBBMData from './MapBBMData.vue'
 
 
-export default defineComponent({
+export default {
     name: "DataComponent",
     components: {
         MapBBMData
@@ -226,6 +276,7 @@ export default defineComponent({
                     active: true
                 }
             ],
+            selected: null
         }
     },
     computed: {
@@ -272,6 +323,47 @@ export default defineComponent({
                 }
             })
             return op.filter((t) => t.count > 0)
+        },
+        state_table_data(){
+            let op = {
+                portals: [],
+                districts: [],
+            }
+            let portal_data = {}
+            Object.keys(this.observations).map((portal) => {
+                portal_data[portal] = this.observations[portal].filter((o) => {
+                    return o[4] === this.selected
+                })
+            })
+            Object.keys(portal_data).map((portal) => {
+                op.portals.push({
+                    portal: portal,
+                    observations: portal_data[portal].length,
+                    users: this.countUnique(portal_data[portal].map(x => x[2])),
+                    districts: this.countUnique(portal_data[portal].map(x => x[3])),
+                })
+            })
+
+            const state_districts = districts.features.filter((d) => d.properties.state === this.selected).map((d) => d.properties.district)
+            state_districts.map((district) => {
+                let data = {}
+                Object.keys(this.observations).map((portal) => {
+                    data[portal] = this.observations[portal].filter((o) => {
+                        return o[3] === district
+                    })
+                })
+                console.log()
+                op.districts.push({
+                    district: district,
+                    observations: Object.values(data).flat().length,
+                    users: this.countUnique(Object.values(data).flat().map((d) => d[2])),
+                    taxa: this.countUnique(Object.values(data).flat().map((d) => d[1])),
+                    // portals: district_data[district].total.portals,
+                })
+            })
+
+            console.log("state_table_data", op, this.selected)
+            return op
         }
     },
     mounted(){
@@ -302,7 +394,10 @@ export default defineComponent({
         },
         countUnique(arr){
             return [...new Set(arr)].length
+        },
+        stateSelected(data){
+            this.selected = data.state
         }
     }
-})
+}
 </script>
