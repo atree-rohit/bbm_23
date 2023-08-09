@@ -1,4 +1,7 @@
-<style scoped>
+<style>
+:root{
+    --animation-speed: 2.5s;
+}
 .loading-container {
     position: absolute;
     margin: auto;
@@ -9,7 +12,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background:rgba(0,0,0,.75);
+    background:rgba(0,0,0,.95);
 }
 .loading-container .circle {
     position: absolute;
@@ -19,31 +22,31 @@
     bottom: 0;
     left: 0;
     border-radius: 50%;
-    background: rgba(138, 43, 226, 0.02);
+    background: rgba(138, 43, 226, 0.05);
 }
 .loading-container .circle:nth-of-type(1) {
     width: 30%;
-    height: 50%;
-    animation: rt 3s infinite linear;
-    box-shadow: 0 0 1px 0 blueviolet, inset 0 0 10px 0 blueviolet;
+    height: 40%;
+    animation: rt var(--animation-speed) infinite linear;
+    box-shadow: 0 0 1rem 0 blueviolet, inset 0 0 10px 0 blueviolet;
 }
 .loading-container .circle:nth-of-type(2) {
-    width: 32.5%;
-    height: 40%;
-    animation: rt 5s infinite linear;
-    box-shadow: 0 0 1px 0 darkviolet, inset 0 0 10px 0 darkviolet;
+    width: 35%;
+    height: 45%;
+    animation: rt calc(var(--animation-speed) * 1.5)  infinite linear;
+    box-shadow: 0 0 1rem 0 rgb(4, 0, 211), inset 0 0 10px 0 rgb(4, 0, 211);
 }
 .loading-container .circle:nth-of-type(3) {
-    width: 25%;
+    width: 40%;
     height: 50%;
-    animation: rt 2s infinite linear;
-    box-shadow: 0 0 1px 0 darkmagenta, inset 0 0 10px 0 darkmagenta;
+    animation: rt calc(var(--animation-speed) * 2) infinite linear;
+    box-shadow: 0 0 1rem 0 rgb(0, 139, 74), inset 0 0 10px 0 rgb(0, 139, 74);
 }
 .loading-container .circle:nth-of-type(4) {
-    width: 20%;
-    height: 70%;
-    animation: rt 7.5s infinite linear;
-    box-shadow: 0 0 1px 0 magenta, inset 0 0 10px 0 magenta;
+    width: 45%;
+    height: 55%;
+    animation: rt calc(var(--animation-speed) * 3) infinite linear;
+    box-shadow: 0 0 1rem 0 rgb(255, 238, 0), inset 0 0 10px 0 rgb(255, 238, 0);
 }
 
 .loading-container .text{
@@ -64,7 +67,7 @@
 
 <template>
     <!-- based on CSS Loading Screen by Jove Angelevski https://codepen.io/AlbertFeynman/pen/ejoMVG -->
-    <div class="loading-container" v-if="loading">
+    <div class="loading-container" v-if="loading" >
         <div class="circle"></div>
         <div class="circle"></div>
         <div class="circle"></div>
