@@ -105,7 +105,6 @@
 </style>
 
 <template>
-	{{ JSON.stringify(data).length }}
     <div class="switcher switcher-sm text-center py-2 bg-dark">
         <button
             class="btn mx-1"
@@ -167,7 +166,8 @@ export default defineComponent({
         mode(newVal){
             this.$emit('mode-change', newVal)
         },
-		data(){
+		data(newVal){
+			console.log("data changed")
 			this.init()
 		}
     },
@@ -183,18 +183,19 @@ export default defineComponent({
         },
     },
 	mounted(){
-		console.log("Map mounted: initializing")
+		console.log("mounted: initializing")
 		if(this.geojson){
 			this.init()
 		}
 	},
     updated(){
-		console.log("Map updated: re-initializing")
+		console.log("updated: re-initializing")
 		this.init()
 	},
     methods: {
         init(){
-			if(this.geojson.features){
+			console.log("init")
+            if(this.geojson.features){
                 this.init_variables()
                 this.init_legend()
                 this.init_svg()
@@ -347,32 +348,6 @@ export default defineComponent({
 			let polygon_data = this.mapData.find((d) => d.name == op.name)
 			op.value = polygon_data ? polygon_data.value : 0
 			this.$emit('polygon-clicked', op)
-			// Call the zoomToPolygon function with the polygon_details
-			this.zoomToPolygon(polygon_details)
-		},
-		zoomToPolygon(polygon_details) {
-			// Get the selected polygon element using its data
-			const polygon_id = this.getPolygonId(polygon_details.properties)
-			const polygonElement = d3.select(`#${polygon_id}`);
-
-			// Calculate the bounding box of the polygon
-			const bbox = polygonElement.node().getBBox();
-
-			// Calculate the scale to fit the polygon into the viewport
-			const scale = Math.min(
-				this.width / bbox.width,
-				this.height / bbox.height
-			);
-
-			// Calculate the translation to center the polygon
-			const translateX = this.width / 2 - bbox.x - bbox.width / 2;
-			const translateY = this.height / 2 - bbox.y - bbox.height / 2;
-
-			// Apply the zoom transform
-			this.svg.transition().duration(750).call(
-				this.zoom.transform,
-				d3.zoomIdentity.translate(translateX, translateY).scale(scale)
-			);
 		},
 
         drawPolygonBoundary(polygon){
