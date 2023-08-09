@@ -24,25 +24,25 @@
 .loading-container .circle:nth-of-type(1) {
     width: 30%;
     height: 50%;
-    animation: rt 6s infinite linear;
+    animation: rt 3s infinite linear;
     box-shadow: 0 0 1px 0 blueviolet, inset 0 0 10px 0 blueviolet;
 }
 .loading-container .circle:nth-of-type(2) {
     width: 32.5%;
     height: 40%;
-    animation: rt 10s infinite linear;
+    animation: rt 5s infinite linear;
     box-shadow: 0 0 1px 0 darkviolet, inset 0 0 10px 0 darkviolet;
 }
 .loading-container .circle:nth-of-type(3) {
     width: 25%;
     height: 50%;
-    animation: rt 5s infinite linear;
+    animation: rt 2s infinite linear;
     box-shadow: 0 0 1px 0 darkmagenta, inset 0 0 10px 0 darkmagenta;
 }
 .loading-container .circle:nth-of-type(4) {
     width: 20%;
     height: 70%;
-    animation: rt 15s infinite linear;
+    animation: rt 7.5s infinite linear;
     box-shadow: 0 0 1px 0 magenta, inset 0 0 10px 0 magenta;
 }
 
