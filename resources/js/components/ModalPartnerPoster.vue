@@ -55,8 +55,8 @@
     }
 
     .logo-container img{
-        width: auto;
-        max-height: 5rem;
+        height: auto;
+        max-width: 8rem;
         border: 2px solid rgba(0,0,0,0.25);
         border-radius: 0.5rem;
         padding: .25rem;
