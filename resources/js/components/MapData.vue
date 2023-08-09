@@ -105,16 +105,7 @@
 </style>
 
 <template>
-    <div class="switcher switcher-sm text-center py-2 bg-dark">
-        <button
-            class="btn mx-1"
-            v-for="pm in modes"
-            :key="pm"
-            :class="pm === mode ? 'btn-success' : 'btn-outline-success bg-light'"
-            @click="mode = pm"
-            v-text="pm"
-        />
-    </div>
+
     <div id="map">
         <div id="map-container"></div>
     </div>
@@ -137,8 +128,8 @@ export default defineComponent({
             type: Object,
             required: true
         },
-        modes:{
-            type: Array,
+        mode:{
+            type: String,
             required: true
         },
 		tooltip_third_row_label: {
@@ -149,7 +140,6 @@ export default defineComponent({
     emits: ['mode-change', 'polygon-clicked'],
     data() {
         return {
-            mode: this.modes[0],
             polygons: null,
             path: null,
             svg: null,
@@ -194,7 +184,7 @@ export default defineComponent({
 	},
     methods: {
         init(){
-			if(this.geojson.features){
+			if(this.geojson[this.mode].features){
                 this.init_variables()
                 this.init_legend()
                 this.init_svg()
@@ -282,9 +272,15 @@ export default defineComponent({
 			this.polygons = base.append("g")
 				.classed("polygons", true)
 			
-			this.geojson.features.forEach((polygon) => {
-				this.drawPolygon(polygon)
-			})
+			
+			if(this.selected != null){
+				let districts = this.geojson.district.features.filter((p) => p.properties.state == this.selected)
+				districts.map((polygon) => this.drawPolygon(polygon))
+			} else {
+				this.geojson[this.mode].features.forEach((polygon) => {
+					this.drawPolygon(polygon)
+				})
+			}
 			
 			this.svg.append("g")
 				.attr("class", "legend")
@@ -345,7 +341,7 @@ export default defineComponent({
                 target_polygon = polygon_details
                 this.selected = polygon_details.properties[this.mode]
             } else {
-                target_polygon = this.geojson
+                target_polygon = this.geojson[this.mode]
                 this.selected = null
             }
 			let [[x0, y0], [x1, y1]] = this.path.bounds(target_polygon)
@@ -404,7 +400,11 @@ export default defineComponent({
 
 
         color_polygon(polygon) {
-            let polygon_data = this.mapData.find((d) => d.name == polygon[this.mode])
+			let mode = "state"
+			if(polygon.district != undefined){
+				mode = "district"
+			}
+			let polygon_data = this.data[mode].find((d) => d.name == polygon[mode])
 			if(polygon_data){
                 return this.colors(polygon_data.value)
 			}
@@ -423,9 +423,13 @@ export default defineComponent({
 				.attr("r", text_size)
         },
         hover_text(properties){
-            
+            let mode = "state"
+			if(properties.district != undefined){
+				mode = "district"
+			}
+
 			let op = ["state", "district"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
-            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.mapData.find((d) => d.name == properties[this.mode])?.value || 0}</td></tr>`)
+            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data[mode].find((d) => d.name == properties[mode])?.value || 0}</td></tr>`)
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			
 		},

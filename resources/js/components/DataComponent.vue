@@ -101,8 +101,16 @@
 .canvas .taxa{
     border: 1px solid green;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
     gap: 1rem;
+}
+.canvas .observations{
+    flex-shrink: 2;
+}
+
+.canvas .taxa{
+    flex-grow: 20;
 }
 
 </style>

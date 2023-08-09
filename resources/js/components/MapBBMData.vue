@@ -5,13 +5,12 @@
 </style>
 
 <template>
-    {{ selected }}
     <div class="map-container border border-danger rounded">
         <loading-data />
         <map-data
-            :geojson='geojson[mode]'
+            :geojson='geojson'
             :data='filtered_map_data'
-            :modes="['state', 'district']"
+            :mode="mode"
             tooltip_third_row_label="Observations"
             @mode-change="mode = $event"
             @polygon-clicked="polygonClick"
@@ -54,7 +53,9 @@ export default {
         filtered_map_data(){
             let op = JSON.parse(JSON.stringify(this.map_data))
             if(this.selected.state != null){
+                const state_districts = this.geojson.district.features.filter((d) => d.properties.state === this.selected.state).map((d) => d.properties.district)
                 op.state = op.state.filter(d => d.name === this.selected.state)
+                op.district = op.district.filter(d => state_districts.includes(d.name))
             }
             if(this.selected.district != null){
                 op.district = op.district.filter(d => d.name === this.selected.district)
