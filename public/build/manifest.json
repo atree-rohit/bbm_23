@@ -73,14 +73,14 @@
     "src": "resources/js/pages/about.js"
   },
   "resources/js/pages/data.css": {
-    "file": "assets/data-71ec08c0.css",
+    "file": "assets/data-da8bf9be.css",
     "src": "resources/js/pages/data.css"
   },
   "resources/js/pages/data.js": {
     "css": [
-      "assets/data-71ec08c0.css"
+      "assets/data-da8bf9be.css"
     ],
-    "file": "assets/data-04c0de45.js",
+    "file": "assets/data-89c7ab21.js",
     "imports": [
       "__plugin-vue_export-helper-46505c61.js",
       "_indexRollupNext-1b7c4933.js"
