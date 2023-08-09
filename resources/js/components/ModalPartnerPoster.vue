@@ -18,6 +18,7 @@
         position: absolute;
         top: 0.125rem;
         left: 0.5rem;
+        z-index: 10;
     }
 
     .modal-header .logo{
@@ -27,6 +28,8 @@
         font-family: 'Times New Roman', Times, serif;
         flex: 2 1 0;
         font-size: 5rem;
+        line-height: 4.5rem;
+        text-align: center;
     }
 
     .modal-body{
@@ -49,7 +52,7 @@
         flex-grow: 5;
         display: flex;
         flex-wrap: wrap;
-        justify-content: start;
+        justify-content: space-evenly;
         align-items: center;
     }
 
