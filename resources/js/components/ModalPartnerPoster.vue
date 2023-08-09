@@ -60,7 +60,7 @@
         border: 2px solid rgba(0,0,0,0.25);
         border-radius: 0.5rem;
         padding: .25rem;
-        object-fit: cover;
+        object-fit: contain;
     }
     .footer{
         display: flex;
