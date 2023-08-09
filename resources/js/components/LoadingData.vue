@@ -81,9 +81,6 @@
 import { mapState } from 'vuex'
 export default {
     name: "LoadingData",
-    mounted(){
-        console.log("LoadingData mounted")
-    },
     computed: {
         ...mapState({
             loading: state => state.data.loading,

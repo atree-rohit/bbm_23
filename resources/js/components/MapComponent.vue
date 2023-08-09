@@ -167,8 +167,7 @@ export default defineComponent({
         mode(newVal){
             this.$emit('mode-change', newVal)
         },
-		data(newVal){
-			console.log("data changed")
+		data(){
 			this.init()
 		}
     },
@@ -184,19 +183,18 @@ export default defineComponent({
         },
     },
 	mounted(){
-		console.log("mounted: initializing")
+		console.log("Map mounted: initializing")
 		if(this.geojson){
 			this.init()
 		}
 	},
     updated(){
-		console.log("updated: re-initializing")
+		console.log("Map updated: re-initializing")
 		this.init()
 	},
     methods: {
         init(){
-			console.log("init")
-            if(this.geojson.features){
+			if(this.geojson.features){
                 this.init_variables()
                 this.init_legend()
                 this.init_svg()
