@@ -105,7 +105,6 @@
 </style>
 
 <template>
-	{{ JSON.stringify(data).length }}
     <div class="switcher switcher-sm text-center py-2 bg-dark">
         <button
             class="btn mx-1"
