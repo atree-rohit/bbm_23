@@ -6,6 +6,7 @@
 
 <template>
     <div class="map-container border border-danger rounded">
+        <loading-data />
         <map-component
             :geojson='geojson[mode]'
             :data='map_data'
@@ -19,15 +20,17 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import MapComponent from './MapComponent.vue'
+import LoadingData from './LoadingData.vue'
 import districts from '../json/districts.json'
 import states from '../json/states.json'
 
 export default defineComponent({
     name: "MapBBMData",
     components: {
-        MapComponent
+        MapComponent,
+        LoadingData
     },
     emits: ["polygon-clicked"],
     data() {
