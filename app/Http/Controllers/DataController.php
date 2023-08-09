@@ -31,7 +31,7 @@ class DataController extends Controller
         ini_set('memory_limit', '256M');
 
         $cacheKey = 'observations_data';
-        $cacheDuration = now()->addSeconds(24);
+        $cacheDuration = now()->addHours(1);
 
         $cachedData = Cache::get($cacheKey);
 
