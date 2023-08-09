@@ -47,19 +47,19 @@ export default {
             state.districts = value
         },
         SET_OBSERVATIONS(state, value){
-            const place_names = state.boundaries.districts.features.map((d) => d.properties)
+            const place_names_map = new Map(state.boundaries.districts.features.map((d) => [d.properties.district, d.properties.state]))
             let op = []
             Object.keys(value).forEach((portal) => {
                 op[portal] = value[portal].map((d) => {
                     const user = state.users[portal][d[2]]
                     const district = state.districts[d[4]]
-                    const state_name = place_names.find((d) => d.district == district)
+                    const state_name = place_names_map.get(district)
                     return [
                         user,
                         d[1],
                         d[3],
                         district,
-                        state_name?.state
+                        state_name
                     ]
                 })
             })
@@ -108,10 +108,15 @@ export default {
         async getObservations({commit}){
             try {
                 const { data }  = await axios.get('/api/data/observations')
+                commit('SET_LOADING', 'Setting Headers')
                 commit('SET_HEADERS', data.headers)
+                commit('SET_LOADING', 'Setting Users')
                 commit('SET_USERS', data.users)
+                commit('SET_LOADING', 'Setting Districts')
                 commit('SET_DISTRICTS_LIST', data.districts)
+                commit('SET_LOADING', 'Setting Observations')
                 commit('SET_OBSERVATIONS', data.observations)
+                commit('SET_LOADING', 'Setting Complete')
             } catch (response) {
                 console.error("error retreiving Observations", response)
             }
