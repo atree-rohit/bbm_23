@@ -5,7 +5,7 @@
 </style>
 
 <template>
-    <div class="map-container border border-danger rounded">
+    <div class="map-container">
         <loading-data />
         <map-data
             :geojson='geojson'
@@ -20,6 +20,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import store from '../store'
 import MapData from './MapData.vue'
 import LoadingData from './LoadingData.vue'
 import districts from '../json/districts.json'
@@ -66,9 +67,9 @@ export default {
     mounted(){
     },
     watch: {
-        map_data(newVal){
-            console.log("mapData changed", newVal)
-        }
+        // map_data(newVal){
+        //     console.log("mapData changed", newVal)
+        // }
     },
     methods:{
         valueFromLabel(str){
