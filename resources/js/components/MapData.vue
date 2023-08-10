@@ -113,6 +113,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import store from '../store'
 import * as d3 from 'd3'
 import * as d3Legend from 'd3-svg-legend'
 
@@ -197,8 +198,8 @@ export default defineComponent({
             this.polygons = null
             this.path = null
             this.svg = {}
-            this.height = window.innerHeight * 0.8
-            this.width = window.innerWidth * 0.65
+            this.height = window.innerHeight * 0.9
+            this.width = window.innerWidth * 0.7
             if(window.innerWidth < 800){
 				this.projection = d3.geoMercator().scale(600).center([110, 20])
 			} else {
@@ -328,6 +329,7 @@ export default defineComponent({
 			return op
 		},
         clicked(polygon_details) {
+			store.dispatch("data/setLoading", "Working")
 			let op = {
 				name: polygon_details.properties[this.mode],
 				value: 0,
@@ -338,6 +340,7 @@ export default defineComponent({
 			
             this.zoomToPolygon(polygon_details)
 			this.$emit('polygon-clicked', op)
+			setTimeout(() => store.dispatch("data/setLoading", null), 500)
 		},
 		zoomToPolygon(polygon_details) {
             let target_polygon = null
@@ -357,6 +360,15 @@ export default defineComponent({
 				.scale(Math.min(8, 0.9 / Math.max((x1 - x0) / this.width, (y1 - y0) / this.height)))
 				.translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
 			)
+
+			// this.zoomTransform = d3.zoomTransform(this.svg.node()); // Get the current zoom transform
+			// console.log(55, d3.zoomTransform(this.svg.node()))
+			// this.zoomTransform.k = Math.min(8, 0.9 / Math.max((x1 - x0) / this.width, (y1 - y0) / this.height));
+			// this.zoomTransform.x = -(x0 + x1) / 2;
+			// this.zoomTransform.y = -(y0 + y1) / 2;
+
+			// // Apply the updated zoomTransform
+			// this.svg.transition().duration(1500).call(this.zoom.transform, this.zoomTransform);
 		},
 
         drawPolygonBoundary(polygon){
