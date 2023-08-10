@@ -111,6 +111,10 @@ export default {
             } catch (response) {
                 console.error("error retreiving Taxa", response)
             }
+        },
+        setLoading({commit}, value){
+            commit('SET_LOADING', value)
+            console.log("setLonading", value)
         }
     }
 }
