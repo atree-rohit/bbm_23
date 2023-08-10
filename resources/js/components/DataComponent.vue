@@ -7,227 +7,76 @@
     margin: 0 0.25rem;
 }
 
-.filters{
-    background: rgba(50, 50, 50, 0.85);
-    color: #bbb;
-    position: absolute;
-    border-radius: 2rem;
-    width: 3.5rem;
-    margin: 0.5rem;
-    padding: 0.5rem;
-    /* height: calc(100% - 1rem); */
-    height: 3.5rem;
-    transition: all 350ms;
-    overflow:hidden;
-}
-.filters:hover{
-    z-index: 10;
-    width: calc(50% + 2rem);
-    height: calc(100% - 1rem);
-}
-
-.filters > ul{
-    background: rgba(50, 50, 50, 1);
-    display: none;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: start;
-    height: calc(100% - 7.5rem);
-    margin-top: 7.5rem;
-    border-radius: 2rem;
-}
-
-.filters > .expand-btn{
-    height: 100%;
-    width: 100%;
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    transition: all 50ms;
-}
-.filters:hover > ul{
-    display: flex;
-}
-
-.filters:hover > .expand-btn{
-    font-size: 0;
-    width: 0;
-    height: 0;
-    transform: rotate(180deg);
-}
-
-.filters > ul > li {
-    margin: 0.25rem;
-    padding: 0.5rem;
-    flex: 0 1 0;
-    border: 1px solid green;
-    transition: all 350ms;
-    border-radius: 2rem;
-}
-.filters > ul > li > .header{
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.filters > ul > li > .header:hover{
-    background: rgba(255, 255, 255, 1);
-    color: #333;
-    border-radius: 2rem;
-    
-}
-.filters > ul > li.active{
-    flex: 1 1 0;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    
-    padding: 0.5rem;
-}
-
 .canvas{
-    margin-left: 4.5rem;
     height: 100%;
     border:1px solid yellow;
     display: flex;
 }
-.canvas > *{
+.canvas .map{
     flex: 1 1 0;
     display: grid;
     justify-content: center;
     align-items: center;
 }
-
-.canvas .observations,
-.canvas .taxa{
-    border: 1px solid green;
+.canvas .tables{
+    max-height: 100%;
     display: flex;
     flex-direction: column;
-    /* flex-wrap: wrap; */
-    gap: 1rem;
+    justify-content: space-around;
 }
-.canvas .observations{
-    flex-shrink: 2;
+.canvas .tables .table-container{
+    max-height: 100%;
+    padding: 1rem;
+    overflow: auto;
+}
+.canvas .tables > *:nth-child(2){
+    flex-grow: 100;
+    /* border: 2px solid #f3f; */
 }
 
-.canvas .taxa{
-    flex-grow: 20;
+.canvas .tables > *:nth-child(3){
+    flex-shrink: 100;
+    /* border: 2px solid #ff3; */
 }
-
 </style>
 
 <template>
     <div class="data-container">
-        <div class="filters">
-            <div class="expand-btn"> >> </div>
-            <ul class="filter-list">
-                <li
-                    v-for="filter in filters"
-                    :key="filter.id"
-                    :class="{'active': filter.active}"
-                    @click="filter.active = !filter.active"
-                >
-                    <div class="header">{{ filter.name }}</div>
-                </li>
-            </ul>
-        </div>
         <div class="canvas">
-            <div class="observations">
+            <div class="map">
+                <MapBBMData @state-selected="stateSelected"/>
+            </div>
+            <div class="tables">
                 <template v-if="!selected">
-                    <table class="table table-sm">
-                        <thead  class="bg-info">
-                            <tr>
-                                <th scope="col">Portal</th>
-                                <th scope="col">Observations</th>
-                                <th scope="col">Users</th>
-                                <th scope="col">States</th>
-                                <th scope="col">Districts</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-info">
-                            <tr
-                                v-for="(row, key) in observation_table_stats"
-                                :key="key"
-                            >
-                                <td>{{ row.portal }}</td>
-                                <td>{{ row.observations }}</td>
-                                <td>{{ row.users }}</td>
-                                <td>{{ row.states }}</td>
-                                <td>{{ row.districts }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-sm">
-                        <thead class="bg-danger text-light">
-                            <tr>
-                                <th>Rank</th>
-                                <th>Count</th>
-                                <th>Unique</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-danger">
-                            <tr
-                                v-for="(row, key) in taxa_stats"
-                                :key="key"
-                            >
-                                <td>{{ row.rank }}</td>
-                                <td>{{ row.count }}</td>
-                                <td>{{ row.unique }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <data-table
+                        :headers="table_data.portals.headers"                    
+                        :data="portal_stats"
+                        :total_row="true"
+                        hue="danger"
+                    />
+                    <data-table
+                        :headers="table_data.taxa.headers"                    
+                        :data="taxa_stats"
+                        :total_row="false"
+                        hue="primary"
+                    />
                 </template>
                 <template v-else>
-                    <table class="table table-sm">
-                        <thead  class="bg-info">
-                            <tr>
-                                <th scope="col">Portal</th>
-                                <th scope="col">Observations</th>
-                                <th scope="col">Users</th>
-                                <th scope="col">States</th>
-                                <th scope="col">Districts</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-info">
-                            <tr
-                                v-for="(row, key) in state_table_data.portals"
-                                :key="key"
-                            >
-                                <td>{{ row.portal }}</td>
-                                <td>{{ row.observations }}</td>
-                                <td>{{ row.users }}</td>
-                                <td>{{ row.states }}</td>
-                                <td>{{ row.districts }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-sm">
-                        <thead  class="bg-danger">
-                            <tr>
-                                <th scope="col">Portal</th>
-                                <th scope="col">Observations</th>
-                                <th scope="col">Users</th>
-                                <th scope="col">States</th>
-                                <th scope="col">Districts</th>
-                            </tr>
-                        </thead>
-                        <tbody class="table-danger">
-                            <tr
-                                v-for="(row, key) in state_table_data.districts"
-                                :key="key"
-                            >
-                                <td>{{ row.district }}</td>
-                                <td>{{ row.observations }}</td>
-                                <td>{{ row.users }}</td>
-                                <td>{{ row.taxa }}</td>
-                                <td>{{ row.districts }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <h1 class="bg-warning text-center py-0">{{ selected }}</h1>
+                    <data-table
+                        :headers="table_data.state_portals.headers"                    
+                        :data="state_table_data.portals"
+                        :total_row="true"
+                        hue="success"
+                    />
+                    <data-table
+                        :headers="table_data.districts.headers"                    
+                        :data="state_table_data.districts"
+                        :total_row="false"
+                        hue="danger"
+                    />
                 </template>
                 
-            </div>
-            <div class="taxa">
-                <MapBBMData @state-selected="stateSelected"/>
             </div>
         </div>
     </div>
@@ -236,16 +85,19 @@
 <script>
 import { mapState } from 'vuex'
 import store from '../store'
+import * as d3 from 'd3'
+
 import districts from '../json/districts.json'
 
-import * as d3 from 'd3'
 import MapBBMData from './MapBBMData.vue'
+import DataTable from './DataTable.vue'
 
 
 export default {
     name: "DataComponent",
     components: {
-        MapBBMData
+        MapBBMData,
+        DataTable
     },
     data() {
         return {
@@ -276,6 +128,88 @@ export default {
                     active: true
                 }
             ],
+            table_data: {
+                portals: {
+                    headers: [{
+                        name: "portal", 
+                        label: "Portals",
+                        sortable: false
+                    },{
+                        name: "observations", 
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users", 
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "states", 
+                        label: "States",
+                        sortable: true
+                    },{
+                        name: "districts", 
+                        label: "Districts",
+                        sortable: true
+                    }],
+                },
+                taxa: {
+                    headers: [{
+                        name: "rank",
+                        label: "Rank",
+                        sortable: false
+                    },{
+                        name: "count",
+                        label: "Count",
+                        sortable: true
+                    },{
+                        name: "unique",
+                        label: "Unique",
+                        sortable: true
+                    }],
+                },
+                state_portals: {
+                    headers: [{
+                        name: "portal", 
+                        label: "Portals",
+                        sortable: false
+                    },{
+                        name: "observations", 
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users", 
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "districts", 
+                        label: "Districts",
+                        sortable: true
+                    }],
+                },
+                districts: {
+                    headers: [{
+                        name: "district",
+                        label: "District",
+                        sortable: false
+                    },{
+                        name: "observations",
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users",
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "taxa",
+                        label: "Taxa",
+                        sortable: true
+                    },{
+                        name: "portals",
+                        label: "Portals",
+                        sortable: false
+                    }],
+                }
+            },
             selected: null
         }
     },
@@ -299,7 +233,7 @@ export default {
             
             return op
         },
-        observation_table_stats(){
+        portal_stats(){
             let op = []
             for(let [key, value] of Object.entries(this.observation_stats)){
                 op.push({
@@ -343,6 +277,12 @@ export default {
                     districts: this.countUnique(portal_data[portal].map(x => x[3])),
                 })
             })
+            op.portals.push({
+                portal: "total",
+                observations: Object.values(portal_data).flat().length,
+                users: this.countUnique(Object.values(portal_data).flat().map(x => x[2])),
+                districts: this.countUnique(Object.values(portal_data).flat().map(x => x[3])),
+            })
 
             const state_districts = districts.features.filter((d) => d.properties.state === this.selected).map((d) => d.properties.district)
             state_districts.map((district) => {
@@ -352,17 +292,15 @@ export default {
                         return o[3] === district
                     })
                 })
-                console.log()
                 op.districts.push({
                     district: district,
                     observations: Object.values(data).flat().length,
                     users: this.countUnique(Object.values(data).flat().map((d) => d[2])),
                     taxa: this.countUnique(Object.values(data).flat().map((d) => d[1])),
-                    // portals: district_data[district].total.portals,
+                    portals: Object.entries(data).filter((d) => d[1].length > 0).map((d) => d[0]).join(", "),
                 })
             })
-
-            console.log("state_table_data", op, this.selected)
+            
             return op
         }
     },
@@ -395,8 +333,9 @@ export default {
         countUnique(arr){
             return [...new Set(arr)].length
         },
-        stateSelected(data){
+        async stateSelected(data){
             this.selected = data.state
+            
         }
     }
 }
