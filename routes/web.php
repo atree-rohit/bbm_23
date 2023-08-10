@@ -25,6 +25,7 @@ Route::get('/data/clean', [DataCleaningController::class, 'clean']);
 Route::get('/about', [PageController::class, 'about']);
 Route::get('/participate', [PageController::class, 'participate']);
 Route::get('/registration', [PageController::class, 'registration']);
+Route::get('/butterfly-counts', [PageController::class, 'buttetfly_counts']);
 Route::get('/resources', [PageController::class, 'resources']);
 Route::get('/calendar', [PageController::class, 'calendar']);
 Route::post('/register', [UserController::class, 'register']);
