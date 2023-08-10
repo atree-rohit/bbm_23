@@ -1,6 +1,6 @@
 <style>
 :root{
-    --animation-speed: 2.5s;
+    --animation-speed: 3s;
 }
 .loading-container {
     position: absolute;
@@ -12,7 +12,8 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background:rgba(0,0,0,.95);
+    background: rgb(0,0,0);
+    background: radial-gradient(circle, rgba(15,5,5,1) 0%, rgba(0,0,0,0.75) 65%, rgba(0,0,0,0.5) 100%);
 }
 .loading-container .circle {
     position: absolute;
