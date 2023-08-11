@@ -39,6 +39,11 @@
     color: #e99;
 }
 
+.form-floating:has(.w-75){
+    display: flex;
+    justify-content: space-between;
+}
+
 </style>
 
 <template>
@@ -107,17 +112,42 @@
                         <template v-if="t<2">
                             <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
                             <textarea v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'textarea'"></textarea>
+                            <label
+                                :for="question.name"
+                                class="font-weight-bold"
+                                :class="{required: question.required}"
+                                v-text="question.label"
+                            />
                         </template>
                         <template v-else>
-                            <input type="text" v-model="current_species[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
+                            <auto-complete
+                                v-if="question.type == 'autocomplete_common'"
+                                :question="question"
+                                :suggestions="common_names"
+                                :value="current_species.common_name"
+                                @selected="commonNameSelected"
+                            />
+                            <auto-complete
+                                v-else-if="question.type == 'autocomplete_scientific'"
+                                :question="question"
+                                :suggestions="scientific_names"
+                                :value="current_species.scientific_name"
+                                @selected="scientificNameSelected"
+                            />
+                            <input type="number" v-model="current_species[question.name]" :placeholder="`Enter ${question.name}`" class="form-control w-75" v-if="question.type == 'increment'">
                             <textarea v-model="current_species[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'textarea'"></textarea>
+                            <label
+                                :for="question.name"
+                                class="font-weight-bold"
+                                :class="{required: question.required}"
+                                v-text="question.label"
+                                v-if="question.type != 'autocomplete_common' && question.type != 'autocomplete_scientific'"
+                            />
+                            <div v-if="question.type=='increment'" class="my-auto">
+                                <button class="btn btn-outline-success px-3 me-2" @click="current_species.individuals++">+</button>
+                                <button class="btn btn-outline-success px-3" @click="decreaseIndividuals">-</button>
+                            </div>
                         </template>
-                        <label
-                            :for="question.name"
-                            class="font-weight-bold"
-                            :class="{required: question.required}"
-                            v-text="question.label"
-                        />
                     </div>
                 </div>
             </template>
@@ -141,9 +171,12 @@
 <script>
 import { mapState } from 'vuex'
 import store from '../store'
-import { dispatch } from 'd3'
+import AutoComplete from './AutoComplete.vue'
 export default{
     name: 'CountForm',
+    components:{
+        AutoComplete
+    },
     data(){
         return {
             tabs:[
@@ -158,7 +191,7 @@ export default{
                     value: "species_list"
                 }
             ],
-            current_tab: "species_list",
+            current_tab: "user_details",
             form_data: {},
             species_list: [],
             current_species: {}
@@ -167,6 +200,7 @@ export default{
     computed: {
         ...mapState({
             quiestions: state => state.butterfly_counts.quiestions,
+            species_lists: state => state.butterfly_counts.species_lists,            
             scientific_names: state => state.butterfly_counts.scientific_names,
             common_names: state => state.butterfly_counts.common_names,
         }),
@@ -213,11 +247,10 @@ export default{
     created(){
         store.dispatch('butterfly_counts/initNames')
         this.initFormData()
-        console.log(this.scientific_names)
     },
     methods:{
         initFormData(){
-            let debug = 'test'
+            let debug = ''
             this.page_questions[0].map((q) => {
                 this.form_data[q.name] = q.required ? debug : null
             })
@@ -227,9 +260,12 @@ export default{
             this.initCurrentSpecies()
         },
         initCurrentSpecies(){
-            this.page_questions[2].map((q) => {
-                this.current_species[q.name] = q.required ? '' : null
-            })
+            this.current_species = {
+                common_name: '',
+                scientific_name: '',
+                individuals: 1,
+                remarks: null
+            }
         },
         tabClass(tab){
             let op = this.current_tab == tab.value ? 'active' : ''
@@ -246,6 +282,36 @@ export default{
         tabClick(tab){
             this.current_tab = tab.value
         },
+        commonNameSelected(name){
+            let match = this.species_lists.synoptic.find((species) => species[1] == name)
+            if(match){
+                this.current_species.scientific_name = match[0]
+                return
+            } 
+            
+            match = this.species_lists.ifb.find((species) => species[1] == name)
+            if(match){
+                this.current_species.scientific_name = match[0]
+            }
+            
+        },
+        scientificNameSelected(name){
+            let match = this.species_lists.synoptic.find((species) => species[0] == name)
+            if(match){
+                this.current_species.common_name = match[1]
+                return
+            } 
+            
+            match = this.species_lists.ifb.find((species) => species[0] == name)
+            if(match){
+                this.current_species.common_name = match[1]
+            }
+        },
+        decreaseIndividuals(){
+            if(this.current_species.individuals > 0){
+                this.current_species.individuals--;
+            }
+        },
         addSpecies(){
             const newSpecies = Object.assign({}, this.current_species)
             this.species_list.push(newSpecies)
@@ -256,6 +322,7 @@ export default{
                 this.species_list.splice(index, 1)
             }
         },
+        
     }
 }
 </script>
