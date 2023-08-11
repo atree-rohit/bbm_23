@@ -6,6 +6,7 @@ import partners from './partners'
 import testimonials from './testimonials'
 import press_links from './press_links'
 import butterfly_counts from './butterfly_counts'
+import locations from './locations'
 import resources from './resources'
 import district_coordinators from './district_coordinators'
 import maps from './maps'
@@ -23,6 +24,7 @@ const store = createStore({
         partners,
         press_links,
         butterfly_counts,
+        locations,
         resources,
         district_coordinators,
         data,
