@@ -22,8 +22,11 @@ export default {
         },
     },
     actions: {
-        initNames({commit, state}){
+        initNames({commit}){
             commit("INIT_NAMES")
+        },
+        async submitForm({commit}, form){
+            await axios.post("/api/butterfly-counts/submit-form", form)
         }
     }
 }
