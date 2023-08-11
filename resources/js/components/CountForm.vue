@@ -1,7 +1,7 @@
 <style scoped>
 .form-container{
-    border: 5px solid red;
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav-item{
@@ -20,7 +20,10 @@
 }
 
 .main-container{
-    height: 100%;
+    height: calc(100vh - 155px);
+    display: grid;
+    grid-template-rows: auto 10px;
+    border: 1rem solid red;
 }
 
 .required::after{
@@ -39,6 +42,7 @@
 
 <template>
     <div class="container-fluid form-container">
+        {{ current_tab }}
         <ul class="nav nav-tabs">
             <li
                 class="nav-item"
@@ -59,9 +63,7 @@
                 v-for="(tab, t) in tabs"
                 :key="tab.value"
             >
-                <template v-if="tab.value == current_tab">
-
-                    <div v-for="question in page_questions(t)" :key="question.name" class="form-floating mb-2">
+                <div v-for="question in page_questions(t)" :key="question.name" class="form-floating mb-2">
                         <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
                         <textarea v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'textarea'"></textarea>
                         <label
@@ -71,7 +73,6 @@
                             v-text="question.label"
                         />
                     </div>
-                </template>
             </div>
             <div class="btns-section">
                 <button
@@ -174,12 +175,13 @@ export default{
             let op = this.current_tab == tab.value ? 'active' : ''
             switch(tab.value){
                 case "location_details":
-                    op = this.completed.user_details ? '' : ' disabled'
+                    op += this.completed.user_details ? '' : ' disabled'
                     break
                 case "species_list":
-                    op = this.completed.location_details ? '' : ' disabled'
+                    op += this.completed.location_details ? '' : ' disabled'
                     break
             }
+            console.log(op, tab, this.current_tab)
             return op
         },
         tabClick(tab){

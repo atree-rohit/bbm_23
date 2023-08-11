@@ -1,30 +1,33 @@
 <style scoped>
     .app-container{
         width: 100%;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 7rem);
         display: flex;
         flex-direction: column;
+        grid-template-rows: auto 60px;
     }
 
     .nav-item{
-    flex: 1 0 0;
-}
+        flex: 1 0 0;
+    }
 
-.nav-link{
-    display: flex;
-    justify-content: center;
+    .nav-link{
+        display: flex;
+        justify-content: center;
 
-}
+    }
 
-.tabs{
-    max-height: 100%;
-    overflow: auto;
-}
+    .tabs{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: auto;
+    }
 
-.nav-link.active{
-    background-color: #28a745;
-    color: white;
-}
+    .nav-link.active{
+        background-color: #28a745;
+        color: white;
+    }
 
     @media (max-width: 768px) {
         .container-fluid{

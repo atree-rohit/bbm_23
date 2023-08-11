@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/js/pages/login.js',
                 'resources/js/pages/logout.js',
                 'resources/js/pages/register.js',
+                'resources/js/pages/butterfly_counts.js',
                 'resources/js/pages/resources.js',
                 'resources/js/pages/manage_users.js',
 
