@@ -36,40 +36,40 @@
         "type": "text",
         "page": 0
     },{
+        "name": "date",
+        "label": "Date",
+        "required": true,
+        "type": "date",
+        "page": 1
+    },{
+        "name": "start_time",
+        "label": "Start Time",
+        "required": false,
+        "type": "time",
+        "page": 1
+    },{
+        "name": "end_time",
+        "label": "End Time",
+        "required": false,
+        "type": "time",
+        "page": 1
+    },{
         "name": "location",
         "label": "Location (Place name, nearest village/town)",
         "required": true,
         "type": "text",
         "page": 1
     },{
+        "name": "coordinates",
+        "label": "GPS Coordinates",
+        "required": true,
+        "type": "location",
+        "page": 1
+    },{
         "name": "state_name",
         "label": "State",
         "required": true,
-        "type": "text",
-        "page": 1
-    },{
-        "name": "coordinates",
-        "label": "GPS Coordinates (from phone)",
-        "required": true,
-        "type": "text",
-        "page": 1
-    },{
-        "name": "date",
-        "label": "Date",
-        "required": true,
-        "type": "text",
-        "page": 1
-    },{
-        "name": "start_time",
-        "label": "Start Time",
-        "required": false,
-        "type": "text",
-        "page": 1
-    },{
-        "name": "end_time",
-        "label": "End Time",
-        "required": false,
-        "type": "text",
+        "type": "autocomplete_state",
         "page": 1
     },{
         "name": "altitude",
