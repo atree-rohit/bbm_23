@@ -70,7 +70,7 @@ export default {
     },
     methods: {
         handleInput() {
-            if (this.searchText.length >= 2) {
+            if (this.searchText.length >= 1) {
                 this.filteredSuggestions = this.suggestions.filter(suggestion =>
                     suggestion.toLowerCase().includes(this.searchText.toLowerCase())
                 )
