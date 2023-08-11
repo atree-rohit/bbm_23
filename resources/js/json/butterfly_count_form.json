@@ -117,7 +117,7 @@
         "name": "remarks",
         "label": "Remarks (Male/Female/seasonal form, etc.)",
         "required": false,
-        "type": "text",
+        "type": "textarea",
         "page": 2
     }
 ]
