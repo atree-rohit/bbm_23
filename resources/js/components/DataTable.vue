@@ -6,8 +6,7 @@
 .table-container .table-sm{
     font-size: 0.85vw;
 }
-.table-container .table tbody tr td:first-child{
-    padding-left:0.5rem;
+.nowrap{
     white-space: nowrap;
 }
 th.sortable {
@@ -60,6 +59,7 @@ tr.empty-row > td{
                     <td
                         v-for="(header, h) in headers"
                         :key="h"
+                        :class="header?.class"
                         v-text="cellText(row, header)"
                     />
                 </tr>
