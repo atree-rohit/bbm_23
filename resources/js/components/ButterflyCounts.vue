@@ -5,6 +5,7 @@
         display: flex;
         flex-direction: column;
         grid-template-rows: auto 60px;
+        /* border: 1rem solid green; */
     }
 
     .nav-item{
