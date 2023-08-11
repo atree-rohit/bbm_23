@@ -26,6 +26,7 @@
 }
 .canvas .tables .table-container{
     max-height: 100%;
+    width: 100%;
     padding: 1rem;
     overflow: auto;
 }
@@ -133,7 +134,8 @@ export default {
                     headers: [{
                         name: "portal", 
                         label: "Portals",
-                        sortable: false
+                        sortable: false,
+                        class: "nowrap"
                     },{
                         name: "observations", 
                         label: "Observations",
@@ -156,7 +158,8 @@ export default {
                     headers: [{
                         name: "rank",
                         label: "Rank",
-                        sortable: false
+                        sortable: false,
+                        class: "nowrap"
                     },{
                         name: "count",
                         label: "Count",
@@ -171,7 +174,8 @@ export default {
                     headers: [{
                         name: "portal", 
                         label: "Portals",
-                        sortable: false
+                        sortable: false,
+                        class: "nowrap"
                     },{
                         name: "observations", 
                         label: "Observations",
@@ -190,7 +194,8 @@ export default {
                     headers: [{
                         name: "district",
                         label: "District",
-                        sortable: false
+                        sortable: false,
+                        class: "nowrap"
                     },{
                         name: "observations",
                         label: "Observations",
@@ -297,7 +302,13 @@ export default {
                     observations: Object.values(data).flat().length,
                     users: this.countUnique(Object.values(data).flat().map((d) => d[2])),
                     taxa: this.countUnique(Object.values(data).flat().map((d) => d[1])),
-                    portals: Object.entries(data).filter((d) => d[1].length > 0).map((d) => d[0]).join(", "),
+                    portals: Object.entries(data)
+                            .filter((d) => d[1].length > 0)
+                            .map((d) => d[0])
+                            .join(", ")
+                            .replace("inats", "iNat")
+                            .replace("ibps", "IBP")
+                            .replace("ifbs", "IFB")
                 })
             })
             
