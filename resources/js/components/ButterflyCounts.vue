@@ -1,52 +1,62 @@
 <style scoped>
     .app-container{
-        /* border: 0.5rem solid red; */
-        width: 100vw;
-        height: calc(100vh - 56px);
-    }
-    .navbar ul{
-        margin: 0;
-        padding: 0;
-        list-style: none;
         width: 100%;
+        height: calc(100vh - 60px);
         display: flex;
-        justify-content: space-around;
+        flex-direction: column;
     }
-    
-    .navbar ul li{
-        margin: 0 0.1rem;
-        flex: 2 0 0;
-        transition: all 0.33s;
-    }
-    
-    .navbar ul li:has(.btn-success){
-        flex: 1 1 0;
+
+    .nav-item{
+    flex: 1 0 0;
+}
+
+.nav-link{
+    display: flex;
+    justify-content: center;
+
+}
+
+.tabs{
+    max-height: 100%;
+    overflow: auto;
+}
+
+.nav-link.active{
+    background-color: #28a745;
+    color: white;
+}
+
+    @media (max-width: 768px) {
+        .container-fluid{
+            padding: 0;
+        }
+        .app-container{
+            padding: 1rem 5px;
+        }
     }
     
 </style>
 
 <template>
     <div class="container-fluid app-container">
-        {{ current_tab }}
         <div class="tabs">
-            <count-form v-if="current_tab == 'add'"/>
+            <count-form v-if="current_nav == 'add'"/>
         </div>
-        <nav class="navbar fixed-bottom navbar-light border border-secondary">
+        <nav class="navbar fixed-bottom navbar-light border border-secondary bg-dark">
             <div class="container-fluid">
-                <ul>
+                <ul class="nav nav-tabs d-flex justify-content-around w-100">
                     <li
-                        v-for='nav in nav_links'
-                        :key='nav.value'
+                        class="nav-item"
+                        v-for="nav in nav_links"
+                        :key="nav.value"
                     >
-                        <div class="d-grid gap-2">
-                            <button
-                                class="btn"
-                                type="button"
-                                :class="current_tab == nav.value ? 'btn-success' : 'btn-outline-secondary'"
-                                @click="navClick(nav)"
-                                v-text="nav.label"
-                            />
-                        </div>
+                        <a
+                            class="nav-link"
+                            :class="current_nav == nav.value ? 'active' : ''"
+                            @click="navClick(nav)"
+                            v-text="nav.label"
+                            href="#"
+                        />
                     </li>
                 </ul>
             </div>
@@ -79,12 +89,12 @@ export default {
                     value: "data"
                 }
             ],
-            current_tab: "add"
+            current_nav: "add"
         };
     },
     methods: {
         navClick(nav) {
-        this.current_tab = nav.value
+        this.current_nav = nav.value
         }
     }
     };

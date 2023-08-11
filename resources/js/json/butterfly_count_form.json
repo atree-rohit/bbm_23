@@ -1,109 +1,123 @@
-{
-    "form": [
-        {
-            "name": "name",
-            "label": "Name of the Person taking the count*",
-            "required": true,
-            "page": 1
-        },{
-            "name": "affiliation",
-            "label": "Affiliation (NGO/school, etc.)",
-            "required": false,
-            "page": 1
-        },{
-            "name": "phone",
-            "label": "Contact Number",
-            "required": false,
-            "page": 1
-        },{
-            "name": "email",
-            "label": "E Mail ID *",
-            "required": false,
-            "page": 1
-        },{
-            "name": "team_members",
-            "label": "Name and/or number of team members",
-            "required": false,
-            "page": 1
-        },{
-            "name": "photo_link",
-            "label": "Link to photo records uploaded",
-            "required": false,
-            "page": 1
-        },{
-            "name": "location",
-            "label": "Location (Place name, nearest village/town) *",
-            "required": true,
-            "page": 2
-        },{
-            "name": "state",
-            "label": "State *",
-            "required": true,
-            "page": 2
-        },{
-            "name": "coordinates",
-            "label": "GPS Coordinates (from phone)",
-            "required": true,
-            "page": 2
-        },{
-            "name": "date",
-            "label": "Date *",
-            "required": true,
-            "page": 2
-        },{
-            "name": "start_time",
-            "label": "Start Time",
-            "required": false,
-            "page": 2
-        },{
-            "name": "end_time",
-            "label": "End Time",
-            "required": false,
-            "page": 2
-        },{
-            "name": "altitude",
-            "label": "Altitude, m",
-            "required": false,
-            "page": 2
-        },{
-            "name": "distance",
-            "label": "Total distance covered, km (approx. estimated)",
-            "required": false,
-            "page": 2
-        },{
-            "name": "weather",
-            "label": "Weather (sunny, clouded, windy, etc.)",
-            "required": false,
-            "page": 2
-        },{
-            "name": "comments",
-            "label": "Comments",
-            "required": false,
-            "page": 2
-        }
-    ],
-    "species": [
-        {
-            "name": "sl_no",
-            "label": "Sl No",
-            "required": false
-        },{
-            "name": "common_name",
-            "label": "Common Name",
-            "required": false
-        },{
-            "name": "scientific_name",
-            "label": "Binomial Name (if known)",
-            "required": false
-        },{
-            "name": "individuals",
-            "label": "No. of individuals",
-            "required": false
-        },{
-            "name": "remarks",
-            "label": "Remarks (Male/Female/seasonal form, etc.)",
-            "required": false
-        }
-    ]
-}
-                    
+[
+    {
+        "name": "name",
+        "label": "Name of the Person taking the count",
+        "required": true,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "affiliation",
+        "label": "Affiliation (NGO/school, etc.)",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "phone",
+        "label": "Contact Number",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "email",
+        "label": "E Mail Address",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "team_members",
+        "label": "Name and/or number of team members",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "photo_link",
+        "label": "Link to photo records uploaded",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "location",
+        "label": "Location (Place name, nearest village/town)",
+        "required": true,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "state_name",
+        "label": "State",
+        "required": true,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "coordinates",
+        "label": "GPS Coordinates (from phone)",
+        "required": true,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "date",
+        "label": "Date",
+        "required": true,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "start_time",
+        "label": "Start Time",
+        "required": false,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "end_time",
+        "label": "End Time",
+        "required": false,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "altitude",
+        "label": "Altitude, m",
+        "required": false,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "distance",
+        "label": "Total distance covered, km (approx. estimated)",
+        "required": false,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "weather",
+        "label": "Weather (sunny, clouded, windy, etc.)",
+        "required": false,
+        "type": "textarea",
+        "page": 1
+    },{
+        "name": "comments",
+        "label": "Comments",
+        "required": false,
+        "type": "textarea",
+        "page": 1
+    },{
+        "name": "common_name",
+        "label": "Common Name",
+        "required": false,
+        "type": "text",
+        "page": 2
+    },{
+        "name": "scientific_name",
+        "label": "Binomial Name (if known)",
+        "required": false,
+        "type": "text",
+        "page": 2
+    },{
+        "name": "individuals",
+        "label": "No. of individuals",
+        "required": false,
+        "type": "text",
+        "page": 2
+    },{
+        "name": "remarks",
+        "label": "Remarks (Male/Female/seasonal form, etc.)",
+        "required": false,
+        "type": "text",
+        "page": 2
+    }
+]
