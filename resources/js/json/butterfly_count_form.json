@@ -99,19 +99,19 @@
         "name": "common_name",
         "label": "Common Name",
         "required": false,
-        "type": "text",
+        "type": "autocomplete_common",
         "page": 2
     },{
         "name": "scientific_name",
         "label": "Binomial Name (if known)",
         "required": false,
-        "type": "text",
+        "type": "autocomplete_scientific",
         "page": 2
     },{
         "name": "individuals",
         "label": "No. of individuals",
         "required": false,
-        "type": "text",
+        "type": "increment",
         "page": 2
     },{
         "name": "remarks",
