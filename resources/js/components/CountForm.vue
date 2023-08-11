@@ -112,11 +112,26 @@
                         <template v-if="t<2">
                             <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
                             <textarea v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'textarea'"></textarea>
+                            <input type="date" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'date'">
+                            <input type="time" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'time'">
+                            <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control w-75" v-if="question.type == 'location'">
+                            <auto-complete
+                                v-else-if="question.type == 'autocomplete_state'"
+                                :question="question"
+                                :suggestions="states"
+                                :value="form_data.state_name"
+                                @selected="stateSelected"
+                            />
+                            
+                            <div v-if="question.type=='location'" class="my-auto">
+                                <button class="btn btn-outline-success px-3 me-2" @click="getPoints">Get Coordinates</button>
+                            </div>
                             <label
                                 :for="question.name"
                                 class="font-weight-bold"
                                 :class="{required: question.required}"
                                 v-text="question.label"
+                                v-if="question.type != 'location' || question.type != 'autocomplete_state'"
                             />
                         </template>
                         <template v-else>
@@ -171,6 +186,7 @@
 <script>
 import { mapState } from 'vuex'
 import store from '../store'
+import districts from '../json/districts.json'
 import AutoComplete from './AutoComplete.vue'
 export default{
     name: 'CountForm',
@@ -194,7 +210,8 @@ export default{
             current_tab: "user_details",
             form_data: {},
             species_list: [],
-            current_species: {}
+            current_species: {},
+            states: []
         }
     },
     computed: {
@@ -203,6 +220,8 @@ export default{
             species_lists: state => state.butterfly_counts.species_lists,            
             scientific_names: state => state.butterfly_counts.scientific_names,
             common_names: state => state.butterfly_counts.common_names,
+            latitude: state => state.locations.latitude,
+            longitude: state => state.locations.longitude,
         }),
         page_questions(){
             let op = []
@@ -244,7 +263,16 @@ export default{
             return this.completed.user_details && this.completed.location_details && this.completed.species_list
         }
     },
+    watch:{
+        latitude(){
+            this.form_data.coordinates = this.latitude + ',' + this.longitude
+        },
+        longitude(){
+            this.form_data.coordinates = this.latitude + ',' + this.longitude
+        }
+    },
     created(){
+        store.dispatch('locations/init')
         store.dispatch('butterfly_counts/initNames')
         this.initFormData()
     },
@@ -257,6 +285,11 @@ export default{
             this.page_questions[1].map((q) => {
                 this.form_data[q.name] = q.required ? debug : null
             })
+            this.form_data.date = new Date().toISOString().slice(0, 10)
+            this.form_data.start_time = new Date().toLocaleTimeString()
+            this.form_data.state = ''
+            this.states = [...new Set(districts.features.map((district) => district.properties.state))]
+            this.species_list = []
             this.initCurrentSpecies()
         },
         initCurrentSpecies(){
@@ -282,7 +315,11 @@ export default{
         tabClick(tab){
             this.current_tab = tab.value
         },
+        stateSelected(state){
+            this.form_data.state_name = state
+        },
         commonNameSelected(name){
+            this.current_species.common_name = name
             let match = this.species_lists.synoptic.find((species) => species[1] == name)
             if(match){
                 this.current_species.scientific_name = match[0]
@@ -296,6 +333,7 @@ export default{
             
         },
         scientificNameSelected(name){
+            this.current_species.scientific_name = name
             let match = this.species_lists.synoptic.find((species) => species[0] == name)
             if(match){
                 this.current_species.common_name = match[1]
@@ -314,6 +352,7 @@ export default{
         },
         addSpecies(){
             const newSpecies = Object.assign({}, this.current_species)
+            console.log(newSpecies)
             this.species_list.push(newSpecies)
             this.initCurrentSpecies()
         },
@@ -322,6 +361,17 @@ export default{
                 this.species_list.splice(index, 1)
             }
         },
+        getPoints(){
+            store.dispatch('locations/getCurrentCoordinates')
+        },
+        submitForm(){
+            let data = {
+                ...this.form_data,
+                species_list: this.species_list
+            }
+            store.dispatch('butterfly_counts/submitForm', data)
+            this.initFormData()
+        }
         
     }
 }
