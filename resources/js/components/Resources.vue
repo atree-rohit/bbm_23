@@ -80,7 +80,7 @@
             class="card"
             v-for="resource in all_data"
             :key="resource.id"
-            @click="gotoLink(resource.link)"
+            @click="gotoLink(resource)"
         >
             <img
                 :src="resource.image_path"
@@ -140,8 +140,12 @@ export default defineComponent({
         store.dispatch('resources/getAllData')
     },
     methods:{
-        gotoLink(link){
-            window.open(link, '_blank')
+        gotoLink(resource){
+            if(resource.link){
+                window.open(resource.link, '_blank')
+            } else {
+                window.open(resource.image_path, '_blank')
+            }
         },
         get_tags(tags){
             return tags.split(',').map((t) => t.trim())
