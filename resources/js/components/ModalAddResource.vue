@@ -121,7 +121,7 @@ export default defineComponent({
                     ]
                 },{
                     type: 'file',
-                    label: 'Image / File',
+                    label: 'Image / File (max 2MB)',
                     name: 'image',
                     required: false
                 },{
