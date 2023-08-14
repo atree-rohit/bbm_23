@@ -1,0 +1,123 @@
+[
+    {
+        "name": "name",
+        "label": "Name of the Person taking the count",
+        "required": true,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "affiliation",
+        "label": "Affiliation (NGO/school, etc.)",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "phone",
+        "label": "Contact Number",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "email",
+        "label": "E Mail Address",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "team_members",
+        "label": "Name and/or number of team members",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "photo_link",
+        "label": "Link to photo records uploaded",
+        "required": false,
+        "type": "text",
+        "page": 0
+    },{
+        "name": "date",
+        "label": "Date",
+        "required": true,
+        "type": "date",
+        "page": 1
+    },{
+        "name": "start_time",
+        "label": "Start Time",
+        "required": false,
+        "type": "time",
+        "page": 1
+    },{
+        "name": "end_time",
+        "label": "End Time",
+        "required": false,
+        "type": "time",
+        "page": 1
+    },{
+        "name": "location",
+        "label": "Location (Place name, nearest village/town)",
+        "required": true,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "coordinates",
+        "label": "GPS Coordinates",
+        "required": true,
+        "type": "location",
+        "page": 1
+    },{
+        "name": "state_name",
+        "label": "State",
+        "required": true,
+        "type": "autocomplete_state",
+        "page": 1
+    },{
+        "name": "altitude",
+        "label": "Altitude, m",
+        "required": false,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "distance",
+        "label": "Total distance covered, km (approx. estimated)",
+        "required": false,
+        "type": "text",
+        "page": 1
+    },{
+        "name": "weather",
+        "label": "Weather (sunny, clouded, windy, etc.)",
+        "required": false,
+        "type": "textarea",
+        "page": 1
+    },{
+        "name": "comments",
+        "label": "Comments",
+        "required": false,
+        "type": "textarea",
+        "page": 1
+    },{
+        "name": "common_name",
+        "label": "Common Name",
+        "required": false,
+        "type": "autocomplete_common",
+        "page": 2
+    },{
+        "name": "scientific_name",
+        "label": "Binomial Name (if known)",
+        "required": false,
+        "type": "autocomplete_scientific",
+        "page": 2
+    },{
+        "name": "individuals",
+        "label": "No. of individuals",
+        "required": false,
+        "type": "increment",
+        "page": 2
+    },{
+        "name": "remarks",
+        "label": "Remarks (Male/Female/seasonal form, etc.)",
+        "required": false,
+        "type": "textarea",
+        "page": 2
+    }
+]

@@ -28,6 +28,11 @@ class PageController extends Controller
         return view('pages.registration');
     }
 
+    public function buttetfly_counts()
+    {
+        return view('pages.butterfly-counts');
+        
+    }
     public function resources()
     {
         return view('pages.resources');

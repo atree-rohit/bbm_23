@@ -17,17 +17,23 @@
             "id" => 4,
             "label" => "How to Participate",
             "link" => "/participate"
-        ],[
+        ],
+        // [
+        //     "id" => 5,
+        //     "label" => "Butterfly Counts",
+        //     "link" => "/butterfly-counts"
+        // ],
+        [
             "id" => 6,
             "label" => "Resources",
             "link" => "/resources"
         ],[
-            "id" => 6,
+            "id" => 7,
             "label" => "Calendar",
             "link" => "/calendar"
         ],
         [
-            "id" => 7,
+            "id" => 8,
             "label" => ".",
             "link" => "/login"
         ]
