@@ -121,7 +121,7 @@ export default defineComponent({
                     ]
                 },{
                     type: 'file',
-                    label: 'Image',
+                    label: 'Image / File',
                     name: 'image',
                     required: false
                 },{
