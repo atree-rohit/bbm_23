@@ -80,9 +80,6 @@ export default {
         return {
             nav_links: [
                 {
-                    label: "Home",
-                    value: "home"
-                }, {
                     label: "About",
                     value: "about"
                 },{

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 100)->nullable(true);
             $table->string('affilation', 200)->nullable(true);
             $table->string('phone', 100)->nullable(true);
-            $table->string('email', 200)->nullable(false);
+            $table->string('email', 200)->nullable(true);
             $table->text('team_members')->nullable(true);
             $table->text('photo_link')->nullable(true);
             $table->text('location')->nullable(true);
