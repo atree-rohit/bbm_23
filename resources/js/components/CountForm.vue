@@ -228,6 +228,7 @@ export default{
             op.push(this.quiestions.filter(question => question.page == 0))
             op.push(this.quiestions.filter(question => question.page == 1))
             op.push(this.quiestions.filter(question => question.page == 2))
+            console.log(11, op)
             return op
         },
         completed(){

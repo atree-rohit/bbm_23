@@ -20,7 +20,7 @@
     },{
         "name": "email",
         "label": "E Mail Address",
-        "required": false,
+        "required": true,
         "type": "text",
         "page": 0
     },{
