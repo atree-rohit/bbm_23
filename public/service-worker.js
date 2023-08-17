@@ -2,9 +2,9 @@
 const CACHE_NAME = 'butterfly-checklist-cache';
 const urlsToCache = [
     '/',
-    '/app.css',
-    '/app.js',
-    './build/manifest.json',
+    '/build/assets/app-7a30ea22.css',
+    '/build/assets/app-4ed993c7.js',
+    '/build/manifest.json',
     // Include other important assets
 ];
 
