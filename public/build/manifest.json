@@ -78,24 +78,14 @@
     "src": "resources/js/pages/about.js"
   },
   "resources/js/pages/butterfly_counts.css": {
-<<<<<<< HEAD
     "file": "assets/butterfly_counts-e1d728c1.css",
-=======
-    "file": "assets/butterfly_counts-c07646e5.css",
->>>>>>> count-app
     "src": "resources/js/pages/butterfly_counts.css"
   },
   "resources/js/pages/butterfly_counts.js": {
     "css": [
-<<<<<<< HEAD
       "assets/butterfly_counts-e1d728c1.css"
     ],
     "file": "assets/butterfly_counts-d805a01d.js",
-=======
-      "assets/butterfly_counts-c07646e5.css"
-    ],
-    "file": "assets/butterfly_counts-3a7a53cf.js",
->>>>>>> count-app
     "imports": [
       "__plugin-vue_export-helper-ecf7da26.js",
       "_districts-fe2f3589.js"
