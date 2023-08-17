@@ -33,6 +33,7 @@ export default defineConfig({
         }),
         VitePWA({
             manifest: './manifest.json',
+            outDir: 'public/build',
         }),
     ],
     resolve: {
