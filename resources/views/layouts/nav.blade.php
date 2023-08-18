@@ -46,6 +46,10 @@
                 "link" => "/manage-users"
             ],[
                 "id" => 1,
+                "label" => "Butterfly Counts",
+                "link" => "/butterfly-counts"
+            ],[
+                "id" => 2,
                 "label" => "Logout",
                 "link" => "/logout"
             ]
