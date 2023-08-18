@@ -1,6 +1,6 @@
 {
-    "name": "Big Butterfly Month Checklist App",
-    "short_name": "BBM App",
+    "name": "BBM - Butterfly Count App",
+    "short_name": "Butterfly Counts",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#9a9",
