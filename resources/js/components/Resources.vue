@@ -95,8 +95,14 @@
             @click="gotoLink(resource)"
         >
             <img
+                :src="youtubeThumbnail(resource)"
+                class="card-img-top"
+                v-if="resource.resource_type == 'video'"
+            >
+            <img
                 :src="resource.image_path"
                 class="card-img-top"
+                v-else
             >
             <div class="card-body">
                 <h5 class="card-title">{{ resource.title }}</h5>
@@ -195,6 +201,24 @@ export default {
                 case 'other': return 'bg-danger'
                     break
             }
+        },
+        youtubeThumbnail(resource){
+            let op = ""
+            if(resource.link.includes("youtube.com")){
+                const regExp = /[?&]v=([^&#]+)/;
+                let stub = ""
+  
+                // Extract the matched group
+                const match = resource.link.match(regExp);
+                
+                // Check if a match was found and return the video ID
+                if (match && match[1]) {
+                    stub =  match[1];
+                } 
+                op = `https://img.youtube.com/vi/${stub}/0.jpg`
+            }
+            console.log(op)
+            return op
         },
         editResource(id){
             this.selected_resource = this.all_data.find((r) => r.id == id)
