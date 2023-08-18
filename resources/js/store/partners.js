@@ -19,7 +19,6 @@ export default {
             state.all_data.push(data)
         },
         UPDATE_DATA(state, value){
-                
             state.all_data.forEach((partner, pid) => {
                 if(partner.id == value.id){
                     state.all_data[pid].name = value.name;

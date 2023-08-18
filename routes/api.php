@@ -42,6 +42,7 @@ Route::delete('/delete_press_link/{id}', [PressLinkController::class, 'delete'])
 
 Route::get('/resources', [ResourceController::class, 'all_data']);
 Route::post('/store_resource', [ResourceController::class, 'store']);
+Route::post('/update_resource/{id}', [ResourceController::class, 'update']);
 Route::delete('/delete_resource/{id}', [ResourceController::class, 'delete']);
 
 Route::get('/district_coordinators', [DistrictCoordinatorController::class, 'all_data']);

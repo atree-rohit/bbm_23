@@ -11,7 +11,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLiveLabel">Edit Partner</h3>
+                    <h3 class="modal-title" id="exampleModalLiveLabel">Edit Resource</h3>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
@@ -45,6 +45,7 @@
                                     :selected="option.value == 'newspaper_print'"
                                 />
                             </select>
+                            
                         </div>
                     </form>
                 </div>
@@ -59,11 +60,10 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
 
-export default defineComponent({
-    name: 'ModalEditPartner',
+export default {
+    name: 'ModalEditResource',
     props: {
         show:{
             type: Boolean,
@@ -80,63 +80,53 @@ export default defineComponent({
             form_questions: [
                 {
                     type: 'text',
-                    label: 'Name',
-                    name: 'name',
+                    label: 'Title',
+                    name: 'title',
+                    required: true
+                },{
+                    type: 'textarea',
+                    label: 'Link URL',
+                    name: 'link',
                     required: true
                 },{
                     type: 'select',
-                    label: 'Partner Type',
-                    name: 'partner_type',
+                    label: 'Resource Type',
+                    name: 'resource_type',
                     required: true,
                     options: [
                         {
-                            label: 'NGO',
-                            value: 'ngo'
+                            label: 'Video',
+                            value: 'video'
                         },{
-                            label: 'Research Organization',
-                            value: 'research_organization'
+                            label: 'Presentation',
+                            value: 'presentation'
                         },{
-                            label: 'School',
-                            value: 'school'
+                            label: 'E-book',
+                            value: 'e-book'
                         },{
-                            label: 'College',
-                            value: 'college'
-                        },{
-                            label: 'University',
-                            value: 'university'
-                        },{
-                            label: 'Nature Club',
-                            value: 'nature_club'
-                        },{
-                            label: 'Social Media Group',
-                            value: 'social_media_group'
+                            label: 'Website',
+                            value: 'website'
                         },{
                             label: 'Other',
                             value: 'other'
-                        }
+                        },
                     ]
                 },{
                     type: 'textarea',
                     label: 'Description',
                     name: 'description',
-                    required: true
-                },{
-                    type: 'text',
-                    label: 'Contact Person',
-                    name: 'contact_person',
                     required: false
                 },{
-                    type: 'textarea',
-                    label: 'Link',
-                    name: 'link',
+                    type: 'text',
+                    label: 'Tags',
+                    name: 'tags',
                     required: false
                 }
             ],
-            form_data:{},
-            upload_file_flag: false,
+            form_data: {}
         }
     },
-    created(){
+    mounted(){
         this.initFormData()
     },
     watch:{
@@ -157,20 +147,20 @@ export default defineComponent({
     },
     methods:{
         ...mapActions({
-            update:'partners/update'
+            update:'resources/update'
         }),
+        
         initFormData(){
             this.form_data = {
                 id: this.data.id,
-                name: this.data.name,
-                partner_type: this.data.partner_type,
-                description: this.data.description,
-                contact_person: this.data.contact_person,
-                image: this.data.image,
+                title: this.data.title,
                 link: this.data.link,
-                user: this.data.user,
+                resource_type: this.data.resource_type,
+                description: this.data.description,
+                tags: this.data.tags,
+                user: this.data.user
             }
-        },
+        }, 
         closeModal(){
             this.$emit('close')
         },
@@ -184,5 +174,5 @@ export default defineComponent({
             }
         }
     }
-})
+}
 </script>

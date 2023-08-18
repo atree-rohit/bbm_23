@@ -47,6 +47,22 @@ class ResourceController extends Controller
             'data' => $resource->toArray()
         ]);
     }
+
+    public function update($resource_id, Request $request){
+        $resource = Resource::find($resource_id);
+        $resource->title = $request->title;
+        $resource->link = $request->link;
+        $resource->resource_type = $request->resource_type;
+        $resource->description = $request->description;
+        $resource->tags = $request->tags;
+        $resource->save();
+
+        return response()->json([
+            'message' => 'Resource updated successfully',
+            'status' => 200,
+            'data' => $resource->toArray()
+        ]);
+    }
     
     public function delete($resource_id){
         $resource = Resource::find($resource_id);
