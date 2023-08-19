@@ -1,80 +1,45 @@
-<style scoped>
-    .app-container{
-        width: 100%;
-        height: calc(100vh - 7rem);
-        display: flex;
-        flex-direction: column;
-        grid-template-rows: auto 60px;
-        /* border: 1rem solid green; */
+<style scoped>    
+    .button-container button{
+        font-size:1.5rem;
     }
-
-    .nav-item{
-        flex: 1 0 0;
-    }
-
-    .nav-link{
-        display: flex;
-        justify-content: center;
-
-    }
-
-    .tabs{
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        overflow: auto;
-    }
-
-    .nav-link.active{
-        background-color: #28a745;
-        color: white;
-    }
-
-    @media (max-width: 768px) {
-        .container-fluid{
-            padding: 0;
-        }
-        .app-container{
-            padding: 1rem 5px;
-        }
-    }
-    
 </style>
 
 <template>
     <div class="container-fluid app-container">
+        {{ show_about_modal }}
+        <div class="button-container d-flex justify-content-around my-2">
+            <button
+                class="btn btn-outline-primary badge rounded-pill text-info"
+                title="About"
+                @click="show_about_modal = true"
+            >
+                <i class="bi bi-info-circle"></i>
+            </button>
+            <button
+                class="btn btn-outline-primary badge rounded-pill text-info" titl
+                ="Your Data"
+
+            >
+                <i class="bi bi-database"></i>
+            </button>
+        </div>
         <div class="tabs">
             <count-form v-if="current_nav == 'add'"/>
         </div>
-        <nav class="navbar fixed-bottom navbar-light border border-secondary bg-dark">
-            <div class="container-fluid">
-                <ul class="nav nav-tabs d-flex justify-content-around w-100">
-                    <li
-                        class="nav-item"
-                        v-for="nav in nav_links"
-                        :key="nav.value"
-                    >
-                        <a
-                            class="nav-link"
-                            :class="current_nav == nav.value ? 'active' : ''"
-                            @click="navClick(nav)"
-                            v-text="nav.label"
-                            href="#"
-                        />
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <ModalAboutBBMApp :show="show_about_modal" @close="show_about_modal = false"/>
     </div>
 </template>
 
 <script>
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import CountForm from "./CountForm.vue"
+import ModalAboutBBMApp from "./ModalAboutBBMApp.vue"
 
 export default {
     name: "ButterflyCounts",
     components: {
-        CountForm
+        CountForm,
+        ModalAboutBBMApp
     },
     data() {
         return {
@@ -90,7 +55,8 @@ export default {
                     value: "data"
                 }
             ],
-            current_nav: "add"
+            current_nav: "add",
+            show_about_modal: false,
         };
     },
     methods: {
