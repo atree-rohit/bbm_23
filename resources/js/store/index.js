@@ -13,6 +13,7 @@ import maps from './maps'
 import data from './data'
 import manage_users from './manage_users'
 import logs from './logs'
+import count_forms from './count_forms'
 
 const store = createStore({
     plugins: [
@@ -30,7 +31,8 @@ const store = createStore({
         data,
         maps,
         manage_users,
-        logs
+        logs,
+        count_forms
     }
 })
 

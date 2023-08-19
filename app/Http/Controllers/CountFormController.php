@@ -52,10 +52,27 @@ class CountFormController extends Controller
             'message' => 'Form submitted successfully',
             'form' => $form
         ]);
-        
-
-        
     }
+
+
+
+    public function count_forms()
+    {
+        $forms = CountForm::with("species_list")->get();
+        $forms->transform(function($i) {
+            $i->species_list->transform(function($j) {
+                unset($j->count_form_id);
+                unset($j->created_at);
+                unset($j->updated_at);
+                return $j;
+            });
+            unset($i->created_at);
+            unset($i->updated_at);
+            return $i;
+        });
+        return $forms;
+    }
+
     /**
      * Display a listing of the resource.
      */

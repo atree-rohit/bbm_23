@@ -43,6 +43,11 @@ class PageController extends Controller
         return view('pages.calendar');
     }
 
+    public function validate_forms()
+    {
+        return view('pages.validate_forms');
+    }
+
     public function register()
     {
         return view('pages.auth.register');
