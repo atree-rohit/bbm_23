@@ -5,7 +5,7 @@
                 v-for="(item, index) in pending"
                 :key="index"
             >
-                <td>{{ item[1] }}</td>
+                <td>{{ item }}</td>
 
             </tr>
         </tbody>
@@ -24,7 +24,7 @@ export default{
             all_data: state => state.count_forms.all_data
         }),
         pending(){
-            return d3.groups(this.all_data, d => d.status).filter((d) => d[0] == 'pending')
+            return d3.groups(this.all_data, d => d.status).filter((d) => d[0] == 'pending')[0][1]
         }
     },
     mounted(){
