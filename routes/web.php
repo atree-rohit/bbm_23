@@ -34,6 +34,7 @@ Route::get('/login', [PageController::class, 'login'])->name('login');
 Route::get('/manage-users', [PageController::class, 'manage'])->name('manage-users');
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/logout', [PageController::class, 'logout']);
+Route::get('/validate-forms', [PageController::class, 'validate_forms']);
 Route::get('/fileupload', [FileController::class, 'index']);
 Route::post('/fileupload', [FileController::class, 'upload'])->name('upload');
 // Route::get('/{any}', [PageController::class, 'home']);

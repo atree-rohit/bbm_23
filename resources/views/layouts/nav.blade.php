@@ -50,6 +50,10 @@
                 "link" => "/butterfly-counts"
             ],[
                 "id" => 2,
+                "label" => "Validate Forms",
+                "link" => "/validate-forms"
+            ],[
+                "id" => 3,
                 "label" => "Logout",
                 "link" => "/logout"
             ]
