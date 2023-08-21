@@ -19,6 +19,9 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.url.startsWith('chrome-extension://')) {
+    return; // Bypass caching for extension requests
+  }
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
