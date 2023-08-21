@@ -12,7 +12,7 @@ class CountForm extends Model
     protected $fillable = [
         'id',
         'name',
-        'affilation',
+        'affiliation',
         'phone',
         'email',
         'team_members',

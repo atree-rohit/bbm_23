@@ -280,9 +280,6 @@ export default{
         longitude(){
             this.form_data.coordinates = this.latitude + ',' + this.longitude
         },
-        user_details(newVal){
-            console.log("watch user_details",newVal, )
-        }
     },
     created(){
         store.dispatch('locations/init')
@@ -316,11 +313,9 @@ export default{
         },
         initTab(){
             if(this.user_details && Object.keys(this.user_details).length > 0){
-                console.log("initTab()", this.user_details)
                 Object.keys(this.user_details).forEach((k) => {
                     this.form_data[k] = this.user_details[k]
                 })
-                console.log(this.form_data)
                 this.current_tab = 'location_details'
             }
             return

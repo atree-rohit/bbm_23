@@ -13,7 +13,7 @@ class CountFormController extends Controller
         $coordinates = explode(',', $request->coordinates);
         $form = new CountForm();
         $form->name = $request->name;
-        $form->affilation = $request->affilation;
+        $form->affiliation = $request->affiliation;
         $form->phone = $request->phone;
         $form->email = $request->email;
         $form->team_members = $request->team_members;
@@ -59,7 +59,16 @@ class CountFormController extends Controller
     public function count_forms()
     {
         $forms = CountForm::with("species_list")->get();
-        $forms->transform(function($i) {
+        return $this->clean_object($forms);
+    }
+
+    public function user_count_forms(Request $request){
+        $forms = CountForm::where('email', $request->email)->with("species_list")->get();
+        return $this->clean_object($forms);
+    }
+
+    public function clean_object($obj){
+        return $obj->transform(function($i) {
             $i->species_list->transform(function($j) {
                 unset($j->count_form_id);
                 unset($j->created_at);
@@ -70,7 +79,6 @@ class CountFormController extends Controller
             unset($i->updated_at);
             return $i;
         });
-        return $forms;
     }
 
     /**

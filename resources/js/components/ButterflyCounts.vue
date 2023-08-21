@@ -10,14 +10,14 @@
             <button
                 class="btn btn-outline-primary badge rounded-pill text-info"
                 title="About"
-                @click="show_about_modal = true"
+                @click="show_modal.about = true"
             >
                 <i class="bi bi-info-circle"></i>
             </button>
             <button
-                class="btn btn-outline-primary badge rounded-pill text-info" titl
-                ="Your Data"
-
+                class="btn btn-outline-primary badge rounded-pill text-info"
+                title="Your Data"
+                @click="show_modal.user_data = true"
             >
                 <i class="bi bi-database"></i>
             </button>
@@ -25,7 +25,8 @@
         <div class="tabs">
             <count-form v-if="current_nav == 'add'"/>
         </div>
-        <ModalAboutBBMApp :show="show_about_modal" @close="show_about_modal = false"/>
+        <ModalAboutBBMApp :show="show_modal.about" @close="show_modal.about = false"/>
+        <ModalUserCountsData :show="show_modal.user_data" @close="show_modal.user_data = false"/>
     </div>
 </template>
 
@@ -33,12 +34,14 @@
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import CountForm from "./CountForm.vue"
 import ModalAboutBBMApp from "./ModalAboutBBMApp.vue"
+import ModalUserCountsData from "./ModalUserCountsData.vue"
 
 export default {
     name: "ButterflyCounts",
     components: {
         CountForm,
-        ModalAboutBBMApp
+        ModalAboutBBMApp,
+        ModalUserCountsData
     },
     data() {
         return {
@@ -55,7 +58,10 @@ export default {
                 }
             ],
             current_nav: "add",
-            show_about_modal: false,
+            show_modal: {
+                about: false,
+                user_data: false,
+            }
         };
     },
     methods: {

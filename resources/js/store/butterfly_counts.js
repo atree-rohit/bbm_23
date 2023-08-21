@@ -12,6 +12,7 @@ export default {
         scientific_names: [],
         common_names: [],
         user_details: {},
+        user_data: [],
     },
     mutations: {
         INIT_NAMES(state){
@@ -21,6 +22,9 @@ export default {
         SET_USER_DETAILS(state, user_details){
             state.user_details = user_details
             saveUserDetails(user_details)
+        },
+        SET_USER_DATA(state, user_data){
+            state.user_data = user_data
         }
     },
     actions: {
@@ -49,6 +53,12 @@ export default {
             const user_details = await getUserDetails()
             if(user_details){
                 commit("SET_USER_DETAILS", user_details)
+            }
+        },
+        async getUserData({commit, state}){
+            const user_data = await axios.get("/api/user_count_forms", {params: state.user_details})
+            if(user_data.data.length > 0){
+                commit("SET_USER_DATA", user_data.data)
             }
         }
     }
