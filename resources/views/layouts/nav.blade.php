@@ -18,11 +18,11 @@
             "label" => "How to Participate",
             "link" => "/participate"
         ],
-        // [
-        //     "id" => 5,
-        //     "label" => "Butterfly Counts",
-        //     "link" => "/butterfly-counts"
-        // ],
+        [
+            "id" => 5,
+            "label" => "Butterfly Counts",
+            "link" => "/butterfly-counts"
+        ],
         [
             "id" => 6,
             "label" => "Resources",
@@ -44,11 +44,13 @@
                 "id" => 0,
                 "label" => "Manage Users",
                 "link" => "/manage-users"
-            ],[
-                "id" => 1,
-                "label" => "Butterfly Counts",
-                "link" => "/butterfly-counts"
-            ],[
+            ],
+            // [
+            //     "id" => 1,
+            //     "label" => "Butterfly Counts",
+            //     "link" => "/butterfly-counts"
+            // ],
+            [
                 "id" => 2,
                 "label" => "Validate Forms",
                 "link" => "/validate-forms"
