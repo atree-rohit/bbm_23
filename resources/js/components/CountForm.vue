@@ -11,11 +11,17 @@
 .nav-link{
     display: flex;
     justify-content: center;
-
+    /* color: white; */
 }
 
 .nav-link.active{
-    background-color: #28a745;
+    background-color: rgb(50, 150, 50);
+    /* background-color: blue; */
+    color: white;
+}
+
+.nav-link.disabled{
+    background-color: rgba(200,50,50,.75);
     color: white;
 }
 .required::after{
@@ -220,6 +226,7 @@ export default{
             species_lists: state => state.butterfly_counts.species_lists,            
             scientific_names: state => state.butterfly_counts.scientific_names,
             common_names: state => state.butterfly_counts.common_names,
+            user_details: state => state.butterfly_counts.user_details,
             latitude: state => state.locations.latitude,
             longitude: state => state.locations.longitude,
         }),
@@ -270,11 +277,14 @@ export default{
         },
         longitude(){
             this.form_data.coordinates = this.latitude + ',' + this.longitude
+        },
+        user_details(newVal){
+            console.log("watch user_details",newVal, )
         }
     },
     created(){
         store.dispatch('locations/init')
-        store.dispatch('butterfly_counts/initNames')
+        store.dispatch('butterfly_counts/init')
         this.initFormData()
     },
     methods:{
@@ -292,6 +302,7 @@ export default{
             this.states = [...new Set(districts.features.map((district) => district.properties.state))]
             this.species_list = []
             this.initCurrentSpecies()
+            this.initTab()
         },
         initCurrentSpecies(){
             this.current_species = {
@@ -300,6 +311,17 @@ export default{
                 individuals: 1,
                 remarks: null
             }
+        },
+        initTab(){
+            if(this.user_details && Object.keys(this.user_details).length > 0){
+                console.log("initTab()", this.user_details)
+                Object.keys(this.user_details).forEach((k) => {
+                    this.form_data[k] = this.user_details[k]
+                })
+                console.log(this.form_data)
+                this.current_tab = 'location_details'
+            }
+            return
         },
         tabClass(tab){
             let op = this.current_tab == tab.value ? 'active' : ''
@@ -353,7 +375,7 @@ export default{
         },
         addSpecies(){
             const newSpecies = Object.assign({}, this.current_species)
-            console.log(newSpecies)
+            console.log("addSpecies()", newSpecies)
             this.species_list.push(newSpecies)
             this.initCurrentSpecies()
         },

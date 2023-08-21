@@ -30,12 +30,6 @@
         "type": "text",
         "page": 0
     },{
-        "name": "photo_link",
-        "label": "Link to photo records uploaded",
-        "required": false,
-        "type": "text",
-        "page": 0
-    },{
         "name": "date",
         "label": "Date",
         "required": true,
@@ -88,6 +82,12 @@
         "label": "Weather (sunny, clouded, windy, etc.)",
         "required": false,
         "type": "textarea",
+        "page": 1
+    },{
+        "name": "photo_link",
+        "label": "Link to photo records uploaded",
+        "required": false,
+        "type": "text",
         "page": 1
     },{
         "name": "comments",

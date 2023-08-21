@@ -6,7 +6,6 @@
 
 <template>
     <div class="container-fluid app-container">
-        {{ show_about_modal }}
         <div class="button-container d-flex justify-content-around my-2">
             <button
                 class="btn btn-outline-primary badge rounded-pill text-info"
