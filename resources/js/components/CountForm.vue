@@ -6,22 +6,24 @@
 
 .nav-item{
     flex: 1 0 0;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    border-radius: 0.5rem 0.5rem  0 0 ;
+    border-bottom: 0px solid transparent;
 }
 
 .nav-link{
     display: flex;
     justify-content: center;
-    /* color: white; */
 }
 
 .nav-link.active{
     background-color: rgb(50, 150, 50);
-    /* background-color: blue; */
     color: white;
 }
 
 .nav-link.disabled{
-    background-color: rgba(200,50,50,.75);
+    background-color: rgba(200,50,50,1);
     color: white;
 }
 .required::after{
