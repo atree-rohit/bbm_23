@@ -7,7 +7,7 @@ export default {
     },
     mutations: {
         SET_ALL_DATA(state, value){
-            state.all_data = value
+            state.all_data = value.reverse()
         },
     },
     actions: {
