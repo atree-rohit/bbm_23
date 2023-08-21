@@ -25,10 +25,10 @@ export default{
         }),
         pending(){
             let op = []
-            let pending = d3.groups(this.all_data, d => d.status).filter((d) => d[0] != 'approved')
-            
-            if(pending.length && pending[0][1].length > 0){
-                op = pending[0][1]
+            let unapproved = d3.groups(this.all_data, d => d.status).filter((d) => d[0] != 'approved')
+            console.log([...new Set(this.all_data.map((d) => d.status))])
+            if(unapproved.length && unapproved[0][1].length > 0){
+                op = unapproved[0][1]
             }
             console.log("pending", op)
             return op
