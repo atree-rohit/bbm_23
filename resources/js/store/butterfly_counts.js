@@ -36,7 +36,7 @@ export default {
             commit("INIT_NAMES")
         },
         async submitForm({commit, dispatch}, form){
-            // await axios.post("/api/butterfly-counts/submit-form", form)
+            await axios.post("/api/butterfly-counts/submit-form", form)
             dispatch("setUserDetails", form)
         },
         setUserDetails({commit}, form){
