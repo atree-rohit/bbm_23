@@ -11,6 +11,7 @@ class CountFormController extends Controller
     public function submit_form(Request $request)
     {
         $coordinates = explode(',', $request->coordinates);
+        $admin = $this->get_district($coordinates);
         $form = new CountForm();
         $form->name = $request->name;
         $form->affilation = $request->affilation;
@@ -19,8 +20,8 @@ class CountFormController extends Controller
         $form->team_members = $request->team_members;
         $form->photo_link = $request->photo_link;
         $form->location = $request->location;
-        $form->state = $request->state;
-        $form->district = $request->district;
+        $form->state = $admin["state"] ?? null;
+        $form->district = $admin["district"] ?? null;
         $form->coordinates = $request->coordinates;
         $form->latitude = $coordinates[0];
         $form->longitude = $coordinates[0];
@@ -52,6 +53,60 @@ class CountFormController extends Controller
             'message' => 'Form submitted successfully',
             'form' => $form
         ]);
+    }
+
+    public function get_district($coordinates)
+    {
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
+        $match = [
+            'district' => '',
+            'state' => ''
+        ];
+        foreach($districts->features as $district){
+            foreach($district->geometry->coordinates as $arr){
+                if($this->pointInPolygon($coordinates[1], $coordinates[0], $arr)){
+                    $match['district'] = $district->properties->district;
+                    $match['state'] = $district->properties->state;
+                    break;
+                }
+            }
+        }
+        return $districts;
+    }
+
+    private function pointInPolygon($longitude, $latitude, $polygonVertices) {
+        $intersections = 0;
+        $vertexCount = count($polygonVertices);
+        
+        for ($i = 0; $i < $vertexCount; $i++) {
+            $j = ($i + 1) % $vertexCount;
+    
+            $vertexI = $polygonVertices[$i];
+            $vertexJ = $polygonVertices[$j];
+            
+            if ($vertexI[1] == $vertexJ[1]) {
+                // Skip horizontal edges
+                continue;
+            }
+    
+            if ($latitude < min($vertexI[1], $vertexJ[1])) {
+                // Skip if point is below the edge
+                continue;
+            }
+    
+            if ($latitude >= max($vertexI[1], $vertexJ[1])) {
+                // Skip if point is above the edge
+                continue;
+            }
+    
+            $xIntersect = ($latitude - $vertexI[1]) * ($vertexJ[0] - $vertexI[0]) / ($vertexJ[1] - $vertexI[1]) + $vertexI[0];
+    
+            if ($xIntersect > $longitude) {
+                $intersections++;
+            }
+        }
+    
+        return ($intersections % 2) == 1;
     }
 
 

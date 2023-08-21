@@ -62,5 +62,7 @@ Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
 Route::get('/get_all_logs', [DataController::class, 'get_all_logs']);
 Route::get('/count_forms', [CountFormController::class, 'count_forms']);
 
+Route::get('/get_district/{slug}', [CountFormController::class, 'get_district']);
+
 
 Route::post('/butterfly-counts/submit-form', [CountFormController::class, 'submit_form']);
