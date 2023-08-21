@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Taxa;
 use App\Models\CountForm;
 use App\Models\CountSpecies;
 use Illuminate\Http\Request;
@@ -71,7 +72,7 @@ class CountFormController extends Controller
                 }
             }
         }
-        return $districts;
+        return $match;
     }
 
     private function pointInPolygon($longitude, $latitude, $polygonVertices) {
@@ -135,6 +136,47 @@ class CountFormController extends Controller
             return $i;
         });
     }
+
+    public function set_form_status(Request $request)
+    {
+        $form = CountForm::find($request->form_id);
+        $form->status = $request->status;
+        $date = date('d-m-Y', strtotime($form->date));
+        $form->date_cleaned = $date;
+        if($request->status == 'approved'){
+            $form->validated = true;
+        } else {
+            $form->validated = false;
+        }
+        $form->save();
+        return response()->json([
+            'message' => 'Count Form status updated successfully',
+            'form' => $form
+        ]);
+    }
+
+    public function set_species_status(Request $request)
+    {
+        $species = CountSpecies::find($request->species_id);
+        $species->status = $request->status;
+        if($request->status == 'approved'){
+            $taxa = Taxa::where('name', $species->scientific_name)->first();
+            if($taxa){
+                $species->scientific_name_cleaned = $species->scientific_name;
+                $species->taxa_id = $taxa->id;                
+                $species->validated = true;
+            }
+        } else {
+            $species->taxa_id = null;
+            $species->validated = false;
+        }
+        $species->save();
+        return response()->json([
+            'message' => 'Species status updated successfully',
+            'species' => $species
+        ]);
+    }
+
 
     /**
      * Display a listing of the resource.

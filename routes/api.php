@@ -62,6 +62,8 @@ Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
 Route::get('/get_all_logs', [DataController::class, 'get_all_logs']);
 Route::get('/count_forms', [CountFormController::class, 'count_forms']);
 Route::get('/user_count_forms', [CountFormController::class, 'user_count_forms']);
+Route::post('/count_forms/set_form_status', [CountFormController::class, 'set_form_status']);
+Route::post('/count_forms/set_species_status', [CountFormController::class, 'set_species_status']);
 
 Route::get('/get_district/{slug}', [CountFormController::class, 'get_district']);
 

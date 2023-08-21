@@ -15,7 +15,7 @@
     }
 
     .form-row.form-pending{
-        border: 1px solid orange;
+        border: 1px solid red;
     }
 
     .form-row:hover{
@@ -58,6 +58,21 @@
             <button class="btn btn-success btn-sm m-1" @click="show_details=!show_details" v-text="buttonText()"/>
         </div>
         <div class="species-list container-fluid" v-if="show_details">
+            <div v-if="admin" class="border border-success text-center m-1 p-2 d-flex">
+                <span>Set Count Form Status</span>
+                <div
+                    v-for="status in statuses"
+                    :key="status"
+                    class="mx-2"
+                >
+                    <button
+                        class="btn btn-success btn-sm"
+                        v-text="status"
+                        v-if="status != count_form.status"
+                        @click="setFormStatus(status)"
+                    />
+                </div>
+            </div>
             <table class="table table-sm">
                 <tbody>
                     <tr
@@ -69,17 +84,22 @@
                     </tr>
                 </tbody>
             </table>
+            <div v-if="admin && unvalidated_species" class="border border-success text-center m-1 p-2">
+                <button class="btn btn-success" @click="validateAllSpecies">Validate All Species</button>
+            </div>
             <table class="table table-sm">
                 <thead class="bg-dark text-light">
                     <tr>
                         <th>Sl. No</th>
                         <th v-for="field in fields.species" :key="field" v-text="field"/>
+                        <th v-if="admin" class="bg-success">Validate</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr
                         v-for="(species, s) in count_form.species_list"
                         :key="species.id"
+                        :class="speciesRowClass(species)"
                     >
                         <td>{{ s + 1  }}</td>
                         <td>{{ species.common_name }}</td>
@@ -87,6 +107,19 @@
                         <td>{{ species.individuals }}</td>
                         <td>{{ species.remarks }}</td>
                         <td>{{ species.status }}</td>
+                        <td v-if="admin" class="d-flex justify-content-around">
+                            <div
+                                v-for="status in statuses"
+                                :key="status"
+                            >
+                                <button
+                                    class="btn btn-success btn-sm"
+                                    v-text="status"
+                                    v-if="status != species.status"
+                                    @click="setSpeciesStatus(species, status)"
+                                />
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -94,6 +127,7 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default{
     name: 'CountFormRow',
     props: {
@@ -109,18 +143,61 @@ export default{
                 form_mini: ["location","state", "district", "latitude", "longitude", "date", "start_time", "end_time"],
                 species: ['common_name', 'scientific_name', 'individuals', 'remarks', 'status']
             },
+            statuses: ['pending','approved','duplicate','rejected'],
             show_details: false,
         }
     },
-    mounted(){
+    computed:{
+        ...mapState({
+            is_super_admin: state => state.auth.is_super_admin,
+            is_admin: state => state.auth.is_admin,
+            user: state => state.auth.user,
+        }),
+        admin(){
+            return this.is_super_admin || this.is_admin
+        },
+        form_validate_flag(){
+            let op = false
+            if(this.count_form.species_list.filter((d) => d.status == 'approved').length > 0){
+                op = true
+            }
+            return op
+        },
+        unvalidated_species(){
+            return this.count_form.species_list.filter((d) => d.status != "approved").length > 0
+        }
     },
     methods:{
         buttonText(){
             return this.show_details ? "Hide Details" : "Show Details"
         },
         rowClass(){
-            return this.count_form.status != "approved" ? "form-approved" : "form-pending"
-        }
+            return this.count_form.status == "approved" ? "form-approved" : "form-pending"
+        },
+        speciesRowClass(species){
+            return species.status == "approved" ? "table-success" : "table-danger"
+        },
+        setFormStatus(status){
+            let data = {
+                form_id: this.count_form.id,
+                status: status
+            }
+            this.$store.dispatch('count_forms/setFormStatus', data)
+        },
+        setSpeciesStatus(species, status){
+            let data = {
+                species_id: species.id,
+                status: status
+            }
+            this.$store.dispatch('count_forms/setSpeciesStatus', data)
+        },
+        validateAllSpecies(){
+            this.count_form.species_list.forEach((species) => {
+                if(species.status != "approved"){
+                    this.setSpeciesStatus(species, "approved")
+                }
+            })
+        },
     }
 }
 </script>
