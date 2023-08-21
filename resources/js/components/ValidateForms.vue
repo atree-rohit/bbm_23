@@ -24,7 +24,12 @@ export default{
             all_data: state => state.count_forms.all_data
         }),
         pending(){
-            return d3.groups(this.all_data, d => d.status).filter((d) => d[0] == 'pending')[0][1]
+            let op = []
+            let pending = d3.groups(this.all_data, d => d.status).filter((d) => d[0] == 'pending')
+            if(pending[0][1].length > 0){
+                op = pending[0][1]
+            }
+            return op
         }
     },
     mounted(){

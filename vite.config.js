@@ -19,6 +19,7 @@ export default defineConfig({
                 'resources/js/pages/butterfly_counts.js',
                 'resources/js/pages/resources.js',
                 'resources/js/pages/manage_users.js',
+                'resources/js/pages/validate_forms.js',
 
             ],
             refresh: true,
