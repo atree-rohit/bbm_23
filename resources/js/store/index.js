@@ -1,4 +1,3 @@
-import { createApp } from 'vue'
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import auth from './auth'
@@ -16,6 +15,9 @@ import logs from './logs'
 import count_forms from './count_forms'
 
 const store = createStore({
+    plugins: [
+        createPersistedState()
+    ],
     modules: {
         auth,
         testimonials,
