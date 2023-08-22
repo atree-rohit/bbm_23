@@ -20,7 +20,6 @@ export default {
     },
     mutations: {
         SET_USER(state, value){
-            alert(JSON.stringify(value))
             state.user = value
         },
         SET_TOKEN(state, value){
