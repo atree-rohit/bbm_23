@@ -52,6 +52,15 @@
     justify-content: space-between;
 }
 
+.individuals-cell .btn{
+    display: none;
+}
+
+.individuals-cell:hover .btn{
+    display: block;
+}
+
+
 </style>
 
 <template>
@@ -82,7 +91,7 @@
                 >
                     <template v-if="current_tab == 'species_list'">
                         <div>
-                            <h1 class="bg-danger">Species List</h1>
+                            <h3 class="bg-warning m-0 p-2 text-center">Species List</h3>
                             <table class="table table-sm table-hover table-responsive border border-primary" v-if="species_list.length">
                                 <thead>
                                     <tr class="bg-info">
@@ -102,7 +111,13 @@
                                         <td v-text="index+1"></td>
                                         <td v-text="row.common_name"></td>
                                         <td v-text="row.scientific_name"></td>
-                                        <td v-text="row.individuals"></td>
+                                        <td class="individuals-cell">
+                                            <div class="container-fluid d-flex justify-content-around">
+                                                <button class="btn btn-success" @click="changeIndividuals(index, '-')">-</button>
+                                                {{row.individuals}}
+                                                <button class="btn btn-success" @click="changeIndividuals(index, '+')">+</button>
+                                            </div>
+                                        </td>
                                         <td>
                                             <button
                                                 type="button"
@@ -383,6 +398,16 @@ export default{
         },
         getPoints(){
             store.dispatch('locations/getCurrentCoordinates')
+        },
+        changeIndividuals(index, t){
+            if(t == '+'){
+                this.species_list[index].individuals++
+            } else {
+                if(this.species_list[index].individuals > 0){
+                    this.species_list[index].individuals--
+                }
+            }
+
         },
         submitForm(){
             let data = {
