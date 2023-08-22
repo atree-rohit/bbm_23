@@ -60,7 +60,9 @@ export default {
         return {
             searchText: "",
             showSuggestions: false,
-            filteredSuggestions: []
+            filteredSuggestions: [],
+            typingTimer: null,
+            typingTimeout: 300, // Adjust the delay as needed
         }
     },
     watch:{
@@ -70,11 +72,14 @@ export default {
     },
     methods: {
         handleInput() {
+            clearTimeout(this.typingTimer)
             if (this.searchText.length >= 1) {
-                this.filteredSuggestions = this.suggestions.filter(suggestion =>
-                    suggestion.toLowerCase().includes(this.searchText.toLowerCase())
-                )
-                this.showSuggestions = true
+                this.typingTimeout = setTimeout(() => {
+                    this.filteredSuggestions = this.suggestions.filter(suggestion =>
+                        suggestion.toLowerCase().includes(this.searchText.toLowerCase())
+                    )
+                    this.showSuggestions = true                    
+                }, this.typingTimeout)
             } else {
                 this.filteredSuggestions = []
                 this.showSuggestions = false
