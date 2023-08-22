@@ -32,13 +32,14 @@
 }
 
 p::first-letter {
-  font-size: 260%;
-  color: var(--primary);
+    font-size: 260%;
+    color: var(--primary);
 }
 </style>
 
 <template>
     <div class="main-container">
+        {{ user }}
         <div class="img-container">
             <img src="img/DSCN2192_mud_puddling_ss.jpg" alt="">
         </div>
@@ -60,17 +61,25 @@ p::first-letter {
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 import Partners from './Partners.vue'
 import Testimonials from './Testimonials.vue'
 import PressLinks from './PressLinks.vue'
 
-export default defineComponent({
+export default{
     name: "Home",
     components: {
         Partners,
         Testimonials,
         PressLinks
+    },
+    computed:{
+        ...mapState({
+            user: state => state.auth
+        })
+    },
+    mounted(){
+        console.log(this.user)
     }
-})
+}
 </script>
