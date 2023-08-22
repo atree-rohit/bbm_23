@@ -16,9 +16,6 @@ import logs from './logs'
 import count_forms from './count_forms'
 
 const store = createStore({
-    plugins: [
-        createPersistedState()
-    ],
     modules: {
         auth,
         testimonials,
