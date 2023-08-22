@@ -27,7 +27,8 @@ export default {
         accuracy: null,
         start_time: null,
         points: [],
-        gettingCoordinates: false
+        gettingCoordinates: false,
+        shouldPersist: false,
     }),
     mutations: {
         SET_GETTING_COORDINATES(state, gettingCoordinates) {

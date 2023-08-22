@@ -4,6 +4,7 @@ export default {
     namespaced: true,
     state: {
         all_data: [],
+        shouldPersist: false,
     },
     getters:{
         all_data(state){

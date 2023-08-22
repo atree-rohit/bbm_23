@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
+import createSelectivePersistPlugin from './selectivePersist'
 import auth from './auth'
 import partners from './partners'
 import testimonials from './testimonials'
@@ -16,22 +16,24 @@ import count_forms from './count_forms'
 
 const store = createStore({
     plugins: [
-        createPersistedState()
+        createSelectivePersistPlugin('auth'),
+        createSelectivePersistPlugin('butterfly_counts'),
+        createSelectivePersistPlugin('count_forms'),
     ],
     modules: {
         auth,
-        testimonials,
+        butterfly_counts,
+        count_forms,
+        data,
+        district_coordinators,
+        locations,
+        logs,
+        manage_users,
+        maps,
         partners,
         press_links,
-        butterfly_counts,
-        locations,
         resources,
-        district_coordinators,
-        data,
-        maps,
-        manage_users,
-        logs,
-        count_forms
+        testimonials
     }
 })
 

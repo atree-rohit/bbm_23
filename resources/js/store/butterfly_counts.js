@@ -13,6 +13,7 @@ export default {
         common_names: [],
         user_details: {},
         user_data: [],
+        shouldPersist: true,
     },
     mutations: {
         INIT_NAMES(state){

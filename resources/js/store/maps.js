@@ -6,6 +6,7 @@ export default {
         regions: {},
         states: {},
         districts: {},
+        shouldPersist: false,
     },
     getters:{
         regions(state){

@@ -8,6 +8,7 @@ export default {
         token: "",
         is_admin: false,
         is_super_admin: false,
+        shouldPersist: true,
     },
     getters:{
         authenticated(state){

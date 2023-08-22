@@ -13,7 +13,8 @@ export default {
         map_data: {
             states: [],
             districts: []
-        }
+        },
+        shouldPersist: false,
     },
     getters:{
         mapData(state){
