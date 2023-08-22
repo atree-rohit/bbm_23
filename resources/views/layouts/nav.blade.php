@@ -38,29 +38,21 @@
             "link" => "/login"
         ]
     ];
-    if(auth()->user()){
-        $auth_links = [
-            [
-                "id" => 0,
-                "label" => "Manage Users",
-                "link" => "/manage-users"
-            ],
-            // [
-            //     "id" => 1,
-            //     "label" => "Butterfly Counts",
-            //     "link" => "/butterfly-counts"
-            // ],
-            [
-                "id" => 2,
-                "label" => "Validate Forms",
-                "link" => "/validate-forms"
-            ],[
-                "id" => 3,
-                "label" => "Logout",
-                "link" => "/logout"
-            ]
-        ];
-    }
+    $auth_links = [
+        [
+            "id" => 0,
+            "label" => "Manage Users",
+            "link" => "/manage-users"
+        ],[
+            "id" => 2,
+            "label" => "Validate Forms",
+            "link" => "/validate-forms"
+        ],[
+            "id" => 3,
+            "label" => "Logout",
+            "link" => "/logout"
+        ]
+    ];
     $current_path = "/";
     foreach($links as $link){
         if(str_replace("/", "", $link["link"]) == $path){
