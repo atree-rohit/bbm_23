@@ -13,7 +13,6 @@ export default {
         common_names: [],
         user_details: {},
         user_data: [],
-        shouldPersist: true,
     },
     mutations: {
         INIT_NAMES(state){
@@ -50,15 +49,17 @@ export default {
             }
             commit("SET_USER_DETAILS", user_details)
         },
-        async initUserDetails({commit}){
+        async initUserDetails({commit, dispatch}){
             const user_details = await getUserDetails()
             if(user_details){
                 commit("SET_USER_DETAILS", user_details)
+                dispatch("getUserData")
             }
         },
         async getUserData({commit, state}){
             const user_data = await axios.get("/api/user_count_forms", {params: state.user_details})
             if(user_data.data.length > 0){
+                console.log("ud", user_data)
                 commit("SET_USER_DATA", user_data.data)
             }
         }
