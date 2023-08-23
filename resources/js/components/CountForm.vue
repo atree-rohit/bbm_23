@@ -381,7 +381,7 @@ export default{
             }
         },
         decreaseIndividuals(){
-            if(this.current_species.individuals > 0){
+            if(this.current_species.individuals > 1){
                 this.current_species.individuals--;
             }
         },
@@ -403,7 +403,7 @@ export default{
             if(t == '+'){
                 this.species_list[index].individuals++
             } else {
-                if(this.species_list[index].individuals > 0){
+                if(this.species_list[index].individuals > 1){
                     this.species_list[index].individuals--
                 }
             }
