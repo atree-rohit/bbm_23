@@ -172,7 +172,7 @@
                                 :value="current_species.scientific_name"
                                 @selected="scientificNameSelected"
                             />
-                            <input type="number" v-model="current_species[question.name]" :placeholder="`Enter ${question.name}`" class="form-control w-75" v-if="question.type == 'increment'">
+                            <input type="number" min="1" v-model="current_species[question.name]" :placeholder="`Enter ${question.name}`" class="form-control w-75" v-if="question.type == 'increment'">
                             <textarea v-model="current_species[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'textarea'"></textarea>
                             <label
                                 :for="question.name"
