@@ -410,6 +410,9 @@ export default{
 
         },
         submitForm(){
+            if(!this.form_completed){
+                return
+            }
             let data = {
                 ...this.form_data,
                 species_list: this.species_list
