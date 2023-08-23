@@ -10,5 +10,5 @@
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/butterfly_counts.js')
+    @vite('resources/js/pages/butterfly_counts.js?v=0')
 @endpush
