@@ -100,7 +100,7 @@
                 class="card-img-top"
                 v-if="resource.resource_type == 'video'"
             >
-            <div v-else-if="resource.title == 'BBM Count App'">
+            <div v-else-if="resource.title == 'BBM Count Form'">
                 <div class="py-5 bg-warning text-center">
                     <h1 class="h1">{{resource.title}}</h1>
                 </div>
