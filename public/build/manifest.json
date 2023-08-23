@@ -198,14 +198,14 @@
     "src": "resources/js/pages/register.js"
   },
   "resources/js/pages/resources.css": {
-    "file": "assets/resources-1e476d17.css",
+    "file": "assets/resources-49fd5886.css",
     "src": "resources/js/pages/resources.css"
   },
   "resources/js/pages/resources.js": {
     "css": [
-      "assets/resources-1e476d17.css"
+      "assets/resources-49fd5886.css"
     ],
-    "file": "assets/resources-18dd1e64.js",
+    "file": "assets/resources-4ec46bb2.js",
     "imports": [
       "__plugin-vue_export-helper-51dc1979.js",
       "_FileUploadComponent-ba4f65ce.js"
