@@ -51,7 +51,7 @@ export default{
     },
     data(){
         return{
-            headers: ["location","state", "district", "latitude", "longitude", "date", "start_time", "end_time", "status"],
+            headers: ["name", "location","state", "district", "latitude", "longitude", "date", "start_time", "end_time", "status"],
             showModal: false,
             selectedFormID: -1
         }
