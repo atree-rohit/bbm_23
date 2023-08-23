@@ -33,6 +33,8 @@ export default defineConfig({
         }),
         VitePWA({
             outDir: 'public/build',
+            injectRegister: 'inline',
+            registerType: 'autoUpdate',
         }),
     ],
     resolve: {
