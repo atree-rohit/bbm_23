@@ -386,6 +386,9 @@ export default{
             }
         },
         addSpecies(){
+            if(!this.current_species_completed){
+                return
+            }
             const newSpecies = Object.assign({}, this.current_species)
             console.log("addSpecies()", newSpecies)
             this.species_list.push(newSpecies)
