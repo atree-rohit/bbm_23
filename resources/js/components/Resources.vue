@@ -100,16 +100,16 @@
                 class="card-img-top"
                 v-if="resource.resource_type == 'video'"
             >
-            <img
-                v-else-if="isImage(resource.image_path)"
-                :src="resource.image_path"
-                class="card-img-top"
-            >
-            <div v-else>
+            <div v-else-if="resource.title == 'BBM Count App'">
                 <div class="py-5 bg-warning text-center">
                     <h1 class="h1">{{resource.title}}</h1>
                 </div>
             </div>
+            <img
+                v-else
+                :src="resource.image_path"
+                class="card-img-top"
+            >
             <div class="card-body">
                 <h5 class="card-title">{{ resource.title }}</h5>
                 
