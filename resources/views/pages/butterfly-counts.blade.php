@@ -3,7 +3,7 @@
 @section('title', 'Butterfly Counts')
 
 @section('manifest')
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/build/manifest.json">
 @endsection
 @section('content')
     <butterfly-counts />
