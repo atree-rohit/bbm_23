@@ -25,7 +25,7 @@ class CountFormController extends Controller
         $form->district = $admin["district"] ?? null;
         $form->coordinates = $request->coordinates;
         $form->latitude = $coordinates[0];
-        $form->longitude = $coordinates[0];
+        $form->longitude = $coordinates[1];
         $form->date = $request->date;
         $form->start_time = $request->start_time;
         $form->end_time = $request->end_time;
