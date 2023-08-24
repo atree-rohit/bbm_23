@@ -60,6 +60,11 @@
     display: block;
 }
 
+.form-floating:has(.form-check){
+    display: flex;
+    justify-content: center;
+}
+
 
 </style>
 
@@ -91,19 +96,35 @@
                 >
                     <div v-for="question in page_questions[t]" :key="question.name" class="form-floating mb-2">
                         <template v-if="t<2">
-                            <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
-                            <textarea v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'textarea'"></textarea>
-                            <input type="date" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'date'">
-                            <input type="time" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-else-if="question.type == 'time'">
-                            <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control w-75" v-if="question.type == 'location'">
-                            <auto-complete
-                                v-else-if="question.type == 'autocomplete_state'"
-                                :question="question"
-                                :suggestions="states"
-                                :value="form_data.state_name"
-                                @selected="stateSelected"
-                            />
-                            
+                            <input
+                                type="text"
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control"
+                                v-if="question.type == 'text'">
+                            <textarea
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control"
+                                v-else-if="question.type == 'textarea'"></textarea>
+                            <input
+                                type="date"
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control"
+                                v-else-if="question.type == 'date'">
+                            <input
+                                type="time"
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control"
+                                v-else-if="question.type == 'time'">
+                            <input
+                                type="text"
+                                v-model="form_data[question.name]"
+                                :placeholder="`Enter ${question.name}`"
+                                class="form-control w-75"
+                                v-if="question.type == 'location'">
                             <div v-if="question.type=='location'" class="my-auto">
                                 <button class="btn btn-outline-success px-3 me-2" @click="getPoints">Get Coordinates</button>
                             </div>
@@ -112,8 +133,19 @@
                                 class="font-weight-bold"
                                 :class="{required: question.required}"
                                 v-text="question.label"
-                                v-if="question.type != 'location' || question.type != 'autocomplete_state'"
+                                v-if="question.type != 'location'"
                             />
+                            <div
+                                class="form-check form-switch h1"
+                                v-if="question.type == 'checkbox'">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        :class="form_data['open_access'] ? 'bg-success' : 'bg-danger'"
+                                        :checked="form_data.open_access"
+                                        @click="form_data.open_access = !form_data.open_access"
+                                    >
+                            </div>
                         </template>
                         <template v-else>
                             <auto-complete
@@ -212,7 +244,6 @@
 <script>
 import { mapState } from 'vuex'
 import store from '../store'
-import districts from '../json/districts.json'
 import AutoComplete from './AutoComplete.vue'
 export default{
     name: 'CountForm',
@@ -237,7 +268,6 @@ export default{
             form_data: {},
             species_list: [],
             current_species: {},
-            states: []
         }
     },
     computed: {
@@ -255,7 +285,6 @@ export default{
             op.push(this.quiestions.filter(question => question.page == 0))
             op.push(this.quiestions.filter(question => question.page == 1))
             op.push(this.quiestions.filter(question => question.page == 2))
-            console.log(op)
             return op
         },
         completed(){
@@ -313,10 +342,9 @@ export default{
             this.page_questions[1].map((q) => {
                 this.form_data[q.name] = q.required ? debug : null
             })
+            this.form_data.open_access = true
             this.form_data.date = new Date().toISOString().slice(0, 10)
             this.form_data.start_time = new Date().toLocaleTimeString()
-            this.form_data.state = ''
-            this.states = [...new Set(districts.features.map((district) => district.properties.state))]
             this.species_list = []
             this.initCurrentSpecies()
             this.initTab()
@@ -352,9 +380,6 @@ export default{
         },
         tabClick(tab){
             this.current_tab = tab.value
-        },
-        stateSelected(state){
-            this.form_data.state_name = state
         },
         commonNameSelected(name){
             this.current_species.common_name = name
