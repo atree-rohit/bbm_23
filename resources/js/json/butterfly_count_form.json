@@ -30,6 +30,12 @@
         "type": "text",
         "page": 0
     },{
+        "name": "open_access",
+        "label": "My data is share as Open Access",
+        "required": false,
+        "type": "checkbox",
+        "page": 0
+    },{
         "name": "date",
         "label": "Date",
         "required": true,
