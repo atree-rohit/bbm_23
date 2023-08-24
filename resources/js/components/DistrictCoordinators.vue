@@ -211,6 +211,10 @@ export default defineComponent({
     methods:{
         polygonClick(polygon){
             let district_coordinators = this.all_data.filter((d) => d.state == this.valueFromLabel(polygon.name) || d.district == this.valueFromLabel(polygon.name))
+            if(district_coordinators.length == 0){
+                alert(`Current No Coordinators set for ${polygon.name}`)
+                return
+            }
             this.selected_district_coordinator = district_coordinators
             this.show_view_modal = true
         },
