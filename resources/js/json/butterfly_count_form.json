@@ -60,12 +60,6 @@
         "type": "location",
         "page": 1
     },{
-        "name": "state_name",
-        "label": "State",
-        "required": true,
-        "type": "autocomplete_state",
-        "page": 1
-    },{
         "name": "altitude",
         "label": "Altitude, m",
         "required": false,
