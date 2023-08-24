@@ -80,7 +80,7 @@
     "src": "resources/js/pages/about.js"
   },
   "resources/js/pages/butterfly_counts.css": {
-    "file": "assets/butterfly_counts-c93b3f57.css",
+    "file": "assets/butterfly_counts-f7283cf9.css",
     "src": "resources/js/pages/butterfly_counts.css"
   },
   "resources/js/pages/butterfly_counts.js": {
@@ -89,9 +89,9 @@
       "assets/bootstrap-icons-999550fa.woff"
     ],
     "css": [
-      "assets/butterfly_counts-c93b3f57.css"
+      "assets/butterfly_counts-f7283cf9.css"
     ],
-    "file": "assets/butterfly_counts-a4493709.js",
+    "file": "assets/butterfly_counts-760b31fd.js",
     "imports": [
       "__plugin-vue_export-helper-5e98bfe4.js"
     ],
