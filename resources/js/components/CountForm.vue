@@ -72,10 +72,18 @@
 }
 
 @media screen and (max-width: 768px) {
-        .container-fluid{
-            padding: 1px 2px !important;
-        }
+    .container-fluid{
+        padding: 1px 2px !important;
     }
+
+    .species-table{
+        font-size: 75%;
+    }
+
+    .individuals-cell .btn{
+        display: block;
+    }
+}
 
 </style>
 
@@ -200,7 +208,7 @@
                         </div>
                         <div class="border border-secondary rounded">
                             <h3 class="bg-warning m-0 p-2 text-center">Species List</h3>
-                            <table class="table table-sm table-hover table-responsive border border-primary" v-if="species_list.length">
+                            <table class="table table-sm table-hover table-responsive border border-primary species-table" v-if="species_list.length">
                                 <thead>
                                     <tr class="bg-info">
                                         <th>No.</th>
@@ -221,9 +229,9 @@
                                         <td v-text="row.scientific_name"></td>
                                         <td class="individuals-cell">
                                             <div class="container-fluid d-flex justify-content-around">
-                                                <button class="btn btn-success" @click="changeIndividuals(index, '-')">-</button>
-                                                {{row.individuals}}
-                                                <button class="btn btn-success" @click="changeIndividuals(index, '+')">+</button>
+                                                <button class="btn btn-sm btn-outline-success" @click="changeIndividuals(index, '-')">-</button>
+                                                <div class="my-auto">{{row.individuals}}</div>
+                                                <button class="btn btn-sm btn-outline-success" @click="changeIndividuals(index, '+')">+</button>
                                             </div>
                                         </td>
                                         <td>
