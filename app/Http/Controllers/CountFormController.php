@@ -58,11 +58,14 @@ class CountFormController extends Controller
 
     public function get_district($coordinates)
     {
-        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
         $match = [
             'district' => '',
             'state' => ''
         ];
+        if(!is_array($coordinates) || count($coordinates) != 2){
+            return $match;            
+        }
+        $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
         foreach($districts->features as $district){
             foreach($district->geometry->coordinates as $arr){
                 if($this->pointInPolygon($coordinates[1], $coordinates[0], $arr)){
