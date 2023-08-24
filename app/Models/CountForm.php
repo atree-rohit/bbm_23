@@ -33,7 +33,9 @@ class CountForm extends Model
         'comments',
         'file',
         'original_filename',
-        'status'
+        'status',
+        'validated',
+        'open_access',
     ];
 
     public function species_list(){

@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('original_filename', 200)->nullable(true);
             $table->enum('status', ['pending', 'approved', 'duplicate', 'rejected'])->default('pending');
             $table->boolean('validated')->nullable(true)->default(null);
+            $table->boolean('open_access')->nullable(true)->default(true);
             $table->timestamps();
         });
     }
