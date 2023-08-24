@@ -65,6 +65,17 @@
     justify-content: center;
 }
 
+@media screen and (min-width: 768px) {
+    .form-check{
+        margin-right: auto;
+    }        
+}
+
+@media screen and (max-width: 768px) {
+        .container-fluid{
+            padding: 1px 2px !important;
+        }
+    }
 
 </style>
 
@@ -136,7 +147,7 @@
                                 v-if="question.type != 'location'"
                             />
                             <div
-                                class="form-check form-switch h1"
+                                class="form-check form-switch h1 ms-auto p-1 my-1"
                                 v-if="question.type == 'checkbox'">
                                     <input
                                         class="form-check-input"

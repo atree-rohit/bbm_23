@@ -2,6 +2,12 @@
     .button-container button{
         font-size:1.5rem;
     }
+    @media screen and (max-width: 768px) {
+        .app-container{
+            padding: 0;
+        }
+        
+    }
 </style>
 
 <template>
