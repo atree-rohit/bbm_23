@@ -153,6 +153,7 @@
         :show="show_modal.add"
         @close="show_modal.add=false"
     />
+    <Footer />
 </template>
 
 <script>
@@ -160,11 +161,13 @@ import { mapState } from 'vuex'
 import store from '../store'
 import ModalAddResource from './ModalAddResource.vue'
 import ModalEditResource from './ModalEditResource.vue'
+import Footer from './Footer.vue'
 export default {
     name: 'Resources',
     components: {
         ModalAddResource,
-        ModalEditResource
+        ModalEditResource,
+        Footer
     },
     data(){
         return {

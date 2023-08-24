@@ -105,6 +105,7 @@
             <district-coordinators />
         </div>
     </div>
+    <Footer />
 </template>
 
 <script>
@@ -112,12 +113,14 @@ import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import Partners from './Partners.vue'
 import DistrictCoordinators from './DistrictCoordinators.vue'
+import Footer from './Footer.vue'
 
 export default defineComponent({
     name: 'About',
     components: {
         Partners,
-        DistrictCoordinators
+        DistrictCoordinators,
+        Footer
     },
     data(){
         return {
