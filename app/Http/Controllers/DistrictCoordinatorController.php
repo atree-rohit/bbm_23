@@ -11,7 +11,7 @@ class DistrictCoordinatorController extends Controller
     {
         $all_data = DistrictCoordinator::with("district_coordinator_image")->get();
         $all_data->transform(function($i) {
-            $i->image_path = $i->district_coordinator_image->path;
+            $i->image_path = $i->district_coordinator_image->path ?? null;
             unset($i->created_at);
             unset($i->updated_at);
             unset($i->district_coordinator_image);
