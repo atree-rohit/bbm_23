@@ -12,6 +12,7 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 1rem;
+        overflow: visible !important;
     }
     .card{
         width: 20rem;
@@ -89,7 +90,7 @@
     
     <div class="main-container m-4">
         <div
-            class="card"
+            class="card border"
             v-for="resource in all_data"
             :key="resource.id"
             @click="gotoLink(resource)"
@@ -99,13 +100,19 @@
                 class="card-img-top"
                 v-if="resource.resource_type == 'video'"
             >
+            <div v-else-if="resource.title == 'BBM Count Form'">
+                <div class="py-5 bg-warning text-center">
+                    <h1 class="h1">{{resource.title}}</h1>
+                </div>
+            </div>
             <img
+                v-else
                 :src="resource.image_path"
                 class="card-img-top"
-                v-else
             >
             <div class="card-body">
                 <h5 class="card-title">{{ resource.title }}</h5>
+                
                 <span class="card-badge badge" :class="badgeColor(resource.resource_type)">
                     {{ resource.resource_type }}
                 </span>
@@ -178,6 +185,15 @@ export default {
         store.dispatch('resources/getAllData')
     },
     methods:{
+        isImage(path){
+            [".jpg", ".jpeg", ".gif", ".png"].map((e) => {
+                if(path.includes(e)){
+                    return true
+                }
+            })
+            
+            return false
+        },
         gotoLink(resource){
             if(resource.link){
                 window.open(resource.link, '_blank')

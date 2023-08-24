@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = 'butterfly-checklist-cache';
+const CACHE_NAME = 'BBMCountsCache1.4';
 const urlsToCache = [
     '/',
     '/build/assets/app-7a30ea22.css',
@@ -9,10 +9,11 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log(111, urlsToCache);
+        console.log("installing cache", urlsToCache);
         return cache.addAll(urlsToCache);
       })
   );
@@ -40,5 +41,22 @@ self.addEventListener('fetch', (event) => {
               });
           });
       })
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  // Clear old caches
+  console.log("activate");
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          console.log("clear cache", cacheName);
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });

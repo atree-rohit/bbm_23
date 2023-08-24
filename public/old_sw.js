@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = 'butterfly-checklist-cache';
+const CACHE_NAME = 'bbm-counts-app-cache-1';
 const urlsToCache = [
     '/',
     '/build/assets/app-7a30ea22.css',

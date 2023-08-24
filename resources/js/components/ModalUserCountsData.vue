@@ -62,8 +62,5 @@ export default{
             this.$emit('close')
         }
     },
-    created(){
-        store.dispatch("butterfly_counts/getUserData")
-    }
 }
 </script>
