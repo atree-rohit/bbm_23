@@ -89,48 +89,6 @@
                     class="questions-container"
                     v-if="tab.value == current_tab"
                 >
-                    <template v-if="current_tab == 'species_list'">
-                        <div>
-                            <h3 class="bg-warning m-0 p-2 text-center">Species List</h3>
-                            <table class="table table-sm table-hover table-responsive border border-primary" v-if="species_list.length">
-                                <thead>
-                                    <tr class="bg-info">
-                                        <th>No.</th>
-                                        <th>Common</th>
-                                        <th>Scientific</th>
-                                        <th>Individuals</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-info">
-                                    <tr
-                                        v-for="(row, index) in species_list"
-                                        :key="index"
-                                        >
-                                        <!-- @click="current_species = row" -->
-                                        <td v-text="index+1"></td>
-                                        <td v-text="row.common_name"></td>
-                                        <td v-text="row.scientific_name"></td>
-                                        <td class="individuals-cell">
-                                            <div class="container-fluid d-flex justify-content-around">
-                                                <button class="btn btn-success" @click="changeIndividuals(index, '-')">-</button>
-                                                {{row.individuals}}
-                                                <button class="btn btn-success" @click="changeIndividuals(index, '+')">+</button>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                class="btn btn-danger btn-sm"
-                                                v-text="'X'"
-                                                @click="deleteSpecies(index)"
-                                            />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </template>
                     <div v-for="question in page_questions[t]" :key="question.name" class="form-floating mb-2">
                         <template v-if="t<2">
                             <input type="text" v-model="form_data[question.name]" :placeholder="`Enter ${question.name}`" class="form-control" v-if="question.type == 'text'">
@@ -187,15 +145,60 @@
                             </div>
                         </template>
                     </div>
+                    <!-- Species Table -->
+                    <template v-if="current_tab == 'species_list'"> 
+                        <div class="btns-section">
+                            <button
+                                class="btn btn-lg"
+                                v-if="current_tab == 'species_list'"
+                                :class="current_species_completed ? 'btn-success' : 'btn-disabled'"
+                                @click="addSpecies"
+                            >Add Species</button>
+                        </div>
+                        <div class="border border-secondary rounded">
+                            <h3 class="bg-warning m-0 p-2 text-center">Species List</h3>
+                            <table class="table table-sm table-hover table-responsive border border-primary" v-if="species_list.length">
+                                <thead>
+                                    <tr class="bg-info">
+                                        <th>No.</th>
+                                        <th>Common</th>
+                                        <th>Scientific</th>
+                                        <th>Individuals</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-info">
+                                    <tr
+                                        v-for="(row, index) in species_list"
+                                        :key="index"
+                                        >
+                                        <!-- @click="current_species = row" -->
+                                        <td v-text="index+1"></td>
+                                        <td v-text="row.common_name"></td>
+                                        <td v-text="row.scientific_name"></td>
+                                        <td class="individuals-cell">
+                                            <div class="container-fluid d-flex justify-content-around">
+                                                <button class="btn btn-success" @click="changeIndividuals(index, '-')">-</button>
+                                                {{row.individuals}}
+                                                <button class="btn btn-success" @click="changeIndividuals(index, '+')">+</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                v-text="'X'"
+                                                @click="deleteSpecies(index)"
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
                 </div>
             </template>
             <div class="btns-section">
-                <button
-                    class="btn btn-lg"
-                    v-if="current_tab == 'species_list'"
-                    :class="current_species_completed ? 'btn-success' : 'btn-disabled'"
-                    @click="addSpecies"
-                >Add Species</button>
                 <button
                     class="btn btn-lg"
                     :class="form_completed ? 'btn-success' : 'btn-disabled'"
