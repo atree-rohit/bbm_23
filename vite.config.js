@@ -38,7 +38,21 @@ export default defineConfig({
             devOptions: {
                 enabled: true
             },
-
+            manifest: {
+                "name": "BBM - Butterfly Count App",
+                "short_name": "Butterfly Counts",
+                "start_url": "/butterfly-counts",
+                "display": "standalone",
+                "background_color": "#9a9",
+                "theme_color": "#4caf50",
+                "icons": [
+                    {
+                        "src": "/bbm.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ]
+            }
         }),
     ],
     resolve: {
