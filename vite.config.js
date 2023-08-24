@@ -35,7 +35,6 @@ export default defineConfig({
             outDir: 'public/build',
             injectRegister: 'auto',
             registerType: 'auto',
-            registerType: 'autoUpdate',
             devOptions: {
                 enabled: true
             },
