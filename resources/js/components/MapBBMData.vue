@@ -53,6 +53,7 @@ export default {
         }),
         filtered_map_data(){
             let op = JSON.parse(JSON.stringify(this.map_data))
+            console.log("FMD", op)
             if(this.selected.state != null){
                 const state_districts = this.geojson.district.features.filter((d) => d.properties.state === this.selected.state).map((d) => d.properties.district)
                 op.state = op.state.filter(d => d.name === this.selected.state)

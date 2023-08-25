@@ -230,6 +230,7 @@ export default defineComponent({
             this.colors = {}
             this.legend = {}
 			let data = this.mapData
+			console.log(this.data)
 			if(this.selected != null){
 				data = this.data.district
 			}

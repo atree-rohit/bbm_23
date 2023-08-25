@@ -1,5 +1,8 @@
 import axios from "axios"
 import * as d3 from "d3"
+import states from "../json/states.json"
+import districts from "../json/districts.json"
+
 
 export default {
     namespaced: true,
@@ -10,6 +13,10 @@ export default {
         taxa: [],
         districts: [],
         loading: null,
+        boundaries: {
+            states: states,
+            districts: districts
+        },
         map_data: {
             states: [],
             districts: []
@@ -77,14 +84,16 @@ export default {
     },
     actions: {
         async getAllData({commit, dispatch}){
+            console.log("DATA getAllData")
             commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
             
             commit('SET_LOADING', 'Getting Observations')
-            await dispatch('getObservations')
+            await dispatch('getObservations').then(() => {
+                commit('SET_LOADING', 'Setting Map Data')
+                commit('SET_MAP_DATA')
+            })
             
-            commit('SET_LOADING', 'Setting Map Data')
-            commit('SET_MAP_DATA')
             
             commit('SET_LOADING', null)
         },

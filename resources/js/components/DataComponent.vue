@@ -315,8 +315,8 @@ export default {
             return op
         }
     },
-    mounted(){
-        // console.clear()
+    created(){
+        console.log("dispatch")
         store.dispatch('data/getAllData')
     },
     methods: {
