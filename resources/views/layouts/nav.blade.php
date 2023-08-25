@@ -17,34 +17,42 @@
             "id" => 4,
             "label" => "How to Participate",
             "link" => "/participate"
-        ],[
+        ],
+        [
+            "id" => 5,
+            "label" => "Butterfly Counts",
+            "link" => "/butterfly-counts"
+        ],
+        [
             "id" => 6,
             "label" => "Resources",
             "link" => "/resources"
         ],[
-            "id" => 6,
+            "id" => 7,
             "label" => "Calendar",
             "link" => "/calendar"
         ],
         [
-            "id" => 7,
+            "id" => 8,
             "label" => ".",
             "link" => "/login"
         ]
     ];
-    if(auth()->user()){
-        $auth_links = [
-            [
-                "id" => 0,
-                "label" => "Manage Users",
-                "link" => "/manage-users"
-            ],[
-                "id" => 1,
-                "label" => "Logout",
-                "link" => "/logout"
-            ]
-        ];
-    }
+    $auth_links = [
+        [
+            "id" => 0,
+            "label" => "Manage Users",
+            "link" => "/manage-users"
+        ],[
+            "id" => 2,
+            "label" => "Validate Forms",
+            "link" => "/validate-forms"
+        ],[
+            "id" => 3,
+            "label" => "Logout",
+            "link" => "/logout"
+        ]
+    ];
     $current_path = "/";
     foreach($links as $link){
         if(str_replace("/", "", $link["link"]) == $path){

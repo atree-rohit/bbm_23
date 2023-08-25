@@ -12,7 +12,7 @@ class CountForm extends Model
     protected $fillable = [
         'id',
         'name',
-        'affilation',
+        'affiliation',
         'phone',
         'email',
         'team_members',
@@ -33,7 +33,9 @@ class CountForm extends Model
         'comments',
         'file',
         'original_filename',
-        'status'
+        'status',
+        'validated',
+        'open_access',
     ];
 
     public function species_list(){

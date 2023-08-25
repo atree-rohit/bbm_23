@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('count_forms', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100)->nullable(true);
-            $table->string('affilation', 200)->nullable(true);
+            $table->string('affiliation', 200)->nullable(true);
             $table->string('phone', 100)->nullable(true);
-            $table->string('email', 200)->nullable(false);
+            $table->string('email', 200)->nullable(true);
             $table->text('team_members')->nullable(true);
             $table->text('photo_link')->nullable(true);
             $table->text('location')->nullable(true);
@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('original_filename', 200)->nullable(true);
             $table->enum('status', ['pending', 'approved', 'duplicate', 'rejected'])->default('pending');
             $table->boolean('validated')->nullable(true)->default(null);
+            $table->boolean('open_access')->nullable(true)->default(true);
             $table->timestamps();
         });
     }

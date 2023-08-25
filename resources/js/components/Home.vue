@@ -7,7 +7,7 @@
     justify-content: center;
 }
 .img-container img{
-    max-width: 110%;
+    max-width: 100%;
     /* max-height: 30vh; */
 }
 .section{
@@ -32,8 +32,8 @@
 }
 
 p::first-letter {
-  font-size: 260%;
-  color: var(--primary);
+    font-size: 260%;
+    color: var(--primary);
 }
 </style>
 
@@ -57,20 +57,22 @@ p::first-letter {
             <press-links />
         </div>
     </div>
+    <Footer />
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import Partners from './Partners.vue'
 import Testimonials from './Testimonials.vue'
 import PressLinks from './PressLinks.vue'
+import Footer from './Footer.vue'
 
-export default defineComponent({
+export default{
     name: "Home",
     components: {
         Partners,
         Testimonials,
-        PressLinks
+        PressLinks,
+        Footer
     }
-})
+}
 </script>

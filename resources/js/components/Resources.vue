@@ -12,6 +12,7 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 1rem;
+        overflow: visible !important;
     }
     .card{
         width: 20rem;
@@ -36,14 +37,26 @@
         transition: all var(--transition-time);        
     }
 
-    .card-delete{
-        content: '🗑';
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: .75rem;
+    .hover-btns{
         opacity: 0;
         transition: all var(--transition-time);
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: .95rem;
+        display: flex;
+        gap: 0.25rem;
+    }
+
+    .hover-btns .badge{
+        transition: all var(--transition-time);
+    }
+
+    .card:hover,
+    .hover-btns .badge:hover{
+        cursor: pointer;
+        transform: scale(1.05);
+        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
     }
 
     .card:hover{
@@ -59,7 +72,7 @@
     }
 
     .card:hover .card-badge,
-    .card:hover .card-delete{
+    .card:hover .hover-btns{
         opacity: 1;
     }
 
@@ -71,33 +84,55 @@
         <div
             v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
         >
-            <button class="btn btn-lg btn-success mx-5" @click="show_modal = true" title="Add Resource">+</button>
+            <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Resource">+</button>
         </div>
     </div>
     
     <div class="main-container m-4">
         <div
-            class="card"
+            class="card border"
             v-for="resource in all_data"
             :key="resource.id"
-            @click="gotoLink(resource.link)"
+            @click="gotoLink(resource)"
         >
             <img
+                :src="youtubeThumbnail(resource)"
+                class="card-img-top"
+                v-if="resource.resource_type == 'video'"
+            >
+            <div v-else-if="resource.title == 'BBM Count Form'">
+                <div class="py-5 bg-warning text-center">
+                    <h1 class="h1">{{resource.title}}</h1>
+                </div>
+            </div>
+            <img
+                v-else
                 :src="resource.image_path"
                 class="card-img-top"
             >
             <div class="card-body">
                 <h5 class="card-title">{{ resource.title }}</h5>
+                
                 <span class="card-badge badge" :class="badgeColor(resource.resource_type)">
                     {{ resource.resource_type }}
                 </span>
-                <span
-                    class="card-delete badge bg-danger"
-                    v-if="user.user_type == 'super_admin'"
-                    @click.stop="deleteResource(resource.id)"
-                >
-                    X
-                </span>
+                <div class="hover-btns">
+                    <span
+                            class="card-edit badge bg-primary"
+                            v-if="user.user_type == 'super_admin'"
+                            @click.stop="editResource(resource.id)"
+                            title="Edit Resource"
+                            v-text="'✎'"
+                        />
+                    <span
+                        class="card-delete badge bg-danger"
+                        v-if="user.user_type == 'super_admin'"
+                        @click.stop="deleteResource(resource.id)"
+                    >
+                        X
+                    </span>
+
+                </div>
             </div>
             <div class="press-link-tags" v-if="resource.tags">
                 <span
@@ -109,25 +144,38 @@
             </div>
         </div>
     </div>
-    <modal-add-resource
-        :show="show_modal"
-        @close="show_modal=false"
+    <modal-edit-resource
+        :show="show_modal.edit"
+        :data="selected_resource"
+        @close="show_modal.edit=false"
     />
+    <modal-add-resource
+        :show="show_modal.add"
+        @close="show_modal.add=false"
+    />
+    <Footer />
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
 import ModalAddResource from './ModalAddResource.vue'
-export default defineComponent({
+import ModalEditResource from './ModalEditResource.vue'
+import Footer from './Footer.vue'
+export default {
     name: 'Resources',
     components: {
-        ModalAddResource
+        ModalAddResource,
+        ModalEditResource,
+        Footer
     },
     data(){
         return {
-            show_modal: false,
+            show_modal: {
+                add: false,
+                edit: false,
+            },
+            selected_resource: {}
         }
     },
     computed: {
@@ -140,8 +188,21 @@ export default defineComponent({
         store.dispatch('resources/getAllData')
     },
     methods:{
-        gotoLink(link){
-            window.open(link, '_blank')
+        isImage(path){
+            [".jpg", ".jpeg", ".gif", ".png"].map((e) => {
+                if(path.includes(e)){
+                    return true
+                }
+            })
+            
+            return false
+        },
+        gotoLink(resource){
+            if(resource.link){
+                window.open(resource.link, '_blank')
+            } else {
+                window.open(resource.image_path, '_blank')
+            }
         },
         get_tags(tags){
             return tags.split(',').map((t) => t.trim())
@@ -160,11 +221,33 @@ export default defineComponent({
                     break
             }
         },
+        youtubeThumbnail(resource){
+            let op = ""
+            if(resource.link.includes("youtube.com")){
+                const regExp = /[?&]v=([^&#]+)/;
+                let stub = ""
+  
+                // Extract the matched group
+                const match = resource.link.match(regExp);
+                
+                // Check if a match was found and return the video ID
+                if (match && match[1]) {
+                    stub =  match[1];
+                } 
+                op = `https://img.youtube.com/vi/${stub}/0.jpg`
+            }
+            console.log(op)
+            return op
+        },
+        editResource(id){
+            this.selected_resource = this.all_data.find((r) => r.id == id)
+            this.show_modal.edit = true
+        },
         deleteResource(id){
             if(confirm('Are you sure you want to delete this Resource?')){
                 store.dispatch('resources/delete', id)
             }
         }
     }
-})
+}
 </script>

@@ -140,16 +140,19 @@
             <district-coordinators v-if="show_section == 1 && subsection_id == 1"/>
         </div>
     </div>
+    <Footer />
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import DistrictCoordinators from './DistrictCoordinators.vue'
+import Footer from './Footer.vue'
 export default defineComponent({
     name: 'HowToParticipate',
     components: {
-        DistrictCoordinators
+        DistrictCoordinators,
+        Footer
     },
     data(){
         return {

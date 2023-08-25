@@ -56,7 +56,6 @@
 
     .logo-container img{
         min-height: 4rem;
-        max-width: 8rem;
         border: 2px solid rgba(0,0,0,0.25);
         border-radius: 0.5rem;
         padding: .25rem;
@@ -94,6 +93,7 @@
                             v-for="partner in partners"
                             :key="partner.id"
                             :src="partner.image_path"
+                            :style="{ 'max-width': `${logo_width}rem` }"
                             class="img-fluid bg-light"
                             alt=""
                         >
@@ -107,7 +107,11 @@
         </div>
         <div class="modal-footer d-flex justify-content-center bg-secondary p-0">
             <button type="button" class="btn btn-dark btn-sm" @click="closeModal">Close</button>
-            <button type="button" class="btn btn-success btn-sm" @click="download">Download</button>
+            <button type="button" class="btn btn-success btn-lg" @click="download">Download</button>
+            <br>
+            <button type="button" class="btn btn-primary btn-sm" @click="logoSize('-')">Decrease Logo Size</button>
+            {{ logo_width }}rem
+            <button type="button" class="btn btn-primary btn-sm" @click="logoSize('+')">Increase Logo Size</button>
         </div>
     </div>
     <div class="modal-backdrop fade show" v-if="show"></div>
@@ -129,6 +133,7 @@ export default defineComponent({
     emits: ["close"],
     data(){
         return {
+            logo_width: 7,
         }
     },
     watch:{
@@ -145,10 +150,20 @@ export default defineComponent({
         ...mapState({
             partners: state => state.partners.all_data,
         }),
+        logo_width_style(){
+            return `min-width: ${this.logo_width}rem;`
+        }
     },
     methods:{
         closeModal(){
             this.$emit('close')
+        },
+        logoSize(type){
+            if(type == "-" && this.logo_width > 6){
+                this.logo_width -= 0.25                    
+            } else if(type == "+" && this.logo_width < 10) {
+                this.logo_width += 0.25
+            }
         },
         download(){
             const div = document.getElementById('partner-poster')

@@ -170,7 +170,6 @@ export default defineComponent({
                 link: this.data.link,
                 user: this.data.user,
             }
-
         },
         closeModal(){
             this.$emit('close')

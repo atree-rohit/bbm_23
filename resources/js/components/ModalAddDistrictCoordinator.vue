@@ -58,14 +58,6 @@
 
                                 />
                             </select>
-                            <file-upload-component
-                                v-else-if="question.type == 'file'"
-                                class="form-control"
-                                type="file"
-                                :upload_file="upload_file_flag"
-                                :folder="`district_coordinators`"
-                                @uploaded_file_id="handleUploadedFileId"
-                            />
                         </div>
                     </form>
                 </div>
@@ -82,7 +74,6 @@
 <script>
 import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
-import FileUploadComponent from './FileUploadComponent.vue'
 import states from '../json/states.json'
 import districts from '../json/districts.json'
 
@@ -93,9 +84,6 @@ export default defineComponent({
             type: Boolean,
             default: false
         }
-    },
-    components: {
-        FileUploadComponent
     },
     emits: ["close"],
     data(){
@@ -138,15 +126,9 @@ export default defineComponent({
                     label: 'Phone Number',
                     name: 'phone',
                     required: false
-                },{
-                    type: 'file',
-                    label: 'Image',
-                    name: 'image',
-                    required: false
                 }
             ],
             form_data:{},
-            upload_file_flag: false,
         }
     },
     created(){
@@ -222,7 +204,6 @@ export default defineComponent({
                 coordinates:"",
                 email: "",
                 phone: "",
-                image:"",
                 user: this.user
             }
 
@@ -233,19 +214,10 @@ export default defineComponent({
         closeModal(){
             this.$emit('close')
         },
-        handleUploadedFileId(file){
-            this.form_data.image = file.data.id
-            try{
-                this.store(this.form_data)
-                this.initFormData()
-                this.closeModal()
-                this.upload_file_flag = false
-            }catch(error){
-                console.error(error)
-            }
-        },
         submit(){
-            this.upload_file_flag = true
+            this.store(this.form_data)
+            this.initFormData()
+            this.closeModal()
         }
     }
 })

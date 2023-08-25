@@ -28,6 +28,11 @@ class PageController extends Controller
         return view('pages.registration');
     }
 
+    public function buttetfly_counts()
+    {
+        return view('pages.butterfly-counts');
+        
+    }
     public function resources()
     {
         return view('pages.resources');
@@ -36,6 +41,11 @@ class PageController extends Controller
     public function calendar()
     {
         return view('pages.calendar');
+    }
+
+    public function validate_forms()
+    {
+        return view('pages.validate_forms');
     }
 
     public function register()

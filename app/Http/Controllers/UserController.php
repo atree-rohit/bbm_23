@@ -31,8 +31,16 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $user = User::where('email', $request->email)->first();
+        if (!$user || !password_verify($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Invalid email or password.',
+                'status' => 401,
+            ], 401);
+        }
+
         Auth::login($user, $remember = true);
         $token = $request->user()->createToken(Auth::user()->email);
+        
         return response()->json([
             'message' => 'User logged in successfully!',
             'token' => $token->plainTextToken,

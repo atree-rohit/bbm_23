@@ -28,7 +28,7 @@
                                 &lt;
                             </button>
                         </div>
-                        <div class="my-0 mx-5 h3">{{ current_district_coordinator_id }}</div>
+                        <div class="my-0 mx-5 h3">{{ current_district_coordinator_id + 1 }}</div>
                         <div>
                             <button
                                 class="btn btn-outline-secondary"
@@ -116,11 +116,6 @@ export default defineComponent({
                     type: 'text',
                     label: 'Phone Number',
                     name: 'phone',
-                    required: false
-                },{
-                    type: 'file',
-                    label: 'Image',
-                    name: 'image',
                     required: false
                 }
             ],
