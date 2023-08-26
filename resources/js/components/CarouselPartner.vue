@@ -4,7 +4,7 @@
     }
     .carousel-item.active{
         height: auto;
-        border: 1px solid red;
+        /* border: 1px solid red; */
         padding: 1rem;
         display: flex;
         flex-wrap: wrap;
