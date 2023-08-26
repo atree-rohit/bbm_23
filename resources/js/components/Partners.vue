@@ -82,50 +82,7 @@
             <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Partner">+</button>
         </div>
     </div>
-    
-    <div class="main-container m-4">
-        <div
-            class="card"
-            v-for="partner in all_data"
-            :key="partner.id"
-            @click="gotoLink(partner.link)"
-        >
-            <img
-                :src="partner.image_path"
-                class="card-img-top"
-            >
-            <div class="card-body">
-                <h5 class="card-title">{{ partner.name }}</h5>
-                <span class="card-badge badge" :class="badgeColor(partner.partner_type)">
-                    {{ partner.partner_type }}
-                </span>
-                <div class="hover-btns">
-                    <span
-                        class="card-edit badge bg-primary"
-                        v-if="user.user_type == 'super_admin'"
-                        @click.stop="editPartner(partner.id)"
-                        title="Edit Partner"
-                        v-text="'✎'"
-                    />
-                    <span
-                        class="card-delete badge bg-danger"
-                        v-if="user.user_type == 'super_admin'"
-                        @click.stop="deletePartner(partner.id)"
-                        title="Delete Partner"
-                        v-text="'X'"
-                    />
-                </div>
-            </div>
-            <div class="card-div-tags" v-if="partner.tags">
-                <span
-                    v-for="(tag, t) in get_tags(partner.tags)"
-                    :key="t"
-                    v-text="tag"
-                    class="card-div-tag badge rounded-pill bg-secondary me-2 px-3 py-2"
-                />
-            </div>
-        </div>
-    </div>
+    <carousel-partner />
     <modal-add-partner
         :show="show_modal.add"
         @close="show_modal.add=false"
@@ -149,6 +106,7 @@ import store from '../store'
 import ModalAddPartner from './ModalAddPartner.vue'
 import ModalEditPartner from './ModalEditPartner.vue'
 import ModalPartnerPoster from './ModalPartnerPoster.vue'
+import CarouselPartner from './CarouselPartner.vue'
 
 export default defineComponent({
     name: 'Partners',
@@ -156,6 +114,7 @@ export default defineComponent({
         ModalAddPartner,
         ModalEditPartner,
         ModalPartnerPoster,
+        CarouselPartner,
     },
     data(){
         return {
