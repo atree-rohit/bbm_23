@@ -1,11 +1,13 @@
 <style scoped>
     .carousel-wrapper {
         position: relative;
+        overflow: visible;
     }
     .carousel-item.active{
         height: auto;
         /* border: 1px solid red; */
-        padding: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 0.25rem;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
@@ -15,8 +17,8 @@
         grid-template-columns: repeat(6, 1fr);
     }
     .card{
-        min-width: 21%;
-        padding: 1rem;
+        min-width: 23%;
+        padding: 1rem 0.25rem;
         border-radius: 1rem;
         box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
     }
@@ -24,6 +26,12 @@
     .card-img{
         max-height: 5rem;
         object-fit: contain;
+    }
+
+    @media screen and (max-width: 768px){
+        .card{
+            max-width: 25%;
+        }
     }
 </style>
 
@@ -43,7 +51,7 @@
                             v-for="partner in item"
                             :key="partner.name"
                         >
-                            <div class="card-body">
+                            <div class="card-body p-0">
                                 <img
                                     :src="partner.image_path"
                                     class="card-img"
@@ -85,7 +93,7 @@ export default {
         return {
             activeIndex: 0,
             autoplayInterval: 2000,
-            slice_size: 8,
+            slice_size: 0,
             badge_color: {
                 'ngo': 'bg-info',
                 'research_organization': 'bg-info',
@@ -125,6 +133,11 @@ export default {
         }
     },
     mounted() {
+        if(window.innerWidth < 768) {
+            this.slice_size = 6
+        } else {
+            this.slice_size = 6
+        }
         this.startAutoplay();
     },
     beforeDestroy() {
