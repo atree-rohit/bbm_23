@@ -1,6 +1,10 @@
 <style scoped>
     .footer-container{
         padding: 0.25rem 0.5rem ;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2.5rem;
     }
     .footer-container>div a{
         display: flex;
@@ -21,15 +25,19 @@
     }
 
     @media screen and (max-width: 768px) {
-        .footer-container>div{
-            gap: 2px;
-            padding: 2px;
+        .footer-container{
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .footer-container>div a{
+            gap: 0.5rem;
+            padding: -5rem;
         }
     }
 </style>
 
 <template>
-    <div class="footer-container bg-info d-flex justify-content-center gap-5">
+    <div class="footer-container bg-info">
         <div>
             <a href="mailto://bigbutterflymonth@gmail.com">
                 <i class="bi bi-envelope text-primary"></i>
