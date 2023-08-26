@@ -13,61 +13,16 @@
         justify-content: center;
         gap: 1rem;
     }
-    .card{
-        width: 13rem;
-        position: relative;
-        transition: all var(--transition-time);
-        box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
-        border-radius: 0.67rem;
-        margin: 0.5rem;
-    }
 
-    
-    .card .card-body{
-        display: grid;
-        align-items: end;
-    }
-    .card .card-badge{
-        position: absolute;
-        font-size: .75rem;
-        bottom: 0.5rem;
-        right: 0.5rem;
-        font-weight: 300;
-        opacity: 0;
-        transition: all var(--transition-time);        
-    }
-
-    .hover-btns{
-        opacity: 0;
-        transition: all var(--transition-time);
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        font-size: .95rem;
+    .btn-container{
         display: flex;
-        gap: 0.25rem;
+        gap: 0.5rem;
     }
 
-    .hover-btns .badge{
-        transition: all var(--transition-time);
-    }
-
-    .card:hover,
-    .hover-btns .badge:hover{
-        cursor: pointer;
-        transform: scale(1.05);
-        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
-    }
-
-    .card-img-top{
-        width: auto;
-        height: 10rem;
-        object-fit: contain;
-    }
-
-    .card:hover .card-badge,
-    .card:hover .hover-btns{
-        opacity: 1;
+    @media screen and (max-width: 768px){
+        .btn-container .btn-lg{
+            padding: 0.5rem;
+        }
     }
 
 </style>
@@ -75,14 +30,26 @@
 <template>
     <div class="header d-flex px-2">
         <div class="h1">Partners</div>
-        <button class="btn btn-lg btn-primary mx-5" @click="show_modal.poster = true" title="Show Partner Poster">Partner Poster</button>
-        <div
-            v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
-        >
-            <button class="btn btn-lg btn-success mx-5" @click="show_modal.add = true" title="Add Partner">+</button>
+        <div class="btn-container">
+            <button
+                class="btn btn-lg btn-primary"
+                @click="show_modal.poster=true"
+                title="Show Partner Poster"
+            >
+                Partner Poster
+            </button>
+            <button
+                class="btn btn-lg btn-success"
+                v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
+                @click="show_modal.add=true"
+                title="Add Partner"
+            >
+                +
+            </button>
         </div>
     </div>
     <carousel-partner />
+
     <modal-add-partner
         :show="show_modal.add"
         @close="show_modal.add=false"
