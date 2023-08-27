@@ -175,7 +175,7 @@ export default defineComponent({
     },
 	mounted(){
 		console.log("Map mounted: initializing")
-		if(this.geojson){
+		if(this.geojson && this.mapData){
 			this.init()
 		}
 	},
@@ -234,6 +234,7 @@ export default defineComponent({
 			if(this.selected != null){
 				data = this.data.district
 			}
+			console.log("init_legend", data)
             this.max = d3.max(data, (d) => d.value) 
             this.colors = d3.scaleLinear()
                 .domain([0,1, this.max/3, this.max])

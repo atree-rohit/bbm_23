@@ -1,49 +1,71 @@
-// indexedDBUtils.js
-const DB_NAME = 'BBMCountsDB';
-const STORE_NAME = 'userDetailsStore';
+// idb.js
+function openDB(storeName) {
+    const DB_NAME = 'BBMCountsDB';
+    const DB_VERSION = 2; // Ensure that this version is updated when making changes
 
-export function openDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, 1);
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onerror = event => {
             reject('Error opening database');
         };
 
         request.onsuccess = event => {
-            resolve(event.target.result);
+            const db = event.target.result;
+            resolve(db);
         };
-
+        
         request.onupgradeneeded = event => {
             const db = event.target.result;
-            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+            if (!db.objectStoreNames.contains(storeName)) {
+                db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+            }
         };
     });
 }
 
-export function saveUserDetails(userDetails) {
-    openDB().then(db => {
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        store.put(userDetails);
-    });
-}
+export async function saveData(storeName, data) {
+    try {
+        console.log("saveData", storeName, data.length);
+        const { id, ...dataWithoutId } = data;
+        const db = await openDB(storeName);
+        const transaction = db.transaction([storeName], 'readwrite');
+        const store = transaction.objectStore(storeName);
+        const request = store.put(dataWithoutId);
 
-export function getUserDetails() {
-    return new Promise((resolve, reject) => {
-        openDB().then(db => {
-            const transaction = db.transaction([STORE_NAME], 'readonly');
-            const store = transaction.objectStore(STORE_NAME);
-            const request = store.get(1); // Assuming user_details is stored with ID 1
-
+        return new Promise((resolve, reject) => {
             request.onsuccess = event => {
-                const userDetails = event.target.result;
-                resolve(userDetails);
+                resolve();
             };
 
             request.onerror = event => {
-                reject('Error retrieving user details');
+                reject(`Error storing data in ${storeName}`);
             };
         });
+    } catch (error) {
+        throw new Error(`Error opening database: ${error}`);
+    }
+}
+
+export function getData(storeName) {
+    return new Promise((resolve, reject) => {
+        openDB(storeName)
+            .then(db => {
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.get(1);
+
+                request.onsuccess = event => {
+                    const data = event.target.result;
+                    resolve(data);
+                };
+
+                request.onerror = event => {
+                    reject(`Error retrieving data from ${storeName}`);
+                };
+            })
+            .catch(error => {
+                resolve(null);
+            });
     });
 }
