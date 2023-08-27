@@ -1,6 +1,6 @@
 {
   "DistrictCoordinators.css": {
-    "file": "assets/DistrictCoordinators-b78723d0.css",
+    "file": "assets/DistrictCoordinators-f29ec8de.css",
     "src": "DistrictCoordinators.css"
   },
   "Footer.css": {
@@ -11,11 +11,11 @@
     "file": "assets/Partners-1a053013.css",
     "src": "Partners.css"
   },
-  "_DistrictCoordinators-20aa0960.js": {
+  "_DistrictCoordinators-63568b31.js": {
     "css": [
-      "assets/DistrictCoordinators-b78723d0.css"
+      "assets/DistrictCoordinators-f29ec8de.css"
     ],
-    "file": "assets/DistrictCoordinators-20aa0960.js",
+    "file": "assets/DistrictCoordinators-63568b31.js",
     "imports": [
       "__plugin-vue_export-helper-38131454.js",
       "_indexRollupNext-d883a810.js"
@@ -87,11 +87,11 @@
       "assets/about-51e3106f.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/about-6453ba6e.js",
+    "file": "assets/about-dc398f41.js",
     "imports": [
       "__plugin-vue_export-helper-38131454.js",
       "_Partners-711ff1a4.js",
-      "_DistrictCoordinators-20aa0960.js",
+      "_DistrictCoordinators-63568b31.js",
       "_Footer-fb32b590.js",
       "_FileUploadComponent-c3c804f0.js",
       "_indexRollupNext-d883a810.js"
@@ -159,10 +159,10 @@
       "assets/how_to_participate-788bab93.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/how_to_participate-84fc6e39.js",
+    "file": "assets/how_to_participate-b11ec676.js",
     "imports": [
       "__plugin-vue_export-helper-38131454.js",
-      "_DistrictCoordinators-20aa0960.js",
+      "_DistrictCoordinators-63568b31.js",
       "_Footer-fb32b590.js",
       "_indexRollupNext-d883a810.js"
     ],

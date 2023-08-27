@@ -74,8 +74,6 @@
 <script>
 import { defineComponent } from 'vue'
 import { mapActions, mapState } from 'vuex'
-import states from '../json/states.json'
-import districts from '../json/districts.json'
 
 export default defineComponent({
     name: 'ModalAddPartner',
@@ -132,7 +130,6 @@ export default defineComponent({
         }
     },
     created(){
-        this.initSelectOptions()
         this.initFormData()
     },
     watch:{
@@ -143,11 +140,15 @@ export default defineComponent({
             } else {
                 body.classList.remove('modal-open')
             }
+        },
+        geojson(){
+            this.initSelectOptions()
         }
     },
     computed:{
         ...mapState({
             user: state => state.auth.user,
+            geojson: state => state.data.geojson,
         }),
         select_district_options(){
             let options = []
@@ -162,7 +163,7 @@ export default defineComponent({
                     value: "-1"
                 })
                 let op = []
-                districts.features.map(district => {
+                this.geojson.districts.features.map(district => {
                     if(this.valueFromLabel(district.properties.state) == this.form_data.state){
                         op.push({
                             label: district.properties.district.trim(),
@@ -184,7 +185,7 @@ export default defineComponent({
             store:'district_coordinators/store'
         }),
         initSelectOptions(){
-            this.form_questions[2].options = states.features.map(state => {
+            this.form_questions[2].options = this.geojson.states.features.map(state => {
                 return {
                     label: state.properties.state.trim(),
                     value: this.valueFromLabel(state.properties.state.trim())

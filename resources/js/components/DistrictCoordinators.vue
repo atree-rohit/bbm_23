@@ -229,13 +229,13 @@ export default defineComponent({
                 return ''
             }
             
-            return this.geojson.states?.features.find((s) => this.valueFromLabel(s.properties.state) == state_code)?.properties.state
+            return this.geojson.states.features.find((s) => this.valueFromLabel(s.properties.state) == state_code)?.properties.state
         },
         getDistrictName(district_code){
             if(district_code == -1 || this.geojson.districts.features == undefined){
                 return ''
             }
-            return this.geojson.districts?.features.find((s) => this.valueFromLabel(s.properties.district) == district_code)?.properties.district
+            return this.geojson.districts.features.find((s) => this.valueFromLabel(s.properties.district) == district_code)?.properties.district
         },
         headerSortClass(header){
             if(header == this.sort_col){
