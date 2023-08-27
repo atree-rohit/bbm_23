@@ -2,7 +2,7 @@ import axios from "axios"
 import butterfly_count_form from "../json/butterfly_count_form.json"
 import butterfly_lists from "../json/butterfly_lists.json"
 
-import { saveData, getData } from "../utils/idb"
+import { saveData, getData } from "../utils/idb_user.js"
 
 export default {
     namespaced: true,
@@ -21,7 +21,7 @@ export default {
         },
         SET_USER_DETAILS(state, user_details){
             state.user_details = user_details
-            saveData("userDetails", user_details)
+            saveData(user_details)
         },
         SET_USER_DATA(state, user_data){
             state.user_data = user_data
@@ -29,6 +29,7 @@ export default {
     },
     actions: {
         init({dispatch}){
+            console.log("init")
             dispatch("initNames")
             dispatch("initUserDetails")
         },
@@ -50,7 +51,8 @@ export default {
             commit("SET_USER_DETAILS", user_details)
         },
         async initUserDetails({commit, dispatch}){
-            const user_details = await getData("userDetails")
+            const user_details = await getData()
+            console.log(user_details)
             if(user_details){
                 commit("SET_USER_DETAILS", user_details)
                 console.log("ud", user_details)

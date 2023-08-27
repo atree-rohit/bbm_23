@@ -88,8 +88,6 @@ import { mapState } from 'vuex'
 import store from '../store'
 import * as d3 from 'd3'
 
-import districts from '../json/districts.json'
-
 import MapBBMData from './MapBBMData.vue'
 import DataTable from './DataTable.vue'
 
@@ -221,7 +219,8 @@ export default {
     computed: {
         ...mapState({
             observations: state => state.data.observations,
-            taxa: state => state.data.taxa
+            taxa: state => state.data.taxa,
+            geojson: state => state.data.geojson,
         }),
         observation_stats(){
             if(Object.keys(this.observations).length === 0) {
@@ -289,7 +288,7 @@ export default {
                 districts: this.countUnique(Object.values(portal_data).flat().map(x => x[3])),
             })
 
-            const state_districts = districts.features.filter((d) => d.properties.state === this.selected).map((d) => d.properties.district)
+            const state_districts = this.geojson.districts.features.filter((d) => d.properties.state === this.selected).map((d) => d.properties.district)
             state_districts.map((district) => {
                 let data = {}
                 Object.keys(this.observations).map((portal) => {

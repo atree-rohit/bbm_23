@@ -39,7 +39,7 @@ class DataController extends Controller
             return response()->json($cachedData);
         }
 
-        $limit = 10;
+        $limit = 100;
         $district_names = $this->get_district_names();
         
         $get = [

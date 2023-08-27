@@ -160,7 +160,10 @@ export default defineComponent({
         },
 		data(){
 			this.init()
-		}
+		},
+		// geojson(){
+		// 	this.init()			
+		// }
     },
     computed:{
         mapData(){
@@ -185,13 +188,14 @@ export default defineComponent({
 	},
     methods: {
         init(){
-			if(this.geojson[this.mode].features){
-                this.init_variables()
+			if(this.mapData && this.geojson[this.mode].features){
+				console.log("init", this.data, this.mapData)
+				this.init_variables()
                 this.init_legend()
                 this.init_svg()
                 this.render_map()
             } else {
-                console.log("No geojson")
+                console.log("No geojson", this.geojson ,this.mode)
             }
         },
         init_variables(){
@@ -230,11 +234,10 @@ export default defineComponent({
             this.colors = {}
             this.legend = {}
 			let data = this.mapData
-			console.log(this.data)
+			
 			if(this.selected != null){
-				data = this.data.district
+				data = this.data.districts
 			}
-			console.log("init_legend", data)
             this.max = d3.max(data, (d) => d.value) 
             this.colors = d3.scaleLinear()
                 .domain([0,1, this.max/3, this.max])
@@ -281,7 +284,7 @@ export default defineComponent({
 			
 			
 			if(this.selected != null){
-				let districts = this.geojson.district.features.filter((p) => p.properties.state == this.selected)
+				let districts = this.geojson.districts.features.filter((p) => p.properties.state == this.selected)
 				districts.map((polygon) => this.drawPolygon(polygon))
 			} else {
 				this.geojson[this.mode].features.forEach((polygon) => {
@@ -418,14 +421,16 @@ export default defineComponent({
 
 
         color_polygon(polygon) {
-			let mode = "state"
+			let mode = "states"
 			if(polygon.district != undefined){
-				mode = "district"
+				mode = "districts"
 			}
-			let polygon_data = this.data[mode].find((d) => d.name == polygon[mode])
+			let key = mode == "states" ? "state" : "district"
+			let polygon_data = this.data[mode].find((d) => d.name == polygon[key])
 			if(polygon_data){
-                return this.colors(polygon_data.value)
+				return this.colors(polygon_data.value)
 			}
+
             return this.colors(0)
         },
         handleZoom(e){
@@ -441,12 +446,12 @@ export default defineComponent({
 				.attr("r", text_size)
         },
         hover_text(properties){
-            let mode = "state"
+            let mode = "states"
 			if(properties.district != undefined){
-				mode = "district"
+				mode = "districts"
 			}
 
-			let op = ["state", "district"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
+			let op = ["states", "districts"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
             op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data[mode].find((d) => d.name == properties[mode])?.value || 0}</td></tr>`)
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			

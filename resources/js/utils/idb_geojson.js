@@ -1,13 +1,14 @@
 // idb.js
+
 function openDB(storeName) {
-    const DB_NAME = 'BBMCountsDB';
-    const DB_VERSION = 2; // Ensure that this version is updated when making changes
+    const DB_NAME = 'BBMCountsDBGeojson';
+    let DB_VERSION = 1; // Ensure that this version is updated when making changes
 
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onerror = event => {
-            reject('Error opening database');
+            reject(`Error opening database for store ${storeName}: ${event.target.error}`);
         };
 
         request.onsuccess = event => {
@@ -26,12 +27,12 @@ function openDB(storeName) {
 
 export async function saveData(storeName, data) {
     try {
-        console.log("saveData", storeName, data.length);
         const { id, ...dataWithoutId } = data;
         const db = await openDB(storeName);
         const transaction = db.transaction([storeName], 'readwrite');
         const store = transaction.objectStore(storeName);
         const request = store.put(dataWithoutId);
+        console.log('saveData', storeName, dataWithoutId)
 
         return new Promise((resolve, reject) => {
             request.onsuccess = event => {
@@ -47,25 +48,25 @@ export async function saveData(storeName, data) {
     }
 }
 
-export function getData(storeName) {
-    return new Promise((resolve, reject) => {
-        openDB(storeName)
-            .then(db => {
-                const transaction = db.transaction([storeName], 'readonly');
-                const store = transaction.objectStore(storeName);
-                const request = store.get(1);
+export async function getData(storeName) {
 
-                request.onsuccess = event => {
-                    const data = event.target.result;
-                    resolve(data);
-                };
+    try {
+        const db = await openDB(storeName);
+        const transaction = db.transaction([storeName], 'readonly');
+        const store = transaction.objectStore(storeName);
+        const request = store.get(1);
 
-                request.onerror = event => {
-                    reject(`Error retrieving data from ${storeName}`);
-                };
-            })
-            .catch(error => {
-                resolve(null);
-            });
-    });
+        return new Promise((resolve, reject) => {
+            request.onsuccess = event => {
+                const data = event.target.result;
+                resolve(data);
+            };
+
+            request.onerror = event => {
+                reject(`Error retrieving data from ${storeName}`);
+            };
+        });
+    } catch (error) {
+        return null;
+    }
 }

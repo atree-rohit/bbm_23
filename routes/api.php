@@ -49,7 +49,7 @@ Route::get('/district_coordinators', [DistrictCoordinatorController::class, 'all
 Route::post('/store_district_coordinator', [DistrictCoordinatorController::class, 'store']);
 Route::delete('/delete_district_coordinator/{id}', [DistrictCoordinatorController::class, 'delete']);
 
-Route::get('/maps/{slug}', [MapsController::class, 'index']);
+Route::get('/maps/geojson', [MapsController::class, 'index']);
 
 
 Route::get('/data/observations', [DataController::class, 'observations']);

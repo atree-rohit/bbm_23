@@ -1,7 +1,7 @@
 import axios from "axios"
 import * as d3 from "d3"
 
-import { saveData, getData } from "../utils/idb"    
+import { saveData, getData } from "../utils/idb_geojson.js"    
 
 export default {
     namespaced: true,
@@ -12,16 +12,12 @@ export default {
         taxa: [],
         districts: [],
         loading: null,
-        boundaries: {
+        geojson: {
             regions: {},
             states: {},
             districts: {}
         },
-        map_data: {
-            regions: [],
-            states: [],
-            districts: []
-        },
+        map_data: {},
         shouldPersist: false,
     },
     getters: {
@@ -49,7 +45,7 @@ export default {
             state.districts = value
         },
         SET_OBSERVATIONS(state, value) {
-            const place_names_map = new Map(state.boundaries.districts.features.map((d) => [d.properties.district, d.properties.state]))
+            const place_names_map = new Map(state.geojson.districts.features.map((d) => [d.properties.district, d.properties.state]))
             let op = []
             Object.keys(value).forEach((portal) => {
                 op[portal] = value[portal].map((d) => {
@@ -66,19 +62,19 @@ export default {
             })
             state.observations = op
         },
-        SET_BOUNDARY(state, value) {
-            // console.log("Set_boundary", value, state.boundaries)
-            state.boundaries[value.level] = JSON.parse(value.data)
+        SET_GEOJSON(state, value) {
+            state.geojson = value
+            // console.log("Set_geojson", value)
         },
         SET_MAP_DATA(state) {
             state.map_data = {
-                state: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[4]).map((p) => {
+                states: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[4]).map((p) => {
                     return {
                         name: p[0],
                         value: p[1]
                     }
                 }),
-                district: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[3]).map((p) => {
+                districts: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[3]).map((p) => {
                     return {
                         name: p[0],
                         value: p[1]
@@ -131,50 +127,18 @@ export default {
             }
         },
         async getMaps({ commit }) {
-            const levels = ["regions", "states", "districts"];
-    
-            try {
-                await Promise.all(levels.map(async level => {
-                    await processBoundary(commit, level);
-                }));
-            } catch (error) {
-                // Handle the error or log it if needed
+            let data = await getData("geojson")
+            if(!data){
+                const response = await axios.get('/api/maps/geojson');
+                data = response.data;
+                console.log('getMaps', response)
+                saveData("geojson", data);
             }
+            commit('SET_GEOJSON', data)
         },
         setLoading({ commit }, value) {
             commit('SET_LOADING', value)
             console.log("setLonading", value)
         }
-    }
-}
-
-async function fetchDataAndSave(storeName, apiEndpoint) {
-    try {
-        let data = await getData(storeName);
-        console.log("getData", storeName, typeof(data));
-        
-        if (!data) {
-            const response = await axios.get(apiEndpoint);
-            data = response.data;
-            console.log("apiData", storeName, typeof(data));
-            await saveData(storeName, data); // Wait for saveData to complete
-        }
-        
-        return data;
-    } catch (error) {
-        console.error(`Error retrieving data from ${storeName}`, error);
-        throw error; // Re-throw the error to propagate it upwards
-    }
-}
-
-async function processBoundary(commit, level) {
-    const storeName = `mapData_${level}`;
-    const apiEndpoint = `/api/maps/${level}`;
-    
-    try {
-        const data = await fetchDataAndSave(storeName, apiEndpoint);
-        commit('SET_BOUNDARY', { level: level, data: data });
-    } catch (error) {
-        // Handle the error or log it if needed
     }
 }
