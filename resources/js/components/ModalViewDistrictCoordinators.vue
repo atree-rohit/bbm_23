@@ -112,11 +112,6 @@ export default defineComponent({
                     label: 'Email',
                     name: 'email',
                     required: false
-                },{
-                    type: 'text',
-                    label: 'Phone Number',
-                    name: 'phone',
-                    required: false
                 }
             ],
             current_district_coordinator_id: 0,
