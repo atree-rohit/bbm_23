@@ -154,9 +154,6 @@ import store from '../store'
 import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
 import ModalViewDistrictCoordinators from './ModalViewDistrictCoordinators.vue'
 import MapDistrictCoordinator from './MapDistrictCoordinator.vue'
-import states from '../json/states.json'
-import districts from '../json/districts.json'
-
 
 export default defineComponent({
     name: 'DistrictCoordinators',
@@ -190,7 +187,8 @@ export default defineComponent({
     computed: {
         ...mapState({
             user: state => state.auth.user,
-            all_data: state => state.district_coordinators.all_data
+            all_data: state => state.district_coordinators.all_data,
+            geojson: state => state.data.geojson,
         }),
         auth(){
             return this.user && (this.user.user_type == 'super_admin' || this.user.user_type == 'admin')
@@ -206,6 +204,7 @@ export default defineComponent({
         }
     },
     created(){
+        store.dispatch('data/getMaps')
         store.dispatch('district_coordinators/getAllData')
     },
     methods:{
@@ -226,16 +225,17 @@ export default defineComponent({
             return str.replace(/\s/g, '_').toLowerCase()
         },
         getStateName(state_code){
-            if(state_code == -1){
+            if(state_code == -1 || this.geojson.states.features == undefined){
                 return ''
             }
-            return states.features.find((s) => this.valueFromLabel(s.properties.state) == state_code)?.properties.state
+            
+            return this.geojson.states?.features.find((s) => this.valueFromLabel(s.properties.state) == state_code)?.properties.state
         },
         getDistrictName(district_code){
-            if(district_code == -1){
+            if(district_code == -1 || this.geojson.districts.features == undefined){
                 return ''
             }
-            return districts.features.find((s) => this.valueFromLabel(s.properties.district) == district_code)?.properties.district
+            return this.geojson.districts?.features.find((s) => this.valueFromLabel(s.properties.district) == district_code)?.properties.district
         },
         headerSortClass(header){
             if(header == this.sort_col){
