@@ -4,6 +4,7 @@
     --active-clr: rgb(255,255,255);
 
     --transition-time: 500ms;
+    --mobile-breakpoint: 768px;
 }
 
 *{
