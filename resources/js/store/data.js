@@ -106,8 +106,8 @@ export default {
         async getObservations({ commit }) {
             // let data = await getObservationData()
             //need to do some sort of caching / busting here
-            if(!data){
-            }
+            // if(!data){
+            // }
             const response = await axios.get('/api/data/observations');
             let data = response.data;
             console.log('getObservations', response)
