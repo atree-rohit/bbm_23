@@ -31,55 +31,32 @@
         content: '▼';
         padding-left: 0.25rem;
     }
-
-    .card{
-        width: 13rem;
-        position: relative;
-        transition: all var(--transition-time);
-        box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
-        border-radius: 0.67rem;
+    .chip-container{
+        --color: #aaa;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        justify-content: center;
     }
 
-    
-    .card .card-body{
-        display: grid;
-        align-items: end;
-    }
-    .card .card-badge{
-        position: absolute;
-        font-size: .75rem;
-        bottom: 0;
-        right: 0;
-        font-weight: 300;
-        opacity: 0;
-        transition: all var(--transition-time);        
+    .chip{
+        border: 2px solid var(--color);
+        border-radius: 1rem;
+        overflow: hidden;
     }
 
-    .card-delete{
-        content: '🗑';
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: .75rem;
-        opacity: 0;
-        transition: all var(--transition-time);
+    .chip span{
+        padding: 0.5rem;
     }
 
-    .card:hover{
-        cursor: pointer;
-        transform: scale(1.05);
-        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
+    .chip-state{
+        font-weight: bold;
+        border: 1px solid var(--color);
     }
 
-    .card-img-top{
-        width: auto;
-        height: 10rem;
-        object-fit: contain;
-    }
-
-    .card:hover .card-badge,
-    .card:hover .card-delete{
-        opacity: 1;
+    .chip-coordinator{
+        background: var(--color);
+        padding: 0 0.5rem;
     }
 
 </style>
@@ -96,7 +73,21 @@
         </div>
         
         <div class="main-container m-4">
-            <table class="table table-primary">
+            <div class="chip-container">
+                <div
+                    class="chip"
+                    v-for="chip in chips"
+                    :key="chip.state"
+                    @click="polygonClick({name: chip.state})"
+                >
+                    <span class="chip-state" v-text="getStateName(chip.state)"/>
+                    <span class="chip-coordinator" v-text="chip.coordinators"/>
+                    <div class="coordinator-container">
+                        
+                    </div>
+                </div>
+            </div>
+            <table class="table table-primary" v-show="false">
                 <thead>
                     <tr>
                         <th
@@ -151,6 +142,7 @@
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
+import * as d3 from 'd3' 
 import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
 import ModalViewDistrictCoordinators from './ModalViewDistrictCoordinators.vue'
 import MapDistrictCoordinator from './MapDistrictCoordinator.vue'
@@ -199,6 +191,17 @@ export default defineComponent({
                     return a[this.sort_col] > b[this.sort_col] ? 1 : -1
                 }else{
                     return a[this.sort_col] < b[this.sort_col] ? 1 : -1
+                }
+            })
+        },
+        chip_data(){
+            return d3.groups(this.all_data, (p) => p.state)
+        },
+        chips(){
+            return this.chip_data.map((s) =>  {
+                return {
+                    state: s[0],
+                    coordinators: s[1].length
                 }
             })
         }
