@@ -72,7 +72,7 @@
             </div>
         </div>
         
-        <div class="main-container m-4">
+        <div class="main-container">
             <div class="chip-container">
                 <div
                     class="chip"
