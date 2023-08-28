@@ -7,17 +7,14 @@
     }
     
     .section-btn{
-        padding: 0.5rem 1.5rem;
-        margin: 0 1rem;
+        padding: 0.5rem;
+        margin: 0 0.25rem;
         text-transform: uppercase;
         font-size: 1.25rem;
         transition: all .25s ease;
     }
 
-    .section-card{
-        /* border: 1px solid red; */
-        margin: 1rem 2rem;
-    }
+    
 
     .section-card .section-card-body{
         margin:1rem;
@@ -49,6 +46,14 @@
     }
 
     @media screen and (min-width: 728px) {
+        .section-btn-container .section-btn{
+            padding: auto;
+        }
+
+        .section-card{
+            /* border: 1px solid red; */
+            margin: 1rem 2rem;
+        }
         .section-card .section-card-body{
             /* flex-direction: row; */
             display: grid;
