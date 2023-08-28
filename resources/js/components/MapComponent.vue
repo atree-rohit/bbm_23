@@ -3,8 +3,8 @@
 		font-size: 0.9rem !important;
 	}
 	#map{
-		display: flex;
-		justify-content: space-around;
+		/* display: flex;
+		justify-content: space-around; */
 	}
 	#map #map-stats{
 		border: 1px solid pink;
@@ -209,7 +209,7 @@ export default defineComponent({
             this.path = null
             this.svg = {}
             this.height = window.innerHeight * 0.8
-            this.width = window.innerWidth * 0.65
+            this.width = window.innerWidth
             if(window.innerWidth < 800){
 				this.projection = d3.geoMercator().scale(600).center([110, 20])
 			} else {
