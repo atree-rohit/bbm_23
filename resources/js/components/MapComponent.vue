@@ -196,7 +196,7 @@ export default defineComponent({
         init(){
 			console.log("init")
             if(this.geojson.features){
-                this.init_variables()
+				this.init_variables()
                 this.init_legend()
                 this.init_svg()
                 this.render_map()
@@ -396,7 +396,8 @@ export default defineComponent({
 
 
         color_polygon(polygon) {
-            let polygon_data = this.mapData.find((d) => d.name == polygon[this.mode])
+			let key = this.mode.slice(0, -1)
+            let polygon_data = this.mapData.find((d) => d.name == polygon[key])
 			if(polygon_data){
                 return this.colors(polygon_data.value)
 			}
