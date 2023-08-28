@@ -32,7 +32,7 @@
         padding-left: 0.25rem;
     }
     .chip-container{
-        --color: #aaa;
+        
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem 1rem;
@@ -40,13 +40,22 @@
     }
 
     .chip{
-        border: 2px solid var(--color);
+        --color: rgb(23, 161, 120);
+        border: .125rem solid var(--color);
         border-radius: 1rem;
         overflow: hidden;
+        cursor: pointer;
+        transition: all 1s;
     }
+
+    .chip:hover{
+        --color: red;
+    }
+    
 
     .chip span{
         padding: 0.5rem;
+        transition: all 1s;
     }
 
     .chip-state{
@@ -56,6 +65,8 @@
 
     .chip-coordinator{
         background: var(--color);
+        filter: hue-rotate(80deg) brightness(1.8);
+
         padding: 0 0.5rem;
     }
 
