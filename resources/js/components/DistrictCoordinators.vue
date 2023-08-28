@@ -98,7 +98,15 @@
                     </div>
                 </div>
             </div>
-            <table class="table table-primary" v-show="false">
+            <map-district-coordinator @polygon-clicked="polygonClick"/>
+            <modal-view-district-coordinators
+                :show="show_view_modal"
+                :data="selected_district_coordinator"
+                @close="show_view_modal=false"
+            />
+        </div>
+        <div class="admin-container" v-if="auth">        
+            <table class="table table-primary">
                 <thead>
                     <tr>
                         <th
@@ -135,12 +143,6 @@
                     </tr>
                 </tbody>
             </table>
-            <map-district-coordinator @polygon-clicked="polygonClick"/>
-            <modal-view-district-coordinators
-                :show="show_view_modal"
-                :data="selected_district_coordinator"
-                @close="show_view_modal=false"
-            />
         </div>
         <modal-add-district-coordinator
             :show="show_add_modal"
