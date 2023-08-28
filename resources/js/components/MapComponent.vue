@@ -211,6 +211,7 @@ export default defineComponent({
             this.height = window.innerHeight * 0.8
             this.width = window.innerWidth
             if(window.innerWidth < 800){
+				this.height = window.innerHeight * 0.6
 				this.projection = d3.geoMercator().scale(600).center([110, 20])
 			} else {
 				this.projection = d3.geoMercator().scale(1000).center([80, 27.5])
