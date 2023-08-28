@@ -23,6 +23,9 @@
         .btn-container .btn-lg{
             padding: 0.5rem;
         }
+        .mobile-hide{
+        display: none;
+        }
     }
 
 </style>
@@ -40,7 +43,7 @@
             </button>
             <button
                 class="btn btn-lg btn-success"
-                v-if="user && (user.user_type == 'super_admin' || user.user_type == 'admin')"
+                v-if="auth"
                 @click="show_modal.add=true"
                 title="Add Partner"
             >
@@ -49,6 +52,36 @@
         </div>
     </div>
     <carousel-partner />
+    <div v-if="auth" class="mt-3">
+        <table class="table table-sm table-hover">
+            <thead class="bg-info">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Contact Person</th>
+                    <th class="modile-hide">Link</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-info">
+                <tr
+                    v-for="partner in all_data"
+                    :key="partner.id"
+                >
+                    <td v-text="partner.name"/>
+                    <td v-text="partner.partner_type"/>
+                    <td v-text="partner.contact_person"/>
+                    <td class="mobile-hide" v-text="partner.link"/>
+                    <td class="d-flex justify-content-around bg-secondary">
+                        <button class="btn btn-sm btn-primary" @click="editPartner(partner.id)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @click="deletePartner(partner.id)">Delete</button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
 
     <modal-add-partner
         :show="show_modal.add"
@@ -97,9 +130,10 @@ export default defineComponent({
         ...mapState({
             user: state => state.auth.user,
             all_data: state => state.partners.all_data,
-            is_admin: state => state.auth.is_admin,
-            is_super_admin: state => state.auth.is_super_admin,
         }),
+        auth(){
+            return this.user && (this.user.user_type == 'super_admin' || this.user.user_type == 'admin')
+        }
     },
     mounted(){
         store.dispatch('partners/getAllData')
@@ -107,7 +141,7 @@ export default defineComponent({
     methods:{
         gotoLink(link){
             if(!link) return
-            if(this.is_admin || this.is_super_admin){
+            if(this.auth){
                 if(confirm('Do you want to visit the partner URL?')){
                     window.open(link, '_blank')
                 }
