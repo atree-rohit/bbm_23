@@ -216,7 +216,7 @@ export default defineComponent({
                     state: s[0],
                     coordinators: s[1].length
                 }
-            })
+            }).sort((a,b) => b.coordinators - a.coordinators)
         }
     },
     created(){
