@@ -22,54 +22,9 @@
         padding: 2.5rem 0;
         width: 100%;
     }
-    .card{
-        width: 20rem;
-        position: relative;
-        transition: all var(--transition-time);
-        box-shadow: 0.2rem 0.2rem 0.33rem .2rem rgba(0,0,0,0.125);
-        border-radius: 0.67rem;
-    }
 
-    
-    .card .card-body{
-        display: grid;
-        align-items: end;
-    }
-    .card .card-badge{
-        position: absolute;
-        font-size: .75rem;
-        bottom: 0;
-        right: 0;
-        font-weight: 300;
-        opacity: 0;
-        transition: all var(--transition-time);        
-    }
-
-    .card-delete{
-        content: '🗑';
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: .75rem;
-        opacity: 0;
-        transition: all var(--transition-time);
-    }
-
-    .card:hover{
-        cursor: pointer;
-        transform: scale(1.05);
-        box-shadow: 0.2rem 0.2rem .25rem .2rem rgba(0,0,0,0.5);
-    }
-
-    .card-img-top{
-        width: auto;
-        height: 10rem;
-        object-fit: contain;
-    }
-
-    .card:hover .card-badge,
-    .card:hover .card-delete{
-        opacity: 1;
+    .paragraphs-container{
+        padding: 0 2rem;
     }
 
     p.section-text{
@@ -80,6 +35,13 @@
         line-height: 1rem;
         color: var(--primary);
     }
+    
+    @media screen and (max-width: 768px){
+        .paragraphs-container{
+            padding: 0 1rem;
+        }
+    }
+
 
 </style>
 
@@ -89,7 +51,7 @@
     </div>
     
     <div class="main-container m-1">
-        <div class="section px-5">
+        <div class="section paragraphs-container">
             <p
                 v-for="(paragraph, p) in paragraphs"
                 :key="p"
