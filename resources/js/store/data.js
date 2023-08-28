@@ -2,6 +2,7 @@ import axios from "axios"
 import * as d3 from "d3"
 
 import { saveData, getData } from "../utils/idb_geojson.js"    
+import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
 
 export default {
     namespaced: true,
@@ -103,20 +104,23 @@ export default {
             commit('SET_LOADING', null)
         },
         async getObservations({ commit }) {
-            try {
-                const { data } = await axios.get('/api/data/observations')
-                commit('SET_LOADING', 'Setting Headers')
-                commit('SET_HEADERS', data.headers)
-                commit('SET_LOADING', 'Setting Users')
-                commit('SET_USERS', data.users)
-                commit('SET_LOADING', 'Setting Districts')
-                commit('SET_DISTRICTS_LIST', data.districts)
-                commit('SET_LOADING', 'Setting Observations')
-                commit('SET_OBSERVATIONS', data.observations)
-                commit('SET_LOADING', 'Setting Complete')
-            } catch (response) {
-                console.error("error retreiving Observations", response)
+            // let data = await getObservationData()
+            //need to do some sort of caching / busting here
+            if(!data){
             }
+            const response = await axios.get('/api/data/observations');
+            let data = response.data;
+            console.log('getObservations', response)
+            saveObservationData(data)
+            commit('SET_LOADING', 'Setting Headers')
+            commit('SET_HEADERS', data.headers)
+            commit('SET_LOADING', 'Setting Users')
+            commit('SET_USERS', data.users)
+            commit('SET_LOADING', 'Setting Districts')
+            commit('SET_DISTRICTS_LIST', data.districts)
+            commit('SET_LOADING', 'Setting Observations')
+            commit('SET_OBSERVATIONS', data.observations)
+            commit('SET_LOADING', 'Setting Complete')
         },
         async getTaxa({ commit }) {
             try {
