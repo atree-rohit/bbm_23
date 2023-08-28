@@ -5,11 +5,11 @@
 </style>
 
 <template>
-    <div class="map-container border border-danger rounded">
+    <div class="map-container rounded">
         <map-component
             :geojson='geojson[mode]'
             :data='map_data'
-            :modes="['state', 'district']"
+            :modes="['states', 'districts']"
             tooltip_third_row_label="Coordinator(/s)"
             @mode-change="mode = $event"
             @polygon-clicked="polygonClick"
@@ -46,13 +46,13 @@ export default defineComponent({
                     districts: this.geojson.districts.features.map(f => f.properties.district),
                 }
                 op = {
-                    state: all.states.map((s) => {
+                    states: all.states.map((s) => {
                         return {
                             name: s,
                             value: 0
                         }
                     }),
-                    district: all.districts.map((d) => {
+                    districts: all.districts.map((d) => {
                         return {
                             name: d,
                             value: 0
@@ -60,8 +60,8 @@ export default defineComponent({
                     })
                 }
                 this.district_coordinators.forEach((d) => {
-                    op.state.find((s, i) => d.state == this.valueFromLabel(s.name)).value += 1
-                    op.district.forEach((s) => {
+                    op.states.find((s, i) => d.state == this.valueFromLabel(s.name)).value += 1
+                    op.districts.forEach((s) => {
                         if(d.district == this.valueFromLabel(s.name)){
                             s.value += 1
                         }
