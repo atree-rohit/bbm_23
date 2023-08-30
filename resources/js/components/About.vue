@@ -61,9 +61,6 @@
             
         </div>
         <div class="section">
-            <partners />
-        </div>
-        <div class="section">
             <district-coordinators />
         </div>
     </div>
@@ -73,14 +70,12 @@
 <script>
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
-import Partners from './Partners.vue'
 import DistrictCoordinators from './DistrictCoordinators.vue'
 import Footer from './Footer.vue'
 
 export default defineComponent({
     name: 'About',
     components: {
-        Partners,
         DistrictCoordinators,
         Footer
     },
