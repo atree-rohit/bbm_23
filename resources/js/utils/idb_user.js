@@ -3,7 +3,7 @@ const STORE_NAME = 'userDetailsStore';
 
 export function openDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, 1);
+        const request = indexedDB.open(DB_NAME, 2);
 
         request.onerror = event => {
             reject('Error opening database');
