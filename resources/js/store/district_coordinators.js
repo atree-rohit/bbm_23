@@ -1,4 +1,5 @@
 import axios from "axios"
+import jsonData from "./dc.json"
 
 export default {
     namespaced: true,
@@ -31,6 +32,20 @@ export default {
                 commit('SET_ALL_DATA', data)
             } catch ({ response: { data: data_1 } }) {
                 console.error("error retreiving District Coordinators")
+            }
+        },
+        async importDC({ dispatch }, user) {
+            const time = 666
+            for (const item of jsonData) {
+                if(item.id >= 165 && item.id <=173 ){
+                    await new Promise(resolve => setTimeout(resolve, time)); // Wait for 1 seconds
+                    
+                    let data = { ...item, user: user };
+                    await dispatch('store', data);
+                    
+                    console.log(`After ${time} milli seconds`);
+
+                }
             }
         },
         async store({commit}, payload){
