@@ -53,21 +53,22 @@
 .upperwing, .lowerwing {
     background: linear-gradient(
 		-45deg,
-        hsl(0, 100%, 75%),
-        hsl(29, 100%, 75%),
-        hsl(24, 100%, 75%),
-        hsl(328, 100%, 75%),
-        hsl(300, 100%, 75%),
-        hsl(328, 100%, 75%),
-        hsl(199, 100%, 75%),
-        hsl(170, 100%, 75%),
-        hsl(155, 68%, 75%)
+        hsl(150, 100%, 75%),
+        hsl(200, 100%, 75%),
+        hsl(175, 100%, 75%),
+        hsl(225, 100%, 75%),
+        hsl(200, 100%, 75%),
+        hsl(250, 100%, 75%),
+        hsl(225, 100%, 75%),
+        hsl(275, 100%, 75%),
+        hsl(250, 68%, 75%)
 
 	);
     background-size: 400% 800%;
-    border: .125rem solid rgba(0,0,0,.5);
-    animation-duration: 0.75s;
+    border: .125rem solid rgba(255,255,255,.95);
+    animation-duration: 500ms;
     animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(1, .5, .4, 1);
     animation-direction: alternate;
 }
 
@@ -140,7 +141,7 @@
         opacity: .5;
     }
     to {
-        transform: rotateY(65deg);
+        transform: rotateY(75deg);
         background-position: 0% 50%;
         opacity: .75;
     }
@@ -152,11 +153,11 @@
         background-position: 0% 50%;
     }
     50% {
-        background-position: 100% -%0;
+        background-position: 100% 50%;
         opacity: .5;
     }
     to {
-        transform: rotateY(-65deg);
+        transform: rotateY(-75deg);
         background-position: 0% 50%;
         opacity: .75;
     }
