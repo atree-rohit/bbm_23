@@ -75,7 +75,7 @@
 <template>
     <div class="container-fluid">
         <div class="header d-flex px-2">
-            <div class="h1">District Coordinators</div>
+            <div class="h1">District Coordinators [{{ all_data.length }}]</div>
             <div
                 v-if="auth"
             >
