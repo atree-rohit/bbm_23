@@ -330,6 +330,7 @@ export default{
             if(this.species_list.length == 0){
                 op.species_list = false
             }
+            console.log("completed", op)
             return op
         },
         current_species_completed(){
