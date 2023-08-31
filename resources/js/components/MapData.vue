@@ -111,13 +111,11 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import store from '../store'
 import * as d3 from 'd3'
 import * as d3Legend from 'd3-svg-legend'
 
-
-export default defineComponent({
+export default{
     name: "MapData",
     props: {
         geojson: {
@@ -453,12 +451,18 @@ export default defineComponent({
         },
         hover_text(properties){
             let mode = "states"
+			let op = []
 			if(properties.district != undefined){
 				mode = "districts"
+				op.push(`<tr><td>District</td><td>${properties.district ? properties.district: "-"}</td></tr>`)	
+			} else {
+				let no_of_districts = this.geojson.districts.features.filter((d) => d.properties.state == properties.state).length
+				op.push(`<tr><td>State</td><td>${properties.state ? properties.state: "-"}</td></tr>`)	
+				op.push(`<tr><td>Districts</td><td>${no_of_districts}</td></tr>`)	
 			}
+			
 
-			let op = ["states", "districts"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
-            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data[mode].find((d) => d.name == properties[mode])?.value || 0}</td></tr>`)
+            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data[this.mode].find((d) => d.name == properties[this.mode_key])?.value || 0}</td></tr>`)
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			
 		},
@@ -469,5 +473,5 @@ export default defineComponent({
 			return str ? str.charAt(0).toUpperCase() + str.slice(1) : ""
 		},
     }
-})
+}
 </script>
