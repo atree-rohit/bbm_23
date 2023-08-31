@@ -70,6 +70,11 @@
         padding: 0 0.5rem;
     }
 
+    .admin-container{
+        max-width: 100%;
+        overflow: auto;
+    }
+
 </style>
 
 <template>
@@ -152,16 +157,14 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import store from '../store'
 import * as d3 from 'd3' 
 import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
 import ModalViewDistrictCoordinators from './ModalViewDistrictCoordinators.vue'
 import MapDistrictCoordinator from './MapDistrictCoordinator.vue'
-import dist from 'vuex-persistedstate'
 
-export default defineComponent({
+export default {
     name: 'DistrictCoordinators',
     components: {
         ModalAddDistrictCoordinator,
@@ -286,5 +289,5 @@ export default defineComponent({
             }
         }
     }
-})
+}
 </script>
