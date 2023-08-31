@@ -53,18 +53,18 @@
 .upperwing, .lowerwing {
     background: linear-gradient(
 		-45deg,
+        hsl(0, 100%, 75%),
+        hsl(50, 100%, 75%),
+        hsl(100, 100%, 75%),
         hsl(150, 100%, 75%),
         hsl(200, 100%, 75%),
-        hsl(175, 100%, 75%),
-        hsl(225, 100%, 75%),
-        hsl(200, 100%, 75%),
-        hsl(250, 100%, 75%),
-        hsl(225, 100%, 75%),
-        hsl(275, 100%, 75%),
-        hsl(250, 68%, 75%)
+        hsl(150, 100%, 75%),
+        hsl(100, 100%, 75%),
+        hsl(50, 100%, 75%),
+        hsl(0, 68%, 75%)
 
 	);
-    background-size: 400% 800%;
+    background-size: 200% 400%;
     border: .125rem solid rgba(255,255,255,.95);
     animation-duration: 500ms;
     animation-iteration-count: infinite;
@@ -107,7 +107,9 @@
     top: 0;
     width: 80%;
     height: 80%;
+    z-index: -9;
 }
+
 
 .lowerwing_left {
     right: 0;
