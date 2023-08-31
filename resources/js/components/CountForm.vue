@@ -89,6 +89,7 @@
 
 <template>
     <div class="container-fluid form-container">
+        {{ user_details }}
         <ul class="nav nav-tabs">
             <li
                 class="nav-item"
@@ -330,7 +331,6 @@ export default{
             if(this.species_list.length == 0){
                 op.species_list = false
             }
-            console.log("completed", op)
             return op
         },
         current_species_completed(){
@@ -399,6 +399,9 @@ export default{
             return op
         },
         tabClick(tab){
+            if(tab.value == 'location_details' && Object.keys(this.user_details).length == 0){
+                console.log("Save user Details")
+            }
             this.current_tab = tab.value
         },
         commonNameSelected(name){
