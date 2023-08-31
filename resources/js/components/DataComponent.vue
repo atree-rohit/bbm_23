@@ -39,6 +39,12 @@
     flex-shrink: 100;
     /* border: 2px solid #ff3; */
 }
+
+@media screen and (max-width: 768px){
+        .canvas{
+            flex-direction:column;
+        }
+    }
 </style>
 
 <template>
@@ -224,7 +230,7 @@ export default {
         }),
         observation_stats(){
             if(Object.keys(this.observations).length === 0) {
-                console.log("no observations")
+                // console.log("no observations")
                 return {}
             }
             let op = {
@@ -315,7 +321,6 @@ export default {
         }
     },
     created(){
-        console.log("dispatch")
         store.dispatch('data/getAllData')
     },
     methods: {

@@ -87,7 +87,7 @@ export default {
     },
     actions: {
         async getAllData({ commit, dispatch }) {
-            console.log("DATA getAllData")
+            // console.log("DATA getAllData")
             commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
 
@@ -110,7 +110,7 @@ export default {
             // }
             const response = await axios.get('/api/data/observations');
             let data = response.data;
-            console.log('getObservations', response)
+            // console.log('getObservations', response)
             saveObservationData(data)
             commit('SET_LOADING', 'Setting Headers')
             commit('SET_HEADERS', data.headers)
