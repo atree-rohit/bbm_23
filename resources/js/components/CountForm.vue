@@ -89,7 +89,6 @@
 
 <template>
     <div class="container-fluid form-container">
-        {{ user_details }}
         <ul class="nav nav-tabs">
             <li
                 class="nav-item"
@@ -347,11 +346,15 @@ export default{
         longitude(){
             this.form_data.coordinates = this.latitude + ',' + this.longitude
         },
+        user_details(){
+            this.initUserDetails()
+        }
     },
     created(){
         store.dispatch('locations/init')
         store.dispatch('butterfly_counts/init')
         this.initFormData()
+        this.initUserDetails()
     },
     methods:{
         initFormData(){
@@ -386,6 +389,16 @@ export default{
             }
             return
         },
+        initUserDetails(){
+            if(this.user_details && Object.keys(this.user_details).length > 0){
+                Object.keys(this.user_details).forEach((k) => {
+                    this.form_data[k] = this.user_details[k]
+                })
+                if(this.completed.user_details){
+                    this.tabClick({ label: "Location", value: "location_details" })
+                }
+            }
+        },
         tabClass(tab){
             let op = this.current_tab == tab.value ? 'active' : ''
             switch(tab.value){
@@ -400,10 +413,19 @@ export default{
         },
         tabClick(tab){
             if(tab.value == 'location_details' && Object.keys(this.user_details).length == 0){
-                console.log("Save user Details")
+                this.storeUserDetails()
             }
             this.current_tab = tab.value
         },
+        storeUserDetails(){
+            const fields = ["name", "affiliation", "phone", "email", "team_members", "open_access"]
+            let data = {}
+            fields.forEach((field) => {
+                data[field] = this.form_data[field]
+            })
+            // console.log(data)
+            store.dispatch('butterfly_counts/setUserDetails', data)
+        },  
         commonNameSelected(name){
             this.current_species.common_name = name
             let match = this.species_lists.synoptic.find((species) => species[1] == name)

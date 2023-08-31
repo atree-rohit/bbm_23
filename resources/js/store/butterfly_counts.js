@@ -21,7 +21,6 @@ export default {
         },
         SET_USER_DETAILS(state, user_details){
             state.user_details = user_details
-            saveData(user_details)
         },
         SET_USER_DATA(state, user_data){
             state.user_data = user_data
@@ -47,15 +46,15 @@ export default {
                 phone: form.phone,
                 email: form.email,
                 team_members: form.team_members,
+                open_access: form.open_access,
             }
             commit("SET_USER_DETAILS", user_details)
+            saveData(user_details)
         },
         async initUserDetails({commit, dispatch}){
             const user_details = await getData()
-            // console.log(user_details)
             if(user_details){
                 commit("SET_USER_DETAILS", user_details)
-                // console.log("ud", user_details)
                 dispatch("getUserData")
             }
         },
