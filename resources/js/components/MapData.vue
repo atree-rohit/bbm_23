@@ -105,7 +105,6 @@
 </style>
 
 <template>
-
     <div id="map">
         <div id="map-container"></div>
     </div>
@@ -175,6 +174,9 @@ export default defineComponent({
                 .translateExtent([[-0.5 * this.width,-0.75 * this.height],[2.5 * this.width, 2.5 * this.height]])
 				.on('zoom', this.handleZoom)
         },
+		mode_key(){
+			return this.mode.slice(0, -1)
+		}
     },
 	mounted(){
 		console.log("Map mounted: initializing")
@@ -189,24 +191,28 @@ export default defineComponent({
     methods: {
         init(){
 			if(this.mapData && this.geojson[this.mode].features){
-				console.log("init", this.data, this.mapData)
+				// console.log("init", this.data, this.mapData)
+				// console.log("init")
 				this.init_variables()
                 this.init_legend()
                 this.init_svg()
                 this.render_map()
             } else {
-                console.log("No geojson", this.geojson ,this.mode)
+                // console.log("No geojson", this.geojson ,this.mode_key)
+                console.log("No geojson")
             }
         },
         init_variables(){
             this.polygons = null
             this.path = null
             this.svg = {}
-            this.height = window.innerHeight * 0.9
-            this.width = window.innerWidth * 0.7
             if(window.innerWidth < 800){
+				this.width = window.innerWidth * 0.95
+				this.height = window.innerHeight * 0.66
 				this.projection = d3.geoMercator().scale(600).center([110, 20])
 			} else {
+				this.height = window.innerHeight * 0.9
+            	this.width = window.innerWidth * 0.7
 				this.projection = d3.geoMercator().scale(1000).center([80, 27.5])
 			}
 			this.path = d3.geoPath().projection(this.projection)
@@ -336,9 +342,9 @@ export default defineComponent({
         clicked(polygon_details) {
 			store.dispatch("data/setLoading", "Working")
 			let op = {
-				name: polygon_details.properties[this.mode],
+				name: polygon_details.properties[this.mode_key],
 				value: 0,
-				mode: this.mode
+				mode: this.mode_key
 			}
 			let polygon_data = this.mapData.find((d) => d.name == op.name)
 			op.value = polygon_data ? polygon_data.value : 0
@@ -349,11 +355,11 @@ export default defineComponent({
 		},
 		zoomToPolygon(polygon_details) {
             let target_polygon = null
-            if(this.selected == null || this.selected != polygon_details.properties[this.mode]){
+            if(this.selected == null || this.selected != polygon_details.properties[this.mode_key]){
                 target_polygon = polygon_details
-                this.selected = polygon_details.properties[this.mode]
+                this.selected = polygon_details.properties[this.mode_key]
             } else {
-                target_polygon = this.geojson[this.mode]
+                target_polygon = this.geojson[this.mode_key]
                 this.selected = null
             }
 			let [[x0, y0], [x1, y1]] = this.path.bounds(target_polygon)
