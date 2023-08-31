@@ -1,8 +1,8 @@
 // service-worker.js
-const CACHE_NAME = 'BBMCountsCache1.24';
+const CACHE_NAME = 'BBMCountsCache1.25';
 const urlsToCache = [
     '/',
-    '/build/assets/app-7a30ea22.css',
+    '/build/assets/app-7511b928.css',
     '/build/assets/app-4ed993c7.js',
     '/build/manifest.json',
     // Include other important assets
