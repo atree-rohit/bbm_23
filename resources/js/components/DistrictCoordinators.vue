@@ -86,6 +86,9 @@
             >
                 <button class="btn btn-lg btn-success mx-5" @click="show_add_modal = true" title="Add District Coordinator">+</button>
             </div>
+            <div v-else>
+                <a href="https://forms.gle/vyMg69M253TkEFd19" target=”_blank” class="btn btn-lg btn-success">Become A District Coordinator</a>
+            </div>
         </div>
         
         <div class="main-container">
