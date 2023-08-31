@@ -16,6 +16,11 @@
         font-size: 0.75rem;
         grid-template-columns: repeat(6, 1fr);
     }
+
+    .carousel-control-prev,
+    .carousel-control-next{
+        background:red;
+    }
     .card{
         min-width: 23%;
         padding: 1rem 0.25rem;
@@ -65,22 +70,26 @@
                 </div>
             </div>
 
-            <button
-                class="carousel-control-prev"
-                type="button"
-                @click="prevSlide"
-            >
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button
-                class="carousel-control-next"
-                type="button"
-                @click="nextSlide"
-            >
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            <div class="btns-container bg-info text-center">
+                Play Pause
+                <button
+                    class="carousel-control-prev"
+                    type="button"
+                    @click="prevSlide"
+                >
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button
+                    class="carousel-control-next"
+                    type="button"
+                    @click="nextSlide"
+                >
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+            </div>
         </div>
     </div>
 </template>

@@ -2,7 +2,7 @@
 
 function openDB(storeName) {
     const DB_NAME = 'BBMCountsDBGeojson';
-    let DB_VERSION = 3; // Ensure that this version is updated when making changes
+    let DB_VERSION = 4; // Ensure that this version is updated when making changes
 
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -32,7 +32,7 @@ export async function saveData(storeName, data) {
         const transaction = db.transaction([storeName], 'readwrite');
         const store = transaction.objectStore(storeName);
         const request = store.put(dataWithoutId);
-        console.log('saveData', storeName, dataWithoutId)
+        // console.log('saveData', storeName, dataWithoutId)
 
         return new Promise((resolve, reject) => {
             request.onsuccess = event => {
@@ -56,13 +56,22 @@ export async function getData(storeName) {
         const store = transaction.objectStore(storeName);
         const request = store.get(1);
 
+        const cursor = store.openCursor(null, 'prev');
+
         return new Promise((resolve, reject) => {
-            request.onsuccess = event => {
-                const data = event.target.result;
-                resolve(data);
+            cursor.onsuccess = event => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    // Get the data associated with the highest/latest key
+                    const data = cursor.value;
+                    resolve(data);
+                } else {
+                    // No more data to retrieve
+                    resolve(null);
+                }
             };
 
-            request.onerror = event => {
+            cursor.onerror = event => {
                 reject(`Error retrieving data from ${storeName}`);
             };
         });

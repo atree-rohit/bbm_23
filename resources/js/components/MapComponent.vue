@@ -183,14 +183,14 @@ export default defineComponent({
         },
     },
 	mounted(){
-		console.log("mounted: initializing")
-		if(this.geojson){
-			this.init()
-		}
+		// console.log("mounted: initializing")
+		// if(this.geojson && this.geojson.features){
+		// 	this.init()
+		// }
 	},
     updated(){
-		console.log("updated: re-initializing")
-		this.init()
+		// console.log("updated: re-initializing")
+		// this.init()
 	},
     methods: {
         init(){
