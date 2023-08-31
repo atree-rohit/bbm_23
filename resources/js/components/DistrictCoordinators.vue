@@ -159,6 +159,7 @@ import * as d3 from 'd3'
 import ModalAddDistrictCoordinator from './ModalAddDistrictCoordinator.vue'
 import ModalViewDistrictCoordinators from './ModalViewDistrictCoordinators.vue'
 import MapDistrictCoordinator from './MapDistrictCoordinator.vue'
+import dist from 'vuex-persistedstate'
 
 export default defineComponent({
     name: 'DistrictCoordinators',
@@ -230,11 +231,24 @@ export default defineComponent({
                 alert(`Current No Coordinators set for ${polygon.name}`)
                 return
             }
-            this.selected_district_coordinator = district_coordinators
+            const data = district_coordinators.map((d) => {
+                return {
+                    ...d,
+                    state_name: this.getStateName(d.state),
+                    district_name: this.getDistrictName(d.district)
+                }
+            })
+            this.selected_district_coordinator = data
+            // console.log(data)
             this.show_view_modal = true
         },
         showViewModal(district_coordinator){
-            this.selected_district_coordinator = [district_coordinator]
+            let data = {
+                ...district_coordinator,
+                state_name: this.getStateName(district_coordinator.state),
+                district_name: this.getDistrictName(district_coordinator.district),
+            }
+            this.selected_district_coordinator = [data]
             this.show_view_modal = true
         },
         valueFromLabel(str){

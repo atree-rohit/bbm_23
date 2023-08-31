@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 
-export default defineComponent({
+
+export default {
     name: 'ModalViewDistrictCoordinators',
     props: {
         show:{
@@ -93,13 +93,13 @@ export default defineComponent({
                 },{
                     type: 'select',
                     label: 'State',
-                    name: 'state',
+                    name: 'state_name',
                     required: true,
                     options: []
                 },{
                     type: 'select',
                     label: 'District',
-                    name: 'district',
+                    name: 'district_name',
                     required: true,
                     options: []
                 },{
@@ -138,5 +138,5 @@ export default defineComponent({
             this.$emit('close')
         },
     }
-})
+}
 </script>
