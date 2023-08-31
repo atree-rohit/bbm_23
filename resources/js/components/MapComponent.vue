@@ -189,8 +189,8 @@ export default defineComponent({
 		// }
 	},
     updated(){
-		// console.log("updated: re-initializing")
-		// this.init()
+		console.log("updated: re-initializing")
+		this.init()
 	},
     methods: {
         init(){
