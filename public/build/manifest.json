@@ -1,45 +1,45 @@
 {
   "DistrictCoordinators.css": {
-    "file": "assets/DistrictCoordinators-b2701e70.css",
+    "file": "assets/DistrictCoordinators-1e4cbfd1.css",
     "src": "DistrictCoordinators.css"
   },
   "Footer.css": {
     "file": "assets/Footer-534c752b.css",
     "src": "Footer.css"
   },
-  "_DistrictCoordinators-55a43922.js": {
+  "_DistrictCoordinators-ba442f51.js": {
     "css": [
-      "assets/DistrictCoordinators-b2701e70.css"
+      "assets/DistrictCoordinators-1e4cbfd1.css"
     ],
-    "file": "assets/DistrictCoordinators-55a43922.js",
+    "file": "assets/DistrictCoordinators-ba442f51.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js",
-      "_indexRollupNext-dc2a322c.js"
+      "__plugin-vue_export-helper-d9524ff1.js",
+      "_indexRollupNext-d49db328.js"
     ]
   },
-  "_FileUploadComponent-92c9b1fc.js": {
-    "file": "assets/FileUploadComponent-92c9b1fc.js",
+  "_FileUploadComponent-25806140.js": {
+    "file": "assets/FileUploadComponent-25806140.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ]
   },
-  "_Footer-e627ef7d.js": {
+  "_Footer-d1dc69f8.js": {
     "css": [
       "assets/Footer-534c752b.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/Footer-e627ef7d.js",
+    "file": "assets/Footer-d1dc69f8.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ]
   },
-  "__plugin-vue_export-helper-d6384633.js": {
-    "file": "assets/_plugin-vue_export-helper-d6384633.js"
+  "__plugin-vue_export-helper-d9524ff1.js": {
+    "file": "assets/_plugin-vue_export-helper-d9524ff1.js"
   },
-  "_indexRollupNext-dc2a322c.js": {
-    "file": "assets/indexRollupNext-dc2a322c.js",
+  "_indexRollupNext-d49db328.js": {
+    "file": "assets/indexRollupNext-d49db328.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ]
   },
   "bootstrap-icons.css": {
@@ -73,12 +73,12 @@
       "assets/about-306ac913.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/about-5abbf608.js",
+    "file": "assets/about-6a4ef081.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js",
-      "_DistrictCoordinators-55a43922.js",
-      "_Footer-e627ef7d.js",
-      "_indexRollupNext-dc2a322c.js"
+      "__plugin-vue_export-helper-d9524ff1.js",
+      "_DistrictCoordinators-ba442f51.js",
+      "_Footer-d1dc69f8.js",
+      "_indexRollupNext-d49db328.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/about.js"
@@ -92,9 +92,9 @@
       "assets/butterfly_counts-caa39c8e.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/butterfly_counts-9ef6edf8.js",
+    "file": "assets/butterfly_counts-9ef09fe6.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/butterfly_counts.js"
@@ -107,10 +107,10 @@
     "css": [
       "assets/data-ca932a5c.css"
     ],
-    "file": "assets/data-58fd0aab.js",
+    "file": "assets/data-7c9ae69d.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js",
-      "_indexRollupNext-dc2a322c.js"
+      "__plugin-vue_export-helper-d9524ff1.js",
+      "_indexRollupNext-d49db328.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/data.js"
@@ -124,11 +124,11 @@
       "assets/home-0dab0171.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/home-6d7bb87f.js",
+    "file": "assets/home-3b876007.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js",
-      "_FileUploadComponent-92c9b1fc.js",
-      "_Footer-e627ef7d.js"
+      "__plugin-vue_export-helper-d9524ff1.js",
+      "_FileUploadComponent-25806140.js",
+      "_Footer-d1dc69f8.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/home.js"
@@ -142,28 +142,28 @@
       "assets/how_to_participate-c4e45082.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/how_to_participate-68cff8d1.js",
+    "file": "assets/how_to_participate-c507f835.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js",
-      "_DistrictCoordinators-55a43922.js",
-      "_Footer-e627ef7d.js",
-      "_indexRollupNext-dc2a322c.js"
+      "__plugin-vue_export-helper-d9524ff1.js",
+      "_DistrictCoordinators-ba442f51.js",
+      "_Footer-d1dc69f8.js",
+      "_indexRollupNext-d49db328.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/how_to_participate.js"
   },
   "resources/js/pages/login.js": {
-    "file": "assets/login-aac0969e.js",
+    "file": "assets/login-a0dae5a4.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/login.js"
   },
   "resources/js/pages/logout.js": {
-    "file": "assets/logout-1869bc0e.js",
+    "file": "assets/logout-f4cc0635.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/logout.js"
@@ -176,17 +176,17 @@
     "css": [
       "assets/manage_users-d664e6fb.css"
     ],
-    "file": "assets/manage_users-6f877374.js",
+    "file": "assets/manage_users-6ab89685.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/manage_users.js"
   },
   "resources/js/pages/register.js": {
-    "file": "assets/register-abf60aa2.js",
+    "file": "assets/register-6e166d1b.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/register.js"
@@ -200,11 +200,11 @@
       "assets/resources-20d7e4d0.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/resources-898289e9.js",
+    "file": "assets/resources-330ae183.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js",
-      "_FileUploadComponent-92c9b1fc.js",
-      "_Footer-e627ef7d.js"
+      "__plugin-vue_export-helper-d9524ff1.js",
+      "_FileUploadComponent-25806140.js",
+      "_Footer-d1dc69f8.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/resources.js"
@@ -217,9 +217,9 @@
     "css": [
       "assets/validate_forms-c785e9c9.css"
     ],
-    "file": "assets/validate_forms-840aa604.js",
+    "file": "assets/validate_forms-f8bacaa2.js",
     "imports": [
-      "__plugin-vue_export-helper-d6384633.js"
+      "__plugin-vue_export-helper-d9524ff1.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/validate_forms.js"
