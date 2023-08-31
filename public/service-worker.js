@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = 'BBMCountsCache1.22';
+const CACHE_NAME = 'BBMCountsCache1.23';
 const urlsToCache = [
     '/',
     '/build/assets/app-7a30ea22.css',
@@ -51,8 +51,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          console.log("clear cache", cacheName);
           if (cacheName !== CACHE_NAME) {
+            console.log("clear cache", cacheName);
             return caches.delete(cacheName);
           }
         })

@@ -131,6 +131,7 @@ export default defineComponent({
     },
     created(){
         this.initFormData()
+        // this.importDC(this.user)
     },
     watch:{
         show(newVal){
@@ -146,7 +147,7 @@ export default defineComponent({
             if(this.user.user_type == "admin" || this.user.user_type == "super_admin"){
                 this.form_data.state = "jammu_&_kashmir"
                 // console.log("districts: ", this.form_questions[2].options)
-                console.log("districts: ", this.select_district_options)
+                // console.log("districts: ", this.select_district_options)
                 this.form_data.state = -1
             }
         }
@@ -188,7 +189,8 @@ export default defineComponent({
     },
     methods:{
         ...mapActions({
-            store:'district_coordinators/store'
+            store:'district_coordinators/store',
+            importDC:'district_coordinators/importDC',
         }),
         initSelectOptions(){
             this.form_questions[2].options = this.geojson.states.features.map(state => {
