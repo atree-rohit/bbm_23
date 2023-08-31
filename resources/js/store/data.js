@@ -21,16 +21,11 @@ export default {
         map_data: {},
         shouldPersist: false,
     },
-    getters: {
-        mapData(state) {
-            return {
-                states: d3.groups(state.observations, (d) => d[4]),
-                districts: d3.groups(state.observations, (d) => d[3])
-            }
-        }
-    },
     mutations: {
         SET_LOADING(state, value) {
+            if(value != null){
+                console.info("Loading:", value)
+            }
             state.loading = value
         },
         SET_TAXA(state, value) {
@@ -47,82 +42,90 @@ export default {
         },
         SET_OBSERVATIONS(state, value) {
             const place_names_map = new Map(state.geojson.districts.features.map((d) => [d.properties.district, d.properties.state]))
-            let op = []
-            Object.keys(value).forEach((portal) => {
-                op[portal] = value[portal].map((d) => {
+            let updatedObservations = []
+            Object.entries(value).forEach(([portal, observations]) => {
+                updatedObservations[portal] = observations.map((d) => {
                     const district = state.districts[d[4]]
-                    const state_name = place_names_map.get(district)
                     return [
                         state.users[portal][d[2]],
                         d[1],
                         d[3],
                         district,
-                        state_name
+                        place_names_map.get(district)
                     ]
                 })
             })
-            state.observations = op
+            state.observations = updatedObservations
         },
         SET_GEOJSON(state, value) {
             state.geojson = value
             // console.log("Set_geojson", value)
         },
         SET_MAP_DATA(state) {
+            const observationsArray = Object.values(state.observations).flat();
+            const mapData = observationsArray.reduce((acc, observation) => {
+                const stateName = observation[4];
+                const districtName = observation[3];
+                
+                if (!acc.states[stateName]) {
+                    acc.states[stateName] = 0;
+                }
+                acc.states[stateName]++;
+                
+                if (!acc.districts[districtName]) {
+                    acc.districts[districtName] = 0;
+                }
+                acc.districts[districtName]++;
+                
+                return acc;
+            }, { states: {}, districts: {} });
+
             state.map_data = {
-                states: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[4]).map((p) => {
-                    return {
-                        name: p[0],
-                        value: p[1]
-                    }
-                }),
-                districts: d3.rollups(Object.values(state.observations).flat(), (v) => v.length, (d) => d[3]).map((p) => {
-                    return {
-                        name: p[0],
-                        value: p[1]
-                    }
-                }),
-            }
+                states: Object.entries(mapData.states).map(([name, value]) => ({ name, value })),
+                districts: Object.entries(mapData.districts).map(([name, value]) => ({ name, value })),
+            };
         }
 
     },
     actions: {
         async getAllData({ commit, dispatch }) {
-            // console.log("DATA getAllData")
-            commit('SET_LOADING', 'Getting Taxa Details')
             await dispatch('getTaxa')
-
-            commit('SET_LOADING', 'Getting Map Data')
             await dispatch('getMaps')
-
-            commit('SET_LOADING', 'Getting Observations')
-            await dispatch('getObservations').then(() => {
-                commit('SET_LOADING', 'Setting Map Data')
-                commit('SET_MAP_DATA')
-            })
-
-
-            commit('SET_LOADING', null)
+            await dispatch('getObservations')
         },
         async getObservations({ commit }) {
-            // let data = await getObservationData()
-            //need to do some sort of caching / busting here
-            // if(!data){
-            // }
+            console.group("Loading Data")
+            commit('SET_LOADING', 'Getting Observations')
+            
+            await smallDelay()
+
             const response = await axios.get('/api/data/observations');
             let data = response.data;
-            // console.log('getObservations', response)
             saveObservationData(data)
             commit('SET_LOADING', 'Setting Headers')
             commit('SET_HEADERS', data.headers)
+            
             commit('SET_LOADING', 'Setting Users')
+            await smallDelay()
             commit('SET_USERS', data.users)
+            
             commit('SET_LOADING', 'Setting Districts')
+            await smallDelay()
             commit('SET_DISTRICTS_LIST', data.districts)
+            
             commit('SET_LOADING', 'Setting Observations')
+            await smallDelay()
             commit('SET_OBSERVATIONS', data.observations)
-            commit('SET_LOADING', 'Setting Complete')
+            
+            commit('SET_LOADING', 'Setting Map Data')
+            await smallDelay()
+            commit('SET_MAP_DATA')
+            console.groupEnd()
+            commit('SET_LOADING', null)
+            await smallDelay()
         },
         async getTaxa({ commit }) {
+            commit('SET_LOADING', 'Getting Taxa Details')
             try {
                 const { data } = await axios.get('/api/data/taxa')
                 commit('SET_TAXA', data)
@@ -131,6 +134,7 @@ export default {
             }
         },
         async getMaps({ commit }) {
+            commit('SET_LOADING', 'Getting Map Data')
             let data = await getData("geojson")
             if(!data){
                 const response = await axios.get('/api/maps/geojson');
@@ -142,7 +146,11 @@ export default {
         },
         setLoading({ commit }, value) {
             commit('SET_LOADING', value)
-            console.log("setLonading", value)
+            // console.log("setLoading", value)
         }
     }
+}
+
+async function smallDelay(){
+    await new Promise(resolve => setTimeout(resolve, 500));
 }
