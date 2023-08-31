@@ -49,7 +49,7 @@ export default {
         filtered_map_data(){
             let op = JSON.parse(JSON.stringify(this.map_data))
             if(this.selected.state != null){
-                const state_districts = this.geojson.district.features.filter((d) => d.properties.state === this.selected.state).map((d) => d.properties.district)
+                const state_districts = this.geojson.districts.features.filter((d) => d.properties.state === this.selected.state).map((d) => d.properties.district)
                 op.states = op.states.filter(d => d.name === this.selected.state)
                 op.districts = op.districts.filter(d => state_districts.includes(d.name))
             }
@@ -61,7 +61,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.geojson)
     },
     watch: {
         
