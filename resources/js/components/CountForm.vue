@@ -337,6 +337,16 @@ export default{
         },
         form_completed(){
             return this.completed.user_details && this.completed.location_details && this.completed.species_list
+        },
+        user_details_match(){
+            let op = true
+            const fields = ["name", "affiliation", "phone", "email", "team_members", "open_access"]
+            fields.forEach((field) => {
+                if(this.form_data[field] != this.user_details[field]){
+                    op = false
+                }
+            })
+            return op
         }
     },
     watch:{
@@ -412,7 +422,7 @@ export default{
             return op
         },
         tabClick(tab){
-            if(tab.value == 'location_details' && Object.keys(this.user_details).length == 0){
+            if(tab.value == 'location_details' && !this.user_details_match){
                 this.storeUserDetails()
             }
             this.current_tab = tab.value
@@ -423,7 +433,6 @@ export default{
             fields.forEach((field) => {
                 data[field] = this.form_data[field]
             })
-            // console.log(data)
             store.dispatch('butterfly_counts/setUserDetails', data)
         },  
         commonNameSelected(name){
