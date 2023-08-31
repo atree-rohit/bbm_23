@@ -22,6 +22,7 @@
     right: 0;
     bottom: 0;
     left: 0;
+    opacity: .75;
     border-radius: 50%;
     background: rgba(138, 43, 226, 0.05);
 }
@@ -50,15 +51,6 @@
     box-shadow: 0 0 1rem 0 rgb(255, 238, 0), inset 0 0 10px 0 rgb(255, 238, 0);
 }
 
-.loading-container .text{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    font-size: 1.75rem;
-    color: white;
-}
-
 @keyframes rt {
     100% {
         transform: rotate(360deg);
@@ -73,15 +65,22 @@
         <div class="circle"></div>
         <div class="circle"></div>
         <div class="circle"></div>
-        <div class="text">{{loading}}</div>
+        <ButterflyAnimation>
+            <div class="text">{{loading}}</div>
+        </ButterflyAnimation>        
+        <slot></slot>>
     </div>
 
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import ButterflyAnimation from './ButterflyAnimation.vue';
 export default {
     name: "LoadingData",
+    components: {
+        ButterflyAnimation
+    },
     computed: {
         ...mapState({
             loading: state => state.data.loading,
