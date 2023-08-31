@@ -40,7 +40,6 @@ export function getData() {
 
             request.onsuccess = event => {
                 const userDetails = event.target.result;
-                console.log(event, userDetails)
                 resolve(userDetails);
             };
 
