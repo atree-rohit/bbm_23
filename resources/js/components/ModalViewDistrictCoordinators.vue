@@ -53,7 +53,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
-                    <button type="button" class="btn btn-success" @click="submit">Save changes</button>
+                    <!-- <button type="button" class="btn btn-success" @click="submit">Save changes</button> -->
                 </div>
             </div>
         </div>
