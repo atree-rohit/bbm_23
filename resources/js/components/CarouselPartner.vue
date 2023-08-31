@@ -17,10 +17,10 @@
         grid-template-columns: repeat(6, 1fr);
     }
 
-    .carousel-control-prev,
+    /* .carousel-control-prev,
     .carousel-control-next{
         background:red;
-    }
+    } */
     .card{
         min-width: 23%;
         padding: 1rem 0.25rem;
@@ -70,8 +70,8 @@
                 </div>
             </div>
 
-            <div class="btns-container bg-info text-center">
-                Play Pause
+            <div class="btns-container ">
+                <!-- Play Pause bg-info text-center -->
                 <button
                     class="carousel-control-prev"
                     type="button"
