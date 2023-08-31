@@ -100,14 +100,14 @@
     "src": "resources/js/pages/butterfly_counts.js"
   },
   "resources/js/pages/data.css": {
-    "file": "assets/data-31ea3cf9.css",
+    "file": "assets/data-a6479854.css",
     "src": "resources/js/pages/data.css"
   },
   "resources/js/pages/data.js": {
     "css": [
-      "assets/data-31ea3cf9.css"
+      "assets/data-a6479854.css"
     ],
-    "file": "assets/data-fee74b03.js",
+    "file": "assets/data-989db239.js",
     "imports": [
       "__plugin-vue_export-helper-76231f34.js",
       "_indexRollupNext-57e50435.js"
