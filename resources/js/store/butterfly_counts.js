@@ -29,7 +29,7 @@ export default {
     },
     actions: {
         init({dispatch}){
-            console.log("init")
+            // console.log("init")
             dispatch("initNames")
             dispatch("initUserDetails")
         },
@@ -52,17 +52,17 @@ export default {
         },
         async initUserDetails({commit, dispatch}){
             const user_details = await getData()
-            console.log(user_details)
+            // console.log(user_details)
             if(user_details){
                 commit("SET_USER_DETAILS", user_details)
-                console.log("ud", user_details)
+                // console.log("ud", user_details)
                 dispatch("getUserData")
             }
         },
         async getUserData({commit, state}){
             const user_data = await axios.get("/api/user_count_forms", {params: state.user_details})
             if(user_data.data.length > 0){
-                console.log("ud", user_data)
+                // console.log("ud", user_data)
                 commit("SET_USER_DATA", user_data.data)
             }
         }
