@@ -181,6 +181,9 @@ export default defineComponent({
                 .translateExtent([[-0.5 * this.width,-0.75 * this.height],[2.5 * this.width, 2.5 * this.height]])
 				.on('zoom', this.handleZoom)
         },
+		mode_key(){
+			return this.mode.slice(0, -1)
+		}
     },
 	mounted(){
 		// console.log("mounted: initializing")
@@ -342,7 +345,7 @@ export default defineComponent({
 		},
         clicked(polygon_details) {
 			let op = {
-				name: polygon_details.properties[this.mode],
+				name: polygon_details.properties[this.mode_key],
 				value: 0,
 				mode: this.mode
 			}
@@ -396,8 +399,7 @@ export default defineComponent({
 
 
         color_polygon(polygon) {
-			let key = this.mode.slice(0, -1)
-            let polygon_data = this.mapData.find((d) => d.name == polygon[key])
+			let polygon_data = this.mapData.find((d) => d.name == polygon[this.mode_key])
 			if(polygon_data){
                 return this.colors(polygon_data.value)
 			}
@@ -416,9 +418,8 @@ export default defineComponent({
 				.attr("r", text_size)
         },
         hover_text(properties){
-            
 			let op = ["state", "district"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
-            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.mapData.find((d) => d.name == properties[this.mode])?.value || 0}</td></tr>`)
+            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.mapData.find((d) => d.name == properties[this.mode_key])?.value || 0}</td></tr>`)
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			
 		},
