@@ -30,14 +30,14 @@ class DataController extends Controller
     {
         ini_set('memory_limit', '256M');
 
-        $cacheKey = 'observations_data';
-        $cacheDuration = now()->addSeconds(600);
+        // $cacheKey = 'observations_data';
+        // $cacheDuration = now()->addSeconds(600);
 
-        $cachedData = Cache::get($cacheKey);
+        // $cachedData = Cache::get($cacheKey);
 
-        if ($cachedData) {
-            return response()->json($cachedData);
-        }
+        // if ($cachedData) {
+        //     return response()->json($cachedData);
+        // }
 
         $limit = -1;
         $district_names = $this->get_district_names();
@@ -65,7 +65,7 @@ class DataController extends Controller
             "districts" => $district_names,
         ];
 
-        Cache::put($cacheKey, $data, $cacheDuration);
+        // Cache::put($cacheKey, $data, $cacheDuration);
         
         return response()->json($data);
     }
@@ -111,9 +111,10 @@ class DataController extends Controller
                 "id" => -1,
                 "taxa" => -1,
                 "user" => $user_id,
-                "date" => $form->date_cleaned,
+                "date" => $this->fixDate($form->date, $form->date_cleaned),
                 "district" => $district_id,
             ];
+            // dd($row);
             foreach($form->species_list as $species){
                 $row["id"] = $species->id;
                 $row["taxa"] = $species->taxa_id;
@@ -125,6 +126,17 @@ class DataController extends Controller
             "users" => $users
         ];
         return $return_data;
+    }
+
+    public function fixDate($date1, $date2){
+        $dateToClean = isset($date2) ? $date2 : $date1;
+        $timestamp = strtotime($dateToClean);
+        if ($timestamp === false) {
+            return "Invalid Date";
+        } else {
+            return date("Y-m-d", $timestamp);
+        }
+
     }
 
     public function get_inat_data($limit, $district_names)
@@ -457,6 +469,7 @@ class DataController extends Controller
     {
         ini_set('max_execution_time', 300);
 
+        $existing_taxa_ids = Taxa::all()->pluck("id")->toArray();
         $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
         
         $latest = INat::orderBy('id', 'desc')->first();        
@@ -470,11 +483,13 @@ class DataController extends Controller
         $page = 1;
         $totalPages = 1;
         
-        $saved = ["added" => 0, "skipped" => 0];
+        $saved = ["added" => 0, "skipped" => 0, "taxa_added" => 0];
         
 
         do {
             $url = $base_url.http_build_query($params)."&page=".$page;
+            echo "$url<br>";
+            // dd($url);
             $data = json_decode(file_get_contents($url));
             
             foreach($data->results as $d){
@@ -482,6 +497,11 @@ class DataController extends Controller
                 if($existingINat){
                     $saved["skipped"]++;
                 } else {
+                    if(!in_array($d->taxon->id, $existing_taxa_ids)){
+                        $this->addTaxa($d->taxon);
+                        $existing_taxa_ids[] = $d->taxon->id;
+                        $saved["taxa_added"]++;
+                    }
                     $coordinates = explode(",", $d->location);
                     $inat = new INat();
                     $inat->id = $d->id;
@@ -555,6 +575,17 @@ class DataController extends Controller
         }
     
         return ($intersections % 2) == 1;
+    }
+
+    private function addTaxa($taxa){
+        $taxa = new Taxa();
+        //id, name, common_name, rank, ancestry
+        $taxa->id = $taxa->id;
+        $taxa->name = $taxa->name ?? "";
+        $taxa->common_name = $taxa->preferred_common_name;
+        $taxa->rank = $taxa->rank;
+        $taxa->ancestry = $taxa->ancestry;
+        $taxa->save();
     }
 
 }
