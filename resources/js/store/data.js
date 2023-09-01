@@ -18,6 +18,12 @@ export default {
             states: {},
             districts: {}
         },
+        filters:{
+            year: null,
+            portal: null,
+            state: null,
+            district: null,
+        },
         map_data: {},
         shouldPersist: false,
     },
@@ -62,28 +68,41 @@ export default {
             // console.log("Set_geojson", value)
         },
         SET_MAP_DATA(state) {
-            const observationsArray = Object.values(state.observations).flat();
+            let observationsArray = Object.values(state.observations).flat()
+            if(state.filters.year){
+                    const filteredArray = observationsArray.filter(item => {
+                    const dateParts = item[2].split("-");
+                    const yearInDate = dateParts[0];
+                    return yearInDate == state.filters.year;
+                });
+                
+                observationsArray = filteredArray
+            }
+            console.log(observationsArray[0])
             const mapData = observationsArray.reduce((acc, observation) => {
-                const stateName = observation[4];
-                const districtName = observation[3];
+                const stateName = observation[4]
+                const districtName = observation[3]
                 
                 if (!acc.states[stateName]) {
-                    acc.states[stateName] = 0;
+                    acc.states[stateName] = 0
                 }
-                acc.states[stateName]++;
+                acc.states[stateName]++
                 
                 if (!acc.districts[districtName]) {
-                    acc.districts[districtName] = 0;
+                    acc.districts[districtName] = 0
                 }
-                acc.districts[districtName]++;
+                acc.districts[districtName]++
                 
-                return acc;
-            }, { states: {}, districts: {} });
+                return acc
+            }, { states: {}, districts: {} })
 
             state.map_data = {
                 states: Object.entries(mapData.states).map(([name, value]) => ({ name, value })),
                 districts: Object.entries(mapData.districts).map(([name, value]) => ({ name, value })),
-            };
+            }
+        },
+        SET_FILTER(state, data){
+            state.filters[data.field] = data.value
         }
 
     },
@@ -147,6 +166,16 @@ export default {
         setLoading({ commit }, value) {
             commit('SET_LOADING', value)
             // console.log("setLoading", value)
+        },
+        async setFilter({commit}, data){
+            console.group("Updating Map Data")
+            commit('SET_LOADING', 'Setting Filter')
+            commit('SET_FILTER', data)
+            await smallDelay()
+            commit('SET_LOADING', 'Setting Map Data')
+            commit('SET_MAP_DATA')
+            console.groupEnd()
+            commit('SET_LOADING', null)
         }
     }
 }

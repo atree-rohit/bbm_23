@@ -6,6 +6,18 @@
 
 <template>
     <div class="map-container">
+        <div class="border border-danger d-flex justify-content-center py-1">
+            <button
+                class="btn btn-sm mx-1"
+                v-for="year in years"
+                :key="year"
+                :class="{'btn-success': (year === selected_year || selected_year == null ), 'btn-outline-light': (year !== selected_year)}"
+                @click="selectYear(year)"
+                v-text="year"
+            >
+
+            </button>            
+        </div>
         <loading-data />
         <map-data
             :geojson='geojson'
@@ -34,6 +46,8 @@ export default {
     data() {
         return {
             mode: 'states',
+            years: [2020, 2021, 2022, 2023],
+            selected_year: null,
             selected: {
                 states: null,
                 districts: null,
@@ -62,8 +76,10 @@ export default {
     },
     mounted(){
     },
-    watch: {
-        
+    watch: {        
+        map_data(newVal){
+            console.log(newVal)
+        }
     },
     methods:{
         valueFromLabel(str){
@@ -73,6 +89,14 @@ export default {
             this.selected[data.mode] = this.selected[data.mode] === data.name ? null : data.name
             this.selected[data.mode === 'state' ? 'district' : 'state'] = null
             this.$emit('state-selected', this.selected)
+        },
+        selectYear(year){
+            if(this.selected_year == year){
+                this.selected_year = null
+            } else {
+                this.selected_year = year
+            }
+            store.dispatch('data/setFilter', {field:"year", value: this.selected_year})
         }
     }
 }
