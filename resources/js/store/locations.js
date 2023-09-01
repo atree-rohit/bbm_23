@@ -75,7 +75,7 @@ export default {
                         state.points.length >= tolerance.repeats
                     ) {
                         commit("SET_GETTING_COORDINATES", false)
-                        console.log(state.points)
+                        // console.log(state.points)
                     } else {
                     setTimeout(() => {
                         dispatch("getCoordinates")
