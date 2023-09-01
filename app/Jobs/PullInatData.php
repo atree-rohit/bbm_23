@@ -29,7 +29,7 @@ class PullInatData implements ShouldQueue
      */
     public function handle(): void
     {
-        $existing_taxa_ids = Taxa::all()->pluck("id")->toArray();
+        $existing_taxa_ids = Taxa::pluck('id');
         $districts = json_decode(file_get_contents(public_path('/json/districts_1.json')));
         
         $latest = INat::orderBy('id', 'desc')->first();        
