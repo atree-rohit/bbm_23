@@ -197,6 +197,7 @@ export default {
             commit('SET_LOADING', null)
         },
         async pullInat({ commit }) {
+            console.log("pullInat")
             let response = await axios.get('/api/data/pull_inat');
             if(response){
                 console.log(response)
