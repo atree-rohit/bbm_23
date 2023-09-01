@@ -9,6 +9,7 @@ export default {
     state: {
         headers: [],
         observations: [],
+        filtered_observations: [],
         users: [],
         taxa: [],
         districts: [],
@@ -63,23 +64,29 @@ export default {
             })
             state.observations = updatedObservations
         },
+        SET_FILTERED_OBSERVATIONS(state){
+            let op = {}
+            if(state.filters.year){
+                Object.keys(state.observations).forEach((portal) => {
+                    op[portal] = state.observations[portal].filter((d) => {
+                        const dateParts = d[2].split("-");
+                        const yearInDate = dateParts[0];
+                        return yearInDate == state.filters.year;
+                    })
+                })
+            } else {
+                op = state.observations
+            }
+            console.log(op)
+            state.filtered_observations = op
+        },
         SET_GEOJSON(state, value) {
             state.geojson = value
             // console.log("Set_geojson", value)
         },
         SET_MAP_DATA(state) {
-            let observationsArray = Object.values(state.observations).flat()
-            if(state.filters.year){
-                    const filteredArray = observationsArray.filter(item => {
-                    const dateParts = item[2].split("-");
-                    const yearInDate = dateParts[0];
-                    return yearInDate == state.filters.year;
-                });
-                
-                observationsArray = filteredArray
-            }
-            console.log(observationsArray[0])
-            const mapData = observationsArray.reduce((acc, observation) => {
+            const flatData = Object.values(state.filtered_observations).flat()
+            const mapData = flatData.reduce((acc, observation) => {
                 const stateName = observation[4]
                 const districtName = observation[3]
                 
@@ -135,6 +142,10 @@ export default {
             commit('SET_LOADING', 'Setting Observations')
             await smallDelay()
             commit('SET_OBSERVATIONS', data.observations)
+
+            commit('SET_LOADING', 'Setting Filtered Observations')
+            await smallDelay()
+            commit('SET_FILTERED_OBSERVATIONS')
             
             commit('SET_LOADING', 'Setting Map Data')
             await smallDelay()
@@ -169,13 +180,27 @@ export default {
         },
         async setFilter({commit}, data){
             console.group("Updating Map Data")
+            
             commit('SET_LOADING', 'Setting Filter')
-            commit('SET_FILTER', data)
             await smallDelay()
+            commit('SET_FILTER', data)
+
+            commit('SET_LOADING', 'Setting Filtered Observations')
+            await smallDelay()
+            commit('SET_FILTERED_OBSERVATIONS')
+            
             commit('SET_LOADING', 'Setting Map Data')
+            await smallDelay()
             commit('SET_MAP_DATA')
+
             console.groupEnd()
             commit('SET_LOADING', null)
+        },
+        async pullInat({ commit }) {
+            let response = await axios.get('/api/data/pull_inat');
+            if(response){
+                console.log(response)
+            }
         }
     }
 }

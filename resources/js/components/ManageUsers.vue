@@ -98,6 +98,7 @@
             :data="modal_data"
             @close="show_modal=false"
         />
+        <button class="btn btn-sm btn-danger mb-5" @click="pullInat">Pull Inat</button>
     </div>
     <div class="main-container btn-danger d-flex justify-content-center align-items-center" style="height: 20rem; font-size: 3.5vw; font-weight: 100;" v-else>
         You Need to be Logged In to View This Page
@@ -143,7 +144,7 @@ export default defineComponent({
                     updated_at: log.updated_at,
                 })
             }
-            return op
+            return op.reverse()
         }
     },
     mounted(){
@@ -166,6 +167,9 @@ export default defineComponent({
             if(confirm('Are you sure you want to delete this user?')){
                 store.dispatch('manage_users/delete', id)
             }
+        },
+        pullInat(){
+            store.dispatch('data/pullInat')
         }
     }
 })

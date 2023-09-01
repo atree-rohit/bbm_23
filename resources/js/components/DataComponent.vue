@@ -224,21 +224,22 @@ export default {
     },
     computed: {
         ...mapState({
+            filtered_observations: state => state.data.filtered_observations,
             observations: state => state.data.observations,
             taxa: state => state.data.taxa,
             geojson: state => state.data.geojson,
         }),
         observation_stats(){
-            if(Object.keys(this.observations).length === 0) {
+            if(Object.keys(this.filtered_observations).length === 0) {
                 // console.log("no observations")
                 return {}
             }
             let op = {
-                counts: this.observationStats(this.observations.counts),
-                inat: this.observationStats(this.observations.inats),
-                ibp: this.observationStats(this.observations.ibps),
-                ifb: this.observationStats(this.observations.ifbs),
-                total: this.observationStats([].concat(...Object.values(this.observations))),
+                counts: this.observationStats(this.filtered_observations.counts),
+                inat: this.observationStats(this.filtered_observations.inats),
+                ibp: this.observationStats(this.filtered_observations.ibps),
+                ifb: this.observationStats(this.filtered_observations.ifbs),
+                total: this.observationStats([].concat(...Object.values(this.filtered_observations))),
             }
             
             return op
@@ -258,7 +259,7 @@ export default {
             return op
         },
         taxa_stats(){
-            const all_observations = Object.values(this.observations).flat()
+            const all_observations = Object.values(this.filtered_observations).flat()
             let op = d3.groups(this.taxa, d => d.rank).map((group) => {
                 return {
                     rank: group[0],
@@ -274,8 +275,8 @@ export default {
                 districts: [],
             }
             let portal_data = {}
-            Object.keys(this.observations).map((portal) => {
-                portal_data[portal] = this.observations[portal].filter((o) => {
+            Object.keys(this.filtered_observations).map((portal) => {
+                portal_data[portal] = this.filtered_observations[portal].filter((o) => {
                     return o[4] === this.selected
                 })
             })
@@ -297,8 +298,8 @@ export default {
             const state_districts = this.geojson.districts.features.filter((d) => d.properties.state === this.selected).map((d) => d.properties.district)
             state_districts.map((district) => {
                 let data = {}
-                Object.keys(this.observations).map((portal) => {
-                    data[portal] = this.observations[portal].filter((o) => {
+                Object.keys(this.filtered_observations).map((portal) => {
+                    data[portal] = this.filtered_observations[portal].filter((o) => {
                         return o[3] === district
                     })
                 })
@@ -322,6 +323,7 @@ export default {
     },
     created(){
         store.dispatch('data/getAllData')
+        console.log(this.observations)
     },
     methods: {
         observationStats(data){
@@ -337,8 +339,8 @@ export default {
         getObservationsCount(data){
             let observations = 0
             data.map((d) => {
-                Object.keys(this.observations).forEach((portal) => {
-                    observations += this.observations[portal].filter((o) => {
+                Object.keys(this.filtered_observations).forEach((portal) => {
+                    observations += this.filtered_observations[portal].filter((o) => {
                         return o[1] == d.id
                     }).length
                 })

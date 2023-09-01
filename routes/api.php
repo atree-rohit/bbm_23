@@ -54,6 +54,7 @@ Route::get('/maps/geojson', [MapsController::class, 'index']);
 
 Route::get('/data/observations', [DataController::class, 'observations']);
 Route::get('/data/taxa', [DataController::class, 'taxa']);
+Route::get('/data/pull_inat', [DataController::class, 'pull_inat']);
 
 
 Route::get('/get_all_users', [UserController::class, 'get_all_users']);
@@ -66,6 +67,5 @@ Route::post('/count_forms/set_form_status', [CountFormController::class, 'set_fo
 Route::post('/count_forms/set_species_status', [CountFormController::class, 'set_species_status']);
 
 Route::get('/get_district/{slug}', [CountFormController::class, 'get_district']);
-
 
 Route::post('/butterfly-counts/submit-form', [CountFormController::class, 'submit_form']);
