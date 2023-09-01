@@ -72,54 +72,6 @@ export async function saveForm(userDetails) {
     }
 }
 
-export async function mergeForms(apiForms) {
-    const db = await openDB();
-    const transaction = db.transaction([STORE_NAME], 'readonly');
-    const store = transaction.objectStore(STORE_NAME);
-    const cursor = store.openCursor();
-
-    const updatedForms = [];
-
-    cursor.onsuccess = async (event) => {
-        const cursor = event.target.result;
-        if (cursor) {
-            const existingRecord = cursor.value;
-            const userDetails = JSON.parse(existingRecord.data);
-
-            // Check if the record has 'live' set to true
-            if (userDetails.live) {
-                // Find a matching API form by comparing specified fields (excluding 'id')
-                const matchingApiForm = apiForms.find((apiForm) => {
-                    const apiFormData = { ...apiForm };
-                    delete apiFormData.id; // Remove 'id' field for comparison
-                    const userDetailsData = { ...userDetails };
-                    delete userDetailsData.id; // Remove 'id' field for comparison
-
-                    return JSON.stringify(apiFormData) === JSON.stringify(userDetailsData);
-                });
-
-                if (matchingApiForm) {
-                    // Merge logic here, for example:
-                    userDetails.fieldToMerge = matchingApiForm.fieldToMerge;
-
-                    // Update the record in the database
-                    const serialized = { id: userDetails.id, data: JSON.stringify(userDetails) };
-                    const updateTransaction = db.transaction([STORE_NAME], 'readwrite');
-                    const updateStore = updateTransaction.objectStore(STORE_NAME);
-                    await updateStore.put(serialized);
-                    await updateTransaction.complete;
-                    updatedForms.push(userDetails);
-                }
-            }
-
-            cursor.continue();
-        } else {
-            // All records have been processed
-            console.log('Updated forms:', updatedForms);
-        }
-    };
-}
-
 
 export async function saveForm1(userDetails) {
     return openDB().then(db => {
@@ -173,7 +125,7 @@ export async function saveForm1(userDetails) {
 }
 
 export async function getForms() {
-    console.log("idb_count_Forms: getForms", userDetails)
+    console.log("idb_count_Forms: getForms")
     return openDB().then(db => {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction([STORE_NAME], 'readonly');
