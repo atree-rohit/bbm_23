@@ -450,19 +450,18 @@ export default{
 				.attr("r", text_size)
         },
         hover_text(properties){
-            let mode = "states"
 			let op = []
 			if(properties.district != undefined){
-				mode = "districts"
 				op.push(`<tr><td>District</td><td>${properties.district ? properties.district: "-"}</td></tr>`)	
+				op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data.districts.find((d) => d.name == properties.district)?.value || 0}</td></tr>`)
 			} else {
 				let no_of_districts = this.geojson.districts.features.filter((d) => d.properties.state == properties.state).length
 				op.push(`<tr><td>State</td><td>${properties.state ? properties.state: "-"}</td></tr>`)	
 				op.push(`<tr><td>Districts</td><td>${no_of_districts}</td></tr>`)	
+				op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data.states.find((d) => d.name == properties.state)?.value || 0}</td></tr>`)
 			}
 			
 
-            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.data[this.mode].find((d) => d.name == properties[this.mode_key])?.value || 0}</td></tr>`)
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			
 		},
