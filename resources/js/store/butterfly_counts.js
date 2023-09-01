@@ -3,6 +3,7 @@ import butterfly_count_form from "../json/butterfly_count_form.json"
 import butterfly_lists from "../json/butterfly_lists.json"
 
 import { saveData, getData } from "../utils/idb_user.js"
+import { saveForm, mergeForms, getForms } from "../utils/idb_count_forms"
 
 export default {
     namespaced: true,
@@ -38,6 +39,7 @@ export default {
         async submitForm({commit, dispatch}, form){
             await axios.post("/api/butterfly-counts/submit-form", form)
             dispatch("setUserDetails", form)
+            await saveForm({...form, live:true})
         },
         setUserDetails({commit}, form){
             const user_details = {
@@ -61,8 +63,11 @@ export default {
         async getUserData({commit, state}){
             const user_data = await axios.get("/api/user_count_forms", {params: state.user_details})
             if(user_data.data.length > 0){
-                // console.log("ud", user_data)
                 commit("SET_USER_DATA", user_data.data)
+                user_data.data.forEach(async (d) => {
+                    await saveForm(d)
+                })
+                await mergeForms(user_data.data)
             }
         }
     }
