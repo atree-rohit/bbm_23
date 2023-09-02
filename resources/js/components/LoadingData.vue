@@ -67,8 +67,7 @@
         <div class="circle"></div>
         <ButterflyAnimation>
             <div class="text">{{loading}}</div>
-        </ButterflyAnimation>        
-        <slot></slot>>
+        </ButterflyAnimation>
     </div>
 
 </template>
