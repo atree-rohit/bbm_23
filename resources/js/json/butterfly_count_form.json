@@ -103,7 +103,7 @@
         "page": 2
     },{
         "name": "scientific_name",
-        "label": "Binomial Name (if known)",
+        "label": "Binomial Name",
         "required": false,
         "type": "autocomplete_scientific",
         "page": 2
