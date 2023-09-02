@@ -42,6 +42,7 @@
                 <tr
                     v-for="row in filtered_data"
                     :key="row.id"
+                    :class="tableRowColor(row)"
                 >
                     <td
                         v-for="h in headers"
@@ -94,9 +95,9 @@ export default{
     },
     data(){
         return{
-            headers: ["name", "location","state", "district", "latitude", "longitude", "no_of_species", "date", "start_time", "end_time", "status"],
+            headers: ["id", "name", "location","state", "district", "latitude", "longitude", "no_of_species", "date", "start_time", "end_time", "status"],
             statuses: ["all", "pending", "approved", "rejected", "duplicate"],
-            selected_status: "all",
+            selected_status: "pending",
             showModal: false,
             selectedFormID: -1
         }
@@ -146,6 +147,20 @@ export default{
         },
         showDeleteBtn(row){
             return row.status != "approved"
+        },
+        tableRowColor(row){
+            let op = "table-secondary"
+            switch(row.status){
+                case "pending": op = "table-primary"
+                    break
+                case "approved": op = "table-success text-success"
+                    break
+                case "duplicate": op = "table-warning"
+                    break
+                case "rejected": op = "table-danger text-danger"
+                    break
+            }
+            return op
         },
         async approveForm(form){
             if(confirm('Are you sure you want to Approve this Form?')){

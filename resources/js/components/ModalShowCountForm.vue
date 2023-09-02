@@ -12,6 +12,11 @@
     .form-table th{
         width: 200px;
     }
+
+    .table-container{
+        overflow: auto;
+        max-width: 90vw;
+    }
     
     .table td{
         font-size: .85rem;        
@@ -52,56 +57,66 @@
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-sm form-table">
-                        <tbody>
-                            <tr
-                                v-for="h in fields.form"
-                                :key="h"
-                            >
-                                <th v-text="h" :class="`bg-${formClassColor()}`"/>
-                                <td v-text="form_data[h]" :class="`table-${formClassColor()}`"/>
-                            </tr>
-                        </tbody>
-                    </table>
 
-                    <table class="table table-sm species-table">
-                        <thead class="text-light" :class="speciesTableClassColor()">
-                            <tr>
-                                <th
-                                    v-for="s in fields.species"
-                                    :key="s"
-                                    v-text="s"
-                                />
-                                <th class="bg-dark">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="species in form_data.species_list"
-                                :key="species.id"
-                                :class="speciesTableRowColor(species)"
-                            >
-                                <td
-                                    v-for="s in fields.species"
-                                    :key="s"
-                                    v-text="species[s]"
-                                />
-                                <td v-if="admin" class="d-flex justify-content-around bg-secondary">
-                                    <div
-                                        v-for="status in statuses"
-                                        :key="status"
+                    <div class="table-container">
+                        <table class="table table-sm form-table">
+                            <tbody>
+                                <tr
+                                    v-for="h in fields.form"
+                                    :key="h"
+                                >
+                                    <th v-text="h" :class="`bg-${formClassColor()}`"/>
+                                    <td v-text="form_data[h]" :class="`table-${formClassColor()}`"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table table-sm species-table">
+                            <thead class="text-light" :class="speciesTableClassColor()">
+                                <tr>
+                                    <th
+                                        v-for="s in fields.species"
+                                        :key="s"
+                                        v-text="s"
+                                    />
+                                    <th 
+                                        v-if="admin" 
+                                        class="bg-dark"
                                     >
-                                        <button
-                                            class="btn btn-success btn-sm"
-                                            v-text="status"
-                                            v-if="status != species.status"
-                                            @click="setSpeciesStatus(species, status)"
-                                        />
-                                    </div>
-                                </td>                                
-                            </tr>
-                        </tbody>
-                    </table>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="species in form_data.species_list"
+                                    :key="species.id"
+                                    :class="speciesTableRowColor(species)"
+                                >
+                                    <td
+                                        v-for="s in fields.species"
+                                        :key="s"
+                                        v-text="species[s]"
+                                    />
+                                    <td v-if="admin" class="d-flex justify-content-around bg-secondary">
+                                        <div
+                                            v-for="status in statuses"
+                                            :key="status"
+                                        >
+                                            <button
+                                                class="btn btn-success btn-sm"
+                                                v-text="status"
+                                                v-if="status != species.status"
+                                                @click="setSpeciesStatus(species, status)"
+                                            />
+                                        </div>
+                                    </td>                                
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
@@ -136,6 +151,9 @@ export default{
             statuses: ['pending','approved','duplicate','rejected'],
         }
     },
+    created(){
+        console.log(this.form_data)
+    },
     computed:{
         ...mapState({
             is_super_admin: state => state.auth.is_super_admin,
@@ -162,7 +180,18 @@ export default{
             return (this.unvalidated_species_flag) ? "bg-success" : 'bg-danger'
         },
         speciesTableRowColor(row){
-            return (row.status == 'approved') ? "table-success": 'table-danger'
+            let op = "table-secondary"
+            switch(row.status){
+                case "pending": op = "table-primary"
+                    break
+                case "approved": op = "table-success"
+                    break
+                case "duplicate": op = "table-warning"
+                    break
+                case "rejected": op = "table-danger"
+                    break
+            }
+            return op
         },
         setSpeciesStatus(species, status){
             let data = {
