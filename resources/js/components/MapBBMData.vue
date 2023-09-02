@@ -47,7 +47,7 @@ export default {
         return {
             mode: 'states',
             years: [2020, 2021, 2022, 2023],
-            selected_year: null,
+            selected_year: 2023,
             selected: {
                 states: null,
                 districts: null,
@@ -79,7 +79,7 @@ export default {
     watch: {        
         map_data(newVal){
             console.log(newVal)
-        }
+        },
     },
     methods:{
         valueFromLabel(str){
