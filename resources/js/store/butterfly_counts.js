@@ -64,10 +64,10 @@ export default {
             }
         },
         async getUserData({commit, state}){
-            let data = await getForms()
-            if(data.length){
-                commit("SET_USER_DATA", data)
-            }
+            // let data = await getForms()
+            // if(data.length){
+            //     commit("SET_USER_DATA", data)
+            // }
             const user_data = await axios.get("/api/user_count_forms", {params: state.user_details})
             if(user_data.data.length > 0){
                 commit("SET_USER_DATA", user_data.data)
