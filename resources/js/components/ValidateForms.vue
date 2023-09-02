@@ -11,6 +11,9 @@
 </style>
 
 <template>
+    <ButterflyAnimation v-if="loading">
+        <div class="text">{{loading}}</div>
+    </ButterflyAnimation>
     <div class="container-fluid validate-forms-container">
         <div class="d-flex justify-content-center bg-dark p-2">
             <button
@@ -82,10 +85,12 @@
 import { mapState } from 'vuex'
 import store from '../store'
 import ModalShowCountForm from "./ModalShowCountForm.vue"
+import ButterflyAnimation from './ButterflyAnimation.vue';
 export default{
     name: "ValidateForms",
     components: {
-        ModalShowCountForm
+        ModalShowCountForm,
+        ButterflyAnimation
     },
     data(){
         return{
@@ -100,7 +105,8 @@ export default{
         ...mapState({
             user: state => state.auth.user,
             is_super_admin: state => state.auth.is_super_admin,
-            all_data: state => state.count_forms.all_data
+            all_data: state => state.count_forms.all_data,
+            loading: state => state.count_forms.loading
         }),
         filtered_data(){
             let op = []
