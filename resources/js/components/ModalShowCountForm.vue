@@ -28,7 +28,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div v-if="admin" class="border border-success text-center m-1 p-2 w-75">
-                        <div v-if="unvalidated_species_flag" class="d-flex justify-content-center">
+                        <div class="d-flex justify-content-center">
                             <div
                                 v-for="status in statuses"
                                 :key="status"
@@ -41,11 +41,13 @@
                                     @click="setFormStatus(status)"
                                 />
                             </div>
+                            <div class="mx-2">
+                                <button class="btn btn-success" @click="validateAllSpecies">Validate All Species</button>
+                            </div>
+                            <div class="mx-2">
+                                <button class="btn btn-danger" @click="deleteForm">Delete Form</button>
+                            </div>
                         </div>
-                        <div v-else class="">
-                            <button class="btn btn-success" @click="validateAllSpecies">Validate All Species</button>
-                        </div>
-                        <button class="btn btn-danger" @click="deleteForm">Delete Form</button>
                     </div>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
