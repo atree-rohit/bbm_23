@@ -11,7 +11,17 @@
 </style>
 
 <template>
-    <div class="container-fluid my-2 validate-forms-container">
+    <div class="container-fluid validate-forms-container">
+        <div class="d-flex justify-content-center bg-dark p-2">
+            <button
+                v-for="status in statuses"
+                :key="status"
+                class="btn btn-sm"
+                :class="status == selected_status ? 'btn-success' : 'btn-outline-success bg-light'"
+                v-text="status"
+                @click="selected_status = status"
+            />
+        </div>
         <table class="table table-sm">
             <thead class="bg-success text-warning">
                 <tr>
@@ -80,6 +90,8 @@ export default{
     data(){
         return{
             headers: ["name", "location","state", "district", "latitude", "longitude", "no_of_species", "date", "start_time", "end_time", "status"],
+            statuses: ["all", "pending", "approved", "rejected", "duplicate"],
+            selected_status: "all",
             showModal: false,
             selectedFormID: -1
         }
@@ -100,6 +112,9 @@ export default{
                     })
                 }
             })
+            if(this.selected_status != "all"){
+                op = op.filter((d) => d.status == this.selected_status)
+            }
 
             return op
         },
