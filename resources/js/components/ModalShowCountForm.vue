@@ -27,24 +27,8 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLiveLabel">DATA SHEET</h3>
-                    <button type="button" class="btn-close" @click="closeModal"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-sm form-table">
-                        <tbody>
-                            <tr
-                                v-for="h in fields.form"
-                                :key="h"
-                            >
-                                <th v-text="h" :class="`bg-${formClassColor()}`"/>
-                                <td v-text="form_data[h]" :class="`table-${formClassColor()}`"/>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div v-if="admin" class="border border-success text-center m-1 p-2">
-                        <div v-if="unvalidated_species_flag" class="d-flex justify-content-around">
+                    <div v-if="admin" class="border border-success text-center m-1 p-2 w-75">
+                        <div v-if="unvalidated_species_flag" class="d-flex justify-content-center">
                             <div
                                 v-for="status in statuses"
                                 :key="status"
@@ -62,8 +46,20 @@
                             <button class="btn btn-success" @click="validateAllSpecies">Validate All Species</button>
                         </div>
                     </div>
-
-
+                    <button type="button" class="btn-close" @click="closeModal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm form-table">
+                        <tbody>
+                            <tr
+                                v-for="h in fields.form"
+                                :key="h"
+                            >
+                                <th v-text="h" :class="`bg-${formClassColor()}`"/>
+                                <td v-text="form_data[h]" :class="`table-${formClassColor()}`"/>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <table class="table table-sm species-table">
                         <thead class="text-light" :class="speciesTableClassColor()">

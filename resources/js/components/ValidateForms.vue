@@ -38,9 +38,23 @@
                     />
                     <td
                         v-if="is_super_admin"
+                        class="bg-secondary d-flex justify-content-around"
                     >
-                        <button class="btn btn-sm btn-success" @click="approveForm(row)">Approve</button>
-                        <button class="btn btn-sm btn-danger" @click="deleteForm(row)">Delete</button>
+                        <button
+                            class="btn btn-sm btn-success"
+                            v-if="showApproveBtn(row)"
+                            @click="approveForm(row)"
+                        >
+                            Approve
+                        </button>
+                        &nbsp;
+                        <button
+                            class="btn btn-sm btn-danger"
+                            v-if="showDeleteBtn(row)"
+                            @click="deleteForm(row)"
+                        >
+                            Delete
+                        </button>
                     </td>
 
                 </tr>
@@ -104,11 +118,21 @@ export default{
             this.selectedFormID = form_id
             this.showModal = true
         },
+        showApproveBtn(row){
+            return row.status == "pending"
+        },
+        showDeleteBtn(row){
+            return row.status != "approved"
+        },
         async approveForm(form){
-            await store.dispatch('count_forms/approveForm', form)
+            if(confirm('Are you sure you want to Approve this Form?')){
+                await store.dispatch('count_forms/approveForm', form)
+            }
         },
         async deleteForm(form){
-            await store.dispatch('count_forms/deleteForm', form)
+            if(confirm('Are you sure you want to delete this Form?')){
+                await store.dispatch('count_forms/deleteForm', form)
+            }
         },
         closeModal(){
             this.selectedForm = {}
