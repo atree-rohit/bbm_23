@@ -7,6 +7,10 @@
     margin: 0 0.25rem;
 }
 
+.nav-pills{
+    padding: 0.5rem;
+    margin: 0 0.5rem;
+}
 .canvas{
     height: 100%;
     border:1px solid yellow;
@@ -18,32 +22,38 @@
     justify-content: center;
     align-items: center;
 }
+
+.tables-container{
+    display: grid;
+    grid-template-rows: 3.5rem auto;
+}
 .canvas .tables{
-    max-height: 100%;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-}
-.canvas .tables .table-container{
-    max-height: 100%;
-    width: 100%;
-    padding: 1rem;
+    background: hsl(120, 25%, 50%);
     overflow: auto;
 }
-.canvas .tables > *:nth-child(2){
-    flex-grow: 100;
-    /* border: 2px solid #f3f; */
-}
 
-.canvas .tables > *:nth-child(3){
-    flex-shrink: 100;
-    /* border: 2px solid #ff3; */
+.nav-pills .nav-link.active{
+    background-color:green;
 }
 
 @media screen and (max-width: 768px){
-        .canvas{
-            flex-direction:column;
-        }
+    .data-container{
+        height: 125vh;
+    }
+    .nav-pills{
+        padding: 0;
+        margin: 0.5rem;
+    }
+    .nav-link{
+        padding: 0.25rem 0.66rem;
+    }
+    .canvas{
+        flex-direction:column;
+    }
     }
 </style>
 
@@ -53,36 +63,47 @@
             <div class="map">
                 <MapBBMData @state-selected="stateSelected"/>
             </div>
-            <div class="tables">
-                <template v-if="!selected">
-                    <data-table
-                        :headers="table_data.portals.headers"                    
-                        :data="portal_stats"
-                        :total_row="true"
-                        hue="danger"
-                    />
-                    <data-table
-                        :headers="table_data.taxa.headers"                    
-                        :data="taxa_stats"
-                        :total_row="false"
-                        hue="primary"
-                    />
-                </template>
-                <template v-else>
+            <div class="tables-container">
+                <ul class="nav nav-pills bg-light justify-content-center rounded">
+                    <li
+                        class="nav-item"
+                        v-for="filter in filters"
+                        :key="filter.id"
+                    >
+                        <a
+                            class="nav-link"
+                            aria-current="page"
+                            href="#"
+                            :class="{'active': filter.active, 'disabled': filter.disabled}"
+                            v-text="filter.name"
+                            @click="selectFilterTab(filter)"
+                        />
+                    </li>
+                    
+                </ul>
+                <div class="tables">
                     <h1 class="bg-warning text-center py-0">{{ selected }}</h1>
-                    <data-table
-                        :headers="table_data.state_portals.headers"                    
-                        :data="state_table_data.portals"
-                        :total_row="true"
-                        hue="success"
-                    />
-                    <data-table
-                        :headers="table_data.districts.headers"                    
-                        :data="state_table_data.districts"
-                        :total_row="false"
-                        hue="danger"
-                    />
-                </template>
+                    <template v-if="active_filter.name=='Taxa'">
+                        <data-table
+                            :headers="table_data.taxa.headers"                    
+                            :data="taxa_stats"
+                            :total_row="false"
+                            hue="info"
+                        />
+                    </template>
+                    <template v-else-if="active_filter.name == 'Portals'">
+                        <data-table
+                            :headers="table_data.portals.headers"                    
+                            :data="portal_stats"
+                            :total_row="true"
+                            hue="danger"
+                        />
+                    </template>
+                    <div v-else>
+                        {{ active_filter }}
+
+                    </div>
+                </div>
                 
             </div>
         </div>
@@ -110,27 +131,32 @@ export default {
                 {
                     id: 1,
                     name: "Portals",
-                    active: false
+                    active: false,
+                    disabled: false
                 },
                 {
                     id: 2,
                     name: "Location",
-                    active: false
+                    active: false,
+                    disabled: true
                 },
                 {
                     id: 3,
                     name: "Taxa",
-                    active: false
+                    active: true,
+                    disabled: false
                 },
                 {
                     id: 4,
                     name: "Date",
-                    active: false
+                    active: false,
+                    disabled: true
                 },
                 {
                     id: 5,
                     name: "Users",
-                    active: true
+                    active: false,
+                    disabled: true
                 }
             ],
             table_data: {
@@ -160,17 +186,35 @@ export default {
                 },
                 taxa: {
                     headers: [{
-                        name: "rank",
-                        label: "Rank",
-                        sortable: false,
+                        name: "common_name",
+                        label: "Name",
+                        sortable: true,
                         class: "nowrap"
                     },{
-                        name: "count",
-                        label: "Count",
+                        name: "scientific_name",
+                        label: "Scientific Name",
+                        sortable: true,
+                        class: "nowrap"
+                    },{
+                        name: "rank",
+                        label: "Rank",
+                        sortable: true,
+                        class: "nowrap"
+                    },{
+                        name: "observations",
+                        label: "Observations",
                         sortable: true
                     },{
-                        name: "unique",
-                        label: "Unique",
+                        name: "users",
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "states",
+                        label: "States",
+                        sortable: true
+                    },{
+                        name: "districts",
+                        label: "Districts",
                         sortable: true
                     }],
                 },
@@ -229,6 +273,9 @@ export default {
             taxa: state => state.data.taxa,
             geojson: state => state.data.geojson,
         }),
+        active_filter(){
+            return this.filters.filter((f) => f.active)[0]
+        },
         observation_stats(){
             if(Object.keys(this.filtered_observations).length === 0) {
                 // console.log("no observations")
@@ -259,15 +306,23 @@ export default {
             return op
         },
         taxa_stats(){
+            // common_name, scientific_name,  rank, observations, users, states, districts
             const all_observations = Object.values(this.filtered_observations).flat()
-            let op = d3.groups(this.taxa, d => d.rank).map((group) => {
+            let op = d3.groups(all_observations, d => d[1]).map((taxon) => {
+                let taxa = this.taxa.find((t) => t.id === taxon[0])
+                if(!taxa) return {}
                 return {
-                    rank: group[0],
-                    count: all_observations.filter((o) => group[1].map((o) => o.id).includes(o[1])).length,
-                    unique: this.countUnique(group[1].map(x => x.name))
+                    common_name: taxa.common_name,
+                    scientific_name: taxa.name,
+                    rank: taxa.rank,
+                    observations: taxon[1].length,
+                    users: this.countUnique(taxon[1].map((o) => o[0])),
+                    states: this.countUnique(taxon[1].map((o) => o[4])),
+                    districts: this.countUnique(taxon[1].map((o) => o[5])),
                 }
             })
-            return op.filter((t) => t.count > 0)
+            return op.sort((a,b) => b.observations - a.observations)
+
         },
         state_table_data(){
             let op = {
@@ -350,9 +405,15 @@ export default {
         countUnique(arr){
             return [...new Set(arr)].length
         },
+        selectFilterTab(filter){
+            this.filters.map((f) => {
+                f.active = false
+            })
+            filter.active = true
+        },
         async stateSelected(data){
             this.selected = data.state
-            
+            store.dispatch('data/setFilter', {field:"state", value: this.selected})            
         }
     }
 }

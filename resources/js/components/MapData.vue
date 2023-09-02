@@ -206,12 +206,12 @@ export default{
             this.svg = {}
             if(window.innerWidth < 800){
 				this.width = window.innerWidth * 0.95
-				this.height = window.innerHeight * 0.66
-				this.projection = d3.geoMercator().scale(600).center([110, 20])
+				this.height = window.innerHeight * 0.45
+				this.projection = d3.geoMercator().scale(550).center([112.5, 17.5])
 			} else {
 				this.height = window.innerHeight * 0.9
-            	this.width = window.innerWidth * 0.7
-				this.projection = d3.geoMercator().scale(1000).center([80, 27.5])
+            	this.width = window.innerWidth * 0.55
+				this.projection = d3.geoMercator().scale(1000).center([95, 27.5])
 			}
 			this.path = d3.geoPath().projection(this.projection)
             this.tooltip = this.init_tooltip()

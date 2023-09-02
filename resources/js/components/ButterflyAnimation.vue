@@ -10,15 +10,7 @@
     top: 0;
     background: rgba(0, 0, 0, .6);
 }
-.butterfly-container .text {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    font-size: 1.75rem;
-    margin-top: 5rem;
-    color: white;
-}
+
 
 #butterfly_wrapper {
     margin-top: -3rem;

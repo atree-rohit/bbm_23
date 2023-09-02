@@ -1,39 +1,68 @@
 <style scoped>
-.table-container .table thead tr th{
+.table-container{
+    max-height: 50vh;
+    overflow: auto;
+    width: 100%;
+    padding: 1rem;
+    flex-grow: 10;
+}
+/* Table Header Styles */
+.table-container .table thead tr th {
     padding: 0.25rem 0.5rem !important;
 }
 
-.table-container .table-sm{
-    font-size: 0.85vw;
-}
-.nowrap{
-    white-space: nowrap;
-}
-th.sortable {
-    cursor: pointer;
-    transition: all 800ms;
+/* Small Table Font Size */
+.table-container .table-sm {
+    font-size: 1rem;
 }
 
-th.sortable:hover{
-    background-color: rgba(100,20,20,.5);
+/* Prevent Text Wrapping */
+.nowrap {
+    white-space: nowrap;
 }
-th.sort-asc::after{
+
+/* Sortable Table Headers */
+th.sortable {
+    cursor: pointer;
+    transition: background-color 800ms;
+}
+
+th.sortable:hover {
+    background-color: rgba(100, 20, 20, 0.5);
+}
+
+/* Sort Icons */
+th.sort-asc::after,
+th.sort-desc::after {
     content: "▲";
     margin-left: 0.5rem;
 }
-th.sort-desc::after{
-    content:"▼";
-    margin-left: 0.5rem;
+
+th.sort-desc::after {
+    content: "▼";
 }
-.total-row{
+
+/* Total Row Styles */
+.total-row {
     font-weight: bold;
     filter: invert(1);
 }
 
-tr.empty-row > td{
-    background: rgb(255, 100, 100, .75);
-    /* color: yellowgreen; */
+/* Empty Row Styles */
+tr.empty-row > td {
+    background: rgba(255, 100, 100, 0.75);
 }
+
+/* Responsive Font Size */
+@media screen and (max-width: 768px) {
+    .table-container{
+        padding: .25rem;
+    }
+    .table-container .table-sm {
+        font-size: 0.75rem;
+    }
+}
+
 </style>
 
 <template>
@@ -53,6 +82,7 @@ tr.empty-row > td{
             <tbody :class="`table-${hue}`">
                 <tr
                     v-for="(row, row_id) in sorted_data"
+                    :key="row_id"
                     :row_id="row_id"
                     :class="totalRowClass(row, row_id)"
                 >

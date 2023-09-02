@@ -51,6 +51,16 @@
     box-shadow: 0 0 1rem 0 rgb(255, 238, 0), inset 0 0 10px 0 rgb(255, 238, 0);
 }
 
+.loading-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.75rem;
+    margin-top: 5rem;
+    color: white;
+}
+
 @keyframes rt {
     100% {
         transform: rotate(360deg);
@@ -66,7 +76,7 @@
         <div class="circle"></div>
         <div class="circle"></div>
         <ButterflyAnimation>
-            <div class="text">{{loading}}</div>
+            <div class="loading-text">{{loading}}</div>
         </ButterflyAnimation>
     </div>
 

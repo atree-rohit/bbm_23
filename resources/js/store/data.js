@@ -77,6 +77,14 @@ export default {
             } else {
                 op = state.observations
             }
+            if(state.filters.state){
+                Object.keys(op).forEach((portal) => {
+                    op[portal] = op[portal].filter((d) => {
+                        return d[4] == state.filters.state;
+                    })
+                })
+                console.log(op)
+            }
             state.filtered_observations = op
         },
         SET_GEOJSON(state, value) {
