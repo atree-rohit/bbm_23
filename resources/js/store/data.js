@@ -20,7 +20,7 @@ export default {
             districts: {}
         },
         filters:{
-            year: null,
+            year: 2023,
             portal: null,
             state: null,
             district: null,
@@ -77,7 +77,6 @@ export default {
             } else {
                 op = state.observations
             }
-            console.log(op)
             state.filtered_observations = op
         },
         SET_GEOJSON(state, value) {
