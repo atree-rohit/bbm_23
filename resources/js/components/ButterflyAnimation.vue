@@ -1,5 +1,15 @@
 <style scoped>
 
+.butterfly-container {
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    background: rgba(0, 0, 0, .6);
+}
 .butterfly-container .text {
     display: flex;
     justify-content: center;
@@ -9,16 +19,6 @@
     margin-top: 5rem;
     color: white;
 }
-
-.butterfly-container {
-    height: 100vh;
-    width: 100%;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 
 #butterfly_wrapper {
     margin-top: -3rem;
@@ -194,18 +194,11 @@
                 </div>
             </div>
         </div>
-        <div class="text">{{loading}}</div>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default{
     name: 'ButterflyAnimation',
-    computed: {
-        ...mapState({
-            loading: state => state.data.loading,
-        }),
-    }
 }
 </script>
