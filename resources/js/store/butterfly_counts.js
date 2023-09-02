@@ -37,6 +37,9 @@ export default {
             commit("INIT_NAMES")
         },
         async submitForm({commit, dispatch}, form){
+            if(form.end_time == null){
+                form.end_time = new Date().toLocaleTimeString()
+            }
             await axios.post("/api/butterfly-counts/submit-form", form)
             dispatch("setUserDetails", form)
             await saveForm({...form, live:true})
