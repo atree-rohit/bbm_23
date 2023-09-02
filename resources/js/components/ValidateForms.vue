@@ -3,10 +3,15 @@
     cursor: pointer;
     background-color: hsl(100, 80%, 80%) !important;
 }
+.validate-forms-container{
+    height: 100%;
+    width: 100vw;
+    overflow: auto;
+}
 </style>
 
 <template>
-    <div class="container-fluid validate-forms-container">
+    <div class="container-fluid my-2 validate-forms-container">
         <table class="table table-sm">
             <thead class="bg-success text-warning">
                 <tr>
@@ -15,6 +20,9 @@
                         :key="h"
                         v-text="h"
                     />
+                    <th
+                        v-if="is_super_admin"
+                    >Actions</th>
                 </tr>
             </thead>
             <tbody class="table-secondary">
@@ -28,6 +36,12 @@
                         v-text="row[h]"
                         @click="selectForm(row.id)"
                     />
+                    <td
+                        v-if="is_super_admin"
+                    >
+                        <button class="btn btn-sm btn-success" @click="approveForm(row)">Approve</button>
+                        <button class="btn btn-sm btn-danger" @click="deleteForm(row)">Delete</button>
+                    </td>
 
                 </tr>
             </tbody>
@@ -51,7 +65,7 @@ export default{
     },
     data(){
         return{
-            headers: ["name", "location","state", "district", "latitude", "longitude", "date", "start_time", "end_time", "status"],
+            headers: ["name", "location","state", "district", "latitude", "longitude", "no_of_species", "date", "start_time", "end_time", "status"],
             showModal: false,
             selectedFormID: -1
         }
@@ -59,11 +73,19 @@ export default{
     computed: {
         ...mapState({
             user: state => state.auth.user,
+            is_super_admin: state => state.auth.is_super_admin,
             all_data: state => state.count_forms.all_data
         }),
         filtered_data(){
-            return this.all_data
+            let op = []
+            this.all_data.forEach((d) => {
+                op.push({
+                    ...d,
+                    no_of_species: d.species_list.length
+                })
+            })
 
+            return op
         },
         selected_form(){
             if(this.selectedFormID == -1){
@@ -81,6 +103,12 @@ export default{
         selectForm(form_id){
             this.selectedFormID = form_id
             this.showModal = true
+        },
+        async approveForm(form){
+            await store.dispatch('count_forms/approveForm', form)
+        },
+        async deleteForm(form){
+            await store.dispatch('count_forms/deleteForm', form)
         },
         closeModal(){
             this.selectedForm = {}

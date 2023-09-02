@@ -171,13 +171,26 @@ class CountFormController extends Controller
                 $species->validated = true;
             }
         } else {
-            $species->taxa_id = null;
+            // $species->taxa_id = null;
             $species->validated = false;
         }
         $species->save();
         return response()->json([
             'message' => 'Species status updated successfully',
             'species' => $species
+        ]);
+    }
+
+    public function delete_form(Request $request)
+    {
+        $form = CountForm::find($request->id);
+        foreach($form->species_list as $species){
+            $species->delete();
+        }
+        $form->delete();
+        return response()->json([
+            'message' => 'Count Form deleted successfully',
+            'form' => $form
         ]);
     }
 
