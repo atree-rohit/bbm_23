@@ -93,10 +93,12 @@ export default{
         filtered_data(){
             let op = []
             this.all_data.forEach((d) => {
-                op.push({
-                    ...d,
-                    no_of_species: d.species_list.length
-                })
+                if(d.date.includes("2023-09")){
+                    op.push({
+                        ...d,
+                        no_of_species: d.species_list.length
+                    })
+                }
             })
 
             return op

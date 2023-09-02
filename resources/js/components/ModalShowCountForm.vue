@@ -45,6 +45,7 @@
                         <div v-else class="">
                             <button class="btn btn-success" @click="validateAllSpecies">Validate All Species</button>
                         </div>
+                        <button class="btn btn-danger" @click="deleteForm">Delete Form</button>
                     </div>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
@@ -179,6 +180,12 @@ export default{
             this.form_data.species_list
                 .filter((s) => s.status == "pending" )
                 .forEach((species) => this.setSpeciesStatus(species, "approved"))
+        },
+        async deleteForm(){
+            if(confirm('Are you sure you want to delete this Form?')){
+                this.$emit('close')
+                await this.$store.dispatch('count_forms/deleteForm', this.form_data)
+            }
         },
         closeModal(){
             this.$emit('close')

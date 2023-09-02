@@ -210,14 +210,14 @@
     "src": "resources/js/pages/resources.js"
   },
   "resources/js/pages/validate_forms.css": {
-    "file": "assets/validate_forms-51fb54f2.css",
+    "file": "assets/validate_forms-c28f3ca3.css",
     "src": "resources/js/pages/validate_forms.css"
   },
   "resources/js/pages/validate_forms.js": {
     "css": [
-      "assets/validate_forms-51fb54f2.css"
+      "assets/validate_forms-c28f3ca3.css"
     ],
-    "file": "assets/validate_forms-9d1f4b0b.js",
+    "file": "assets/validate_forms-24940854.js",
     "imports": [
       "__plugin-vue_export-helper-13c6137d.js"
     ],
