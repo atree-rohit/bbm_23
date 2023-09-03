@@ -293,6 +293,7 @@ export default {
         },
         portal_stats(){
             let op = []
+            console.log(this.observation_stats)
             for(let [key, value] of Object.entries(this.observation_stats)){
                 op.push({
                     portal: key,
@@ -318,7 +319,7 @@ export default {
                     observations: taxon[1].length,
                     users: this.countUnique(taxon[1].map((o) => o[0])),
                     states: this.countUnique(taxon[1].map((o) => o[4])),
-                    districts: this.countUnique(taxon[1].map((o) => o[5])),
+                    districts: this.countUnique(taxon[1].map((o) => o[3])),
                 }
             })
             return op.sort((a,b) => b.observations - a.observations)
@@ -386,7 +387,7 @@ export default {
                 observations: data.length,
                 users: this.countUnique(data.map(x => x[2])),
                 states: this.countUnique(data.map(x => x[4])),
-                districts: this.countUnique(data.map(x => x[5])),
+                districts: this.countUnique(data.map(x => x[3])),
             }
             
             return op
