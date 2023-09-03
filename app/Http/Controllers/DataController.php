@@ -505,13 +505,13 @@ class DataController extends Controller
             "skipped" => 0
         ];
         foreach($request->data as $i){
-            if(!in_array($i["id"], $existing_inat_ids)){
+            if(in_array($i["id"], $existing_inat_ids)){
+                $inat = INat::where('id', $i["id"])->first();
+                $count["skipped"]++;
+            } else {
                 $inat = new INat();
                 $inat->id = $i["id"];
                 $count["added"]++;
-            } else {
-                $inat = INat::where('id', $i["id"])->first();
-                $count["skipped"]++;
             }
             $inat->user_id = $i["user_id"];
             $inat->user = $i["user"];
