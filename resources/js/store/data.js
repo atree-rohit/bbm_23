@@ -1,6 +1,6 @@
 import axios from "axios"
 import * as d3 from "d3"
-
+// import inat_data from "../json/inat_data_2023_09_03.json"
 import { saveData, getData } from "../utils/idb_geojson.js"    
 import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
 
@@ -203,14 +203,151 @@ export default {
             console.groupEnd()
             commit('SET_LOADING', null)
         },
-        async pullInat({ commit }) {
+        async pullInat({ dispatch, state }) {
             console.log("pullInat")
-            let response = await axios.get('/api/data/pull_inat');
-            if(response){
-                console.log(response)
+            
+            console.log("get_maps")
+            await dispatch('getMaps')
+            
+            console.log("get_taxa")
+            await dispatch('getTaxa')
+
+            // console.log(inat_data)
+            // let add = await axios.post("/api/data/store_inat_observations", {data:inat_data})
+            // console.log(add)
+
+            console.log("get_last_update_time")
+            let response = await axios.get('/api/data/inat_last_updated')
+            let last_update_time = response.data.split("T")[0]
+            
+
+            const base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated&updated_since=' 
+            const per_page = 200
+            
+            console.log("get_initial_response")
+            let url = getUrl(base_url, 1, 1)
+
+            const initial_response = await axios.get(url)
+            
+            console.log("base_url", base_url)
+
+            if(initial_response){
+                console.log("total_results", initial_response.data.total_results)
+                const total_pages = Math.ceil(initial_response.data.total_results / per_page) + 1
+                // const total_pages = 1
+                let new_data = {
+                    taxa: [],
+                    observations: []
+                }
+                for(let p = 1 ; p <= total_pages ; p++){
+                    url = getUrl(base_url, p, per_page)
+                    const response = await axios.get(url)
+                    console.log("url", url)
+                    if(response){
+                        console.log("response", response.data.results)
+                        response.data.results.forEach((o) => {
+                            let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
+                            if(taxa_is_new){
+                                new_data.taxa.push(taxa_is_new)
+                            }
+                            new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
+                        })
+                    }
+                    console.log("new_data", new_data)
+                    console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
+                }
+                const store_inat_data = {
+                    taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
+                    observations: await axios.post("/api/data/store_inat_observations", {data:new_data.observations})
+                }
+                console.log("store_inat_data", store_inat_data)
             }
         }
     }
+}
+
+function getNewObservation(observation, districts){
+    let coordinates = observation.location.split(",").map((d) => parseFloat(d))
+    let op = {
+        id: observation.id,
+        user_id: observation.user.id,
+        user: observation.user.name || observation.user.login,
+        observed_on: observation.observed_on,
+        place: observation.place_guess,
+        latitude: coordinates[0],
+        longitude: coordinates[1],
+        taxa_id: observation.taxon.id,
+        img_url: observation.photos[0].url,
+        inat_created_at: observation.created_at,
+        inat_updated_at: observation.updated_at
+        
+    }
+
+    districts.forEach((district) => {
+        district.geometry.coordinates.forEach((polygon) => {
+            let result = pointInPolygon(op.longitude, op.latitude, polygon);
+            if(result){
+                op.state = district.properties.state;
+                op.district = district.properties.district;
+                op.validated = true;
+            }
+        })
+    })
+    return op
+}
+
+function pointInPolygon(longitude, latitude, polygonVertices) {
+    let intersections = 0;
+    const vertexCount = polygonVertices.length;
+
+    for (let i = 0; i < vertexCount; i++) {
+        const j = (i + 1) % vertexCount;
+
+        const vertexI = polygonVertices[i];
+        const vertexJ = polygonVertices[j];
+
+        if (vertexI[1] === vertexJ[1]) {
+            // Skip horizontal edges
+            continue;
+        }
+
+        if (latitude < Math.min(vertexI[1], vertexJ[1])) {
+            // Skip if point is below the edge
+            continue;
+        }
+
+        if (latitude >= Math.max(vertexI[1], vertexJ[1])) {
+            // Skip if point is above the edge
+            continue;
+        }
+
+        const xIntersect = (latitude - vertexI[1]) * (vertexJ[0] - vertexI[0]) / (vertexJ[1] - vertexI[1]) + vertexI[0];
+
+        if (xIntersect > longitude) {
+            intersections++;
+        }
+    }
+
+    return (intersections % 2) === 1;
+}
+
+
+function getNewTaxa(taxa, taxon, new_taxa){
+    if(taxa.filter((d) => d.id == taxon.id).length > 0 || new_taxa.filter((d) => d.id == taxon.id).length > 0){
+        return false
+    } else {
+        return {
+            id: taxon.id,
+            name: taxon.name || '',
+            common_name: taxon.preferred_common_name,
+            rank: taxon.rank,
+            ancestry: taxon.ancestry
+        }
+    }
+}
+
+function getUrl(base_url, page, per_page){
+    return base_url + "&page=" + page + "&per_page=" + per_page
 }
 
 async function smallDelay(){
