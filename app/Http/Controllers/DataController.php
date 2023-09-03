@@ -465,6 +465,72 @@ class DataController extends Controller
         return response()->json(Activity::all());
     }
 
+    public function inat_last_updated()
+    {
+        return response()->json(INat::orderBy('inat_updated_at', 'desc')->first()->inat_updated_at);
+    }
+
+    // store_taxa
+    // store_inat_observations
+
+    public function store_taxa(Request $request)
+    {
+        $existing_taxa_ids = Taxa::all()->pluck("id")->toArray();
+        $count = [
+            "added" => 0,
+            "skipped" => 0
+        ];
+        foreach($request->data as $t){
+            if(in_array($t["id"], $existing_taxa_ids)){
+                $count["skipped"]++;
+            } else {
+                $taxa = new Taxa();
+                $taxa->id = $t["id"];
+                $taxa->name = $t["name"];
+                $taxa->common_name = $t["common_name"];
+                $taxa->rank = $t["rank"];
+                $taxa->ancestry = $t["ancestry"];
+                $taxa->save();
+                $count["added"]++;
+            }
+        }
+        return response()->json(["status" => "success", "count" => $count]);
+    }
+
+    public function store_inat_observations(Request $request)
+    {
+        $existing_inat_ids = INat::all()->pluck("id")->toArray();
+        $count = [
+            "added" => 0,
+            "skipped" => 0
+        ];
+        foreach($request->data as $i){
+            if(!in_array($i["id"], $existing_inat_ids)){
+                $inat = new INat();
+                $inat->id = $i["id"];
+                $count["added"]++;
+            } else {
+                $inat = INat::where('id', $i["id"])->first();
+                $count["skipped"]++;
+            }
+            $inat->user_id = $i["user_id"];
+            $inat->user = $i["user"];
+            $inat->observed_on = $i["observed_on"];
+            $inat->place = $i["place"];
+            $inat->latitude = $i["latitude"];
+            $inat->longitude = $i["longitude"];
+            $inat->taxa_id = $i["taxa_id"];
+            $inat->img_url = $i["img_url"];
+            $inat->inat_created_at = $i["inat_created_at"];
+            $inat->inat_updated_at = $i["inat_updated_at"];
+            $inat->state = $i["state"] ?? null;
+            $inat->district = $i["district"] ?? null;
+            $inat->validated = $i["validated"] ?? false;
+            $inat->save();
+        }
+        return response()->json(["status" => "success", "count" => $count]);
+    }
+
     public function pull_inat()
     {
         ini_set('max_execution_time', 300);
@@ -476,9 +542,9 @@ class DataController extends Controller
         $base_url = "https://api.inaturalist.org/v1/observations?";
         $params = [
             "place_id" => "any",
-            "project_id" => "big-butterfly-month-2023",
+            "project_id" => "big-butterfly-month-2023-india",
             "verifiable" => "any",
-            "per_page" => 100,
+            "per_page" => 200,
         ];
         $page = 1;
         $totalPages = 1;
