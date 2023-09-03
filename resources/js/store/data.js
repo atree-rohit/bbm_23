@@ -221,7 +221,7 @@ export default {
             let last_update_time = response.data.split("T")[0]
             
 
-            const base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated&updated_since=' 
+            const base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated&updated_since=' + last_update_time 
             const per_page = 200
             
             console.log("get_initial_response")
@@ -234,7 +234,6 @@ export default {
             if(initial_response){
                 console.log("total_results", initial_response.data.total_results)
                 const total_pages = Math.ceil(initial_response.data.total_results / per_page) + 1
-                // const total_pages = 1
                 let new_data = {
                     taxa: [],
                     observations: []
