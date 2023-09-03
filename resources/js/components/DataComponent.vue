@@ -131,7 +131,7 @@ export default {
                 {
                     id: 1,
                     name: "Portals",
-                    active: false,
+                    active: true,
                     disabled: false
                 },
                 {
@@ -143,7 +143,7 @@ export default {
                 {
                     id: 3,
                     name: "Taxa",
-                    active: true,
+                    active: false,
                     disabled: false
                 },
                 {
@@ -385,7 +385,7 @@ export default {
         observationStats(data){
             let op = {
                 observations: data.length,
-                users: this.countUnique(data.map(x => x[2])),
+                users: this.countUnique(data.map(x => x[0])),
                 states: this.countUnique(data.map(x => x[4])),
                 districts: this.countUnique(data.map(x => x[3])),
             }
