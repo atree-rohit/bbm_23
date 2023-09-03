@@ -98,7 +98,7 @@
             :data="modal_data"
             @close="show_modal=false"
         />
-        <button class="btn btn-sm btn-danger mb-5" @click="pullInat">Pull Inat</button>
+        <button class="btn btn-sm btn-outline-secondary mb-5" @click="pullInat">Pull Inat</button>
     </div>
     <div class="main-container btn-danger d-flex justify-content-center align-items-center" style="height: 20rem; font-size: 3.5vw; font-weight: 100;" v-else>
         You Need to be Logged In to View This Page
