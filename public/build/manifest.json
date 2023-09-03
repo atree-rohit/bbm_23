@@ -127,14 +127,14 @@
     "src": "resources/js/pages/butterfly_counts.js"
   },
   "resources/js/pages/data.css": {
-    "file": "assets/data-f205ea54.css",
+    "file": "assets/data-86da99c5.css",
     "src": "resources/js/pages/data.css"
   },
   "resources/js/pages/data.js": {
     "css": [
-      "assets/data-f205ea54.css"
+      "assets/data-86da99c5.css"
     ],
-    "file": "assets/data-d7d62747.js",
+    "file": "assets/data-a0a806ce.js",
     "imports": [
       "__plugin-vue_export-helper-3f329d03.js",
       "_indexRollupNext-2d7dfafb.js",
