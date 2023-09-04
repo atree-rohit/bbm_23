@@ -13,6 +13,8 @@ use App\Models\Taxa;
 
 use Illuminate\Support\Facades\Cache;
 
+use Illuminate\Support\Str;
+
 
 use Spatie\Activitylog\Models\Activity;
 
@@ -513,10 +515,13 @@ class DataController extends Controller
                 $inat->id = $i["id"];
                 $count["added"]++;
             }
+            $place = Str::limit($i["place"], 195);
+
+
             $inat->user_id = $i["user_id"];
             $inat->user = $i["user"];
             $inat->observed_on = $i["observed_on"];
-            $inat->place = $i["place"];
+            $inat->place = $place;
             $inat->latitude = $i["latitude"];
             $inat->longitude = $i["longitude"];
             $inat->taxa_id = $i["taxa_id"];
