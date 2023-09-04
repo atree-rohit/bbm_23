@@ -108,7 +108,20 @@
             :data="modal_data"
             @close="show_modal=false"
         />
-        <button class="btn btn-sm btn-outline-secondary mb-5" @click="pullInat">Pull Inat</button>
+        <div v-if="is_super_admin" class="w-100 d-flex justify-content-center py-3 my-2 border border-danger">
+            <button
+                class="btn btn-sm btn-outline-secondary mx-3"
+                @click="pullInat"
+                @keydown="pullInatAll"
+                @keyup="resetAKeyPressed"
+            >Pull Inat</button>
+    
+            <!-- <button
+                class="btn btn-sm btn-outline-secondary mx-3"
+                @click="addStoredData"
+            >addStoredData</button> -->
+        </div>
+ 
     </div>
     <div class="main-container btn-danger d-flex justify-content-center align-items-center" style="height: 20rem; font-size: 3.5vw; font-weight: 100;" v-else>
         You Need to be Logged In to View This Page
@@ -129,7 +142,8 @@ export default defineComponent({
     data(){
         return {
             show_modal: false,
-            modal_data: {}
+            modal_data: {},
+            a_key_pressed: false,
         }
     },
     computed: {
@@ -179,7 +193,21 @@ export default defineComponent({
             }
         },
         pullInat(){
-            store.dispatch('data/pullInat')
+            let pull_all = false
+            store.dispatch('data/pullInat', pull_all)
+        },
+        pullInatAll(event) {
+            if (event.key === 'a' && this.a_key_pressed == false) {
+                let pull_all = true
+                store.dispatch('data/pullInat', pull_all)
+                this.a_key_pressed = true
+            }
+        },
+        resetAKeyPressed(){
+            this.a_key_pressed = false
+        },
+        addStoredData(){
+            store.dispatch('data/addStoredData')
         }
     }
 })
