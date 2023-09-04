@@ -29,6 +29,168 @@ export default {
         map_data: {},
         shouldPersist: false,
     },
+    getters:{
+        observation_stats(state){
+            if(Object.keys(state.filtered_observations).length === 0) {
+                return {}
+            }
+            console.log("GETTER")
+            return {
+                counts: getObservationStats(state.filtered_observations.counts),
+                inat: getObservationStats(state.filtered_observations.inats),
+                ibp: getObservationStats(state.filtered_observations.ibps),
+                ifb: getObservationStats(state.filtered_observations.ifbs),
+                total: getObservationStats([].concat(...Object.values(state.filtered_observations))),
+            }
+        },
+        table_data(state, getters){
+            const table_data = {
+                portals: {
+                    headers: [{
+                        name: "portal", 
+                        label: "Portals",
+                        sortable: false,
+                        class: "nowrap"
+                    },{
+                        name: "observations", 
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users", 
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "states", 
+                        label: "States",
+                        sortable: true
+                    },{
+                        name: "districts", 
+                        label: "Districts",
+                        sortable: true
+                    }],
+                    rows:[]
+                },
+                taxa: {
+                    headers: [{
+                        name: "common_name",
+                        label: "Name",
+                        sortable: true,
+                        class: "nowrap"
+                    },{
+                        name: "scientific_name",
+                        label: "Scientific Name",
+                        sortable: true,
+                        class: "nowrap"
+                    },{
+                        name: "rank",
+                        label: "Rank",
+                        sortable: true,
+                        class: "nowrap"
+                    },{
+                        name: "observations",
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users",
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "states",
+                        label: "States",
+                        sortable: true
+                    },{
+                        name: "districts",
+                        label: "Districts",
+                        sortable: true
+                    }],
+                    rows:[]
+                },
+                state_portals: {
+                    headers: [{
+                        name: "portal", 
+                        label: "Portals",
+                        sortable: false,
+                        class: "nowrap"
+                    },{
+                        name: "observations", 
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users", 
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "districts", 
+                        label: "Districts",
+                        sortable: true
+                    }],
+                    rows:[]
+                },
+                districts: {
+                    headers: [{
+                        name: "district",
+                        label: "District",
+                        sortable: false,
+                        class: "nowrap"
+                    },{
+                        name: "observations",
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "users",
+                        label: "Users",
+                        sortable: true
+                    },{
+                        name: "taxa",
+                        label: "Taxa",
+                        sortable: true
+                    },{
+                        name: "portals",
+                        label: "Portals",
+                        sortable: false
+                    }],
+                    rows:[]
+                }
+            }
+
+            //portal rows
+            let op = []
+            
+            for(let [key, value] of Object.entries(getters.observation_stats)){
+                op.push({
+                    portal: key,
+                    observations: value.observations,
+                    users: value.users,
+                    states: value.states,
+                    districts: value.districts,
+                })
+            }
+            table_data.portals.rows = op
+            
+            //taxa rows
+            const all_observations = Object.values(state.filtered_observations).flat()
+            op = d3.groups(all_observations, d => d[1]).map((taxon) => {
+                let taxa = state.taxa.find((t) => t.id === taxon[0])
+                if(!taxa) return {}
+                return {
+                    common_name: taxa.common_name,
+                    scientific_name: taxa.name,
+                    rank: taxa.rank,
+                    observations: taxon[1].length,
+                    users: countUnique(taxon[1].map((o) => o[0])),
+                    states: countUnique(taxon[1].map((o) => o[4])),
+                    districts: countUnique(taxon[1].map((o) => o[3])),
+                }
+            })
+            table_data.taxa.rows = op.sort((a,b) => b.observations - a.observations)
+            
+            
+
+            return table_data
+            
+
+        }
+    },
     mutations: {
         SET_LOADING(state, value) {
             if(value != null){
@@ -278,6 +440,20 @@ export default {
         }
     }
 }
+
+function getObservationStats(data){
+    return {
+        observations: data.length,
+        users: countUnique(data.map(x => x[0])),
+        states: countUnique(data.map(x => x[4])),
+        districts: countUnique(data.map(x => x[3])),
+    }
+}
+
+function countUnique(arr){
+    return [...new Set(arr)].length
+}
+
 
 function getNewObservation(observation, districts){
     let coordinates = observation.location.split(",").map((d) => parseFloat(d))

@@ -86,7 +86,7 @@
                     <template v-if="active_filter.name=='Taxa'">
                         <data-table
                             :headers="table_data.taxa.headers"                    
-                            :data="taxa_stats"
+                            :data="table_data.taxa.rows"
                             :total_row="false"
                             hue="info"
                         />
@@ -94,7 +94,7 @@
                     <template v-else-if="active_filter.name == 'Portals'">
                         <data-table
                             :headers="table_data.portals.headers"                    
-                            :data="portal_stats"
+                            :data="table_data.portals.rows"
                             :total_row="true"
                             hue="danger"
                         />
@@ -111,9 +111,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import store from '../store'
-import * as d3 from 'd3'
 
 import MapBBMData from './MapBBMData.vue'
 import DataTable from './DataTable.vue'
@@ -159,110 +158,6 @@ export default {
                     disabled: true
                 }
             ],
-            table_data: {
-                portals: {
-                    headers: [{
-                        name: "portal", 
-                        label: "Portals",
-                        sortable: false,
-                        class: "nowrap"
-                    },{
-                        name: "observations", 
-                        label: "Observations",
-                        sortable: true
-                    },{
-                        name: "users", 
-                        label: "Users",
-                        sortable: true
-                    },{
-                        name: "states", 
-                        label: "States",
-                        sortable: true
-                    },{
-                        name: "districts", 
-                        label: "Districts",
-                        sortable: true
-                    }],
-                },
-                taxa: {
-                    headers: [{
-                        name: "common_name",
-                        label: "Name",
-                        sortable: true,
-                        class: "nowrap"
-                    },{
-                        name: "scientific_name",
-                        label: "Scientific Name",
-                        sortable: true,
-                        class: "nowrap"
-                    },{
-                        name: "rank",
-                        label: "Rank",
-                        sortable: true,
-                        class: "nowrap"
-                    },{
-                        name: "observations",
-                        label: "Observations",
-                        sortable: true
-                    },{
-                        name: "users",
-                        label: "Users",
-                        sortable: true
-                    },{
-                        name: "states",
-                        label: "States",
-                        sortable: true
-                    },{
-                        name: "districts",
-                        label: "Districts",
-                        sortable: true
-                    }],
-                },
-                state_portals: {
-                    headers: [{
-                        name: "portal", 
-                        label: "Portals",
-                        sortable: false,
-                        class: "nowrap"
-                    },{
-                        name: "observations", 
-                        label: "Observations",
-                        sortable: true
-                    },{
-                        name: "users", 
-                        label: "Users",
-                        sortable: true
-                    },{
-                        name: "districts", 
-                        label: "Districts",
-                        sortable: true
-                    }],
-                },
-                districts: {
-                    headers: [{
-                        name: "district",
-                        label: "District",
-                        sortable: false,
-                        class: "nowrap"
-                    },{
-                        name: "observations",
-                        label: "Observations",
-                        sortable: true
-                    },{
-                        name: "users",
-                        label: "Users",
-                        sortable: true
-                    },{
-                        name: "taxa",
-                        label: "Taxa",
-                        sortable: true
-                    },{
-                        name: "portals",
-                        label: "Portals",
-                        sortable: false
-                    }],
-                }
-            },
             selected: null
         }
     },
@@ -273,57 +168,12 @@ export default {
             taxa: state => state.data.taxa,
             geojson: state => state.data.geojson,
         }),
+        ...mapGetters({
+            observation_stats: 'data/observation_stats',
+            table_data: 'data/table_data'
+        }),
         active_filter(){
             return this.filters.filter((f) => f.active)[0]
-        },
-        observation_stats(){
-            if(Object.keys(this.filtered_observations).length === 0) {
-                // console.log("no observations")
-                return {}
-            }
-            let op = {
-                counts: this.observationStats(this.filtered_observations.counts),
-                inat: this.observationStats(this.filtered_observations.inats),
-                ibp: this.observationStats(this.filtered_observations.ibps),
-                ifb: this.observationStats(this.filtered_observations.ifbs),
-                total: this.observationStats([].concat(...Object.values(this.filtered_observations))),
-            }
-            
-            return op
-        },
-        portal_stats(){
-            let op = []
-            console.log(this.observation_stats)
-            for(let [key, value] of Object.entries(this.observation_stats)){
-                op.push({
-                    portal: key,
-                    observations: value.observations,
-                    users: value.users,
-                    states: value.states,
-                    districts: value.districts,
-                })
-            }
-            
-            return op
-        },
-        taxa_stats(){
-            // common_name, scientific_name,  rank, observations, users, states, districts
-            const all_observations = Object.values(this.filtered_observations).flat()
-            let op = d3.groups(all_observations, d => d[1]).map((taxon) => {
-                let taxa = this.taxa.find((t) => t.id === taxon[0])
-                if(!taxa) return {}
-                return {
-                    common_name: taxa.common_name,
-                    scientific_name: taxa.name,
-                    rank: taxa.rank,
-                    observations: taxon[1].length,
-                    users: this.countUnique(taxon[1].map((o) => o[0])),
-                    states: this.countUnique(taxon[1].map((o) => o[4])),
-                    districts: this.countUnique(taxon[1].map((o) => o[3])),
-                }
-            })
-            return op.sort((a,b) => b.observations - a.observations)
-
         },
         state_table_data(){
             let op = {
@@ -382,16 +232,6 @@ export default {
         console.log(this.observations)
     },
     methods: {
-        observationStats(data){
-            let op = {
-                observations: data.length,
-                users: this.countUnique(data.map(x => x[0])),
-                states: this.countUnique(data.map(x => x[4])),
-                districts: this.countUnique(data.map(x => x[3])),
-            }
-            
-            return op
-        },
         getObservationsCount(data){
             let observations = 0
             data.map((d) => {
