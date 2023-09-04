@@ -39,7 +39,7 @@ export default {
             }
         },
         async approveForm({commit, dispatch}, form_data){
-            console.group("Approving Form")
+            console.groupCollapsed(`Approving Form #${form_data.id} ( ${form_data.species_list.length} species )` )
             commit('SET_LOADING', 'Approving Form')
             form_data.species_list
                 .filter((s) => s.status == "pending" )
