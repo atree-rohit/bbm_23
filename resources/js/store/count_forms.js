@@ -39,6 +39,7 @@ export default {
             }
         },
         async approveForm({commit, dispatch}, form_data){
+            console.group("Approving Form")
             commit('SET_LOADING', 'Approving Form')
             form_data.species_list
                 .filter((s) => s.status == "pending" )
@@ -48,6 +49,7 @@ export default {
             
             await dispatch('setFormStatus', { form_id: form_data.id, status: "approved" })
             commit('SET_LOADING', null)
+            console.groupEnd()
         },
         async deleteForm({commit}, form_data){
             const { data } = await axios.delete('/api/count_forms/delete_form', { data: form_data })
