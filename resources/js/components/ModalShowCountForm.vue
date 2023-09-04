@@ -145,8 +145,8 @@ export default{
     data(){
         return {
             fields: {
-                form: ['name', 'affiliation', 'phone', 'email', 'team_members', 'open_access', 'location', 'state', 'district',  'latitude', 'longitude', 'date', 'start_time', 'end_time', 'altitude', 'distance', 'weather', 'photo_link', 'status', 'comments'],
-                species: ['common_name', 'scientific_name', 'individuals', 'remarks', 'status']
+                form: ['id', 'name', 'affiliation', 'phone', 'email', 'team_members', 'open_access', 'location', 'state', 'district',  'latitude', 'longitude', 'date', 'start_time', 'end_time', 'altitude', 'distance', 'weather', 'photo_link', 'status', 'comments'],
+                species: ['id', 'common_name', 'scientific_name', 'individuals', 'remarks', 'status']
             },
             statuses: ['pending','approved','duplicate','rejected'],
         }
