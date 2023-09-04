@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import store from '../store'
 import MapData from './MapData.vue'
 import LoadingData from './LoadingData.vue'
@@ -42,7 +42,7 @@ export default {
         MapData,
         LoadingData
     },
-    // emits: ["polygon-clicked"],
+    emits: ["state-selected"],
     data() {
         return {
             mode: 'states',
@@ -57,29 +57,11 @@ export default {
     computed:{
         ...mapState({
             district_coordinators: state => state.district_coordinators.all_data,
-            map_data: state => state.data.map_data,
             geojson: state => state.data.geojson,
         }),
-        filtered_map_data(){
-            let op = JSON.parse(JSON.stringify(this.map_data))
-            if(this.selected.state != null){
-                const state_districts = this.geojson.districts.features.filter((d) => d.properties.state === this.selected.state).map((d) => d.properties.district)
-                op.states = op.states.filter(d => d.name === this.selected.state)
-                op.districts = op.districts.filter(d => state_districts.includes(d.name))
-            }
-            if(this.selected.district != null){
-                op.districts = op.districts.filter(d => d.name === this.selected.district)
-            }
-            console.log("FMD", op)
-            return op
-        }
-    },
-    mounted(){
-    },
-    watch: {        
-        map_data(newVal){
-            console.log(newVal)
-        },
+        ...mapGetters({
+            filtered_map_data: 'data/filtered_map_data'
+        }),
     },
     methods:{
         valueFromLabel(str){

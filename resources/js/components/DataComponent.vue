@@ -163,13 +163,10 @@ export default {
     },
     computed: {
         ...mapState({
-            filtered_observations: state => state.data.filtered_observations,
-            observations: state => state.data.observations,
-            taxa: state => state.data.taxa,
             geojson: state => state.data.geojson,
         }),
         ...mapGetters({
-            observation_stats: 'data/observation_stats',
+            filtered_observations: 'data/filtered_observations',
             table_data: 'data/table_data'
         }),
         active_filter(){
@@ -229,7 +226,6 @@ export default {
     },
     created(){
         store.dispatch('data/getAllData')
-        console.log(this.observations)
     },
     methods: {
         getObservationsCount(data){

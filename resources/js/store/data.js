@@ -10,7 +10,6 @@ export default {
     state: {
         headers: [],
         observations: [],
-        filtered_observations: [],
         users: [],
         taxa: [],
         districts: [],
@@ -26,21 +25,65 @@ export default {
             state: null,
             district: null,
         },
-        map_data: {},
         shouldPersist: false,
     },
     getters:{
-        observation_stats(state){
-            if(Object.keys(state.filtered_observations).length === 0) {
+        filtered_observations(state){
+            let op = {}
+            if(state.filters.year){
+                Object.keys(state.observations).forEach((portal) => {
+                    op[portal] = state.observations[portal].filter((d) => {
+                        const dateParts = d[2].split("-")
+                        const yearInDate = dateParts[0]
+                        return yearInDate == state.filters.year
+                    })
+                })
+            } else {
+                op = state.observations
+            }
+            if(state.filters.state){
+                Object.keys(op).forEach((portal) => {
+                    op[portal] = op[portal].filter((d) => {
+                        return d[4] == state.filters.state
+                    })
+                })
+            }
+            return op
+        },
+        observation_stats(state, getters){
+            if(Object.keys(getters.filtered_observations).length === 0) {
                 return {}
             }
-            console.log("GETTER")
             return {
-                counts: getObservationStats(state.filtered_observations.counts),
-                inat: getObservationStats(state.filtered_observations.inats),
-                ibp: getObservationStats(state.filtered_observations.ibps),
-                ifb: getObservationStats(state.filtered_observations.ifbs),
-                total: getObservationStats([].concat(...Object.values(state.filtered_observations))),
+                counts: getObservationStats(getters.filtered_observations.counts),
+                inat: getObservationStats(getters.filtered_observations.inats),
+                ibp: getObservationStats(getters.filtered_observations.ibps),
+                ifb: getObservationStats(getters.filtered_observations.ifbs),
+                total: getObservationStats([].concat(...Object.values(getters.filtered_observations))),
+            }
+        },
+        map_data(state, getters){
+            const flatData = Object.values(getters.filtered_observations).flat()
+            const mapData = flatData.reduce((acc, observation) => {
+                const stateName = observation[4]
+                const districtName = observation[3]
+                
+                if (!acc.states[stateName]) {
+                    acc.states[stateName] = 0
+                }
+                acc.states[stateName]++
+                
+                if (!acc.districts[districtName]) {
+                    acc.districts[districtName] = 0
+                }
+                acc.districts[districtName]++
+                
+                return acc
+            }, { states: {}, districts: {} })
+
+            return {
+                states: Object.entries(mapData.states).map(([name, value]) => ({ name, value })),
+                districts: Object.entries(mapData.districts).map(([name, value]) => ({ name, value })),
             }
         },
         table_data(state, getters){
@@ -168,7 +211,7 @@ export default {
             table_data.portals.rows = op
             
             //taxa rows
-            const all_observations = Object.values(state.filtered_observations).flat()
+            const all_observations = Object.values(getters.filtered_observations).flat()
             op = d3.groups(all_observations, d => d[1]).map((taxon) => {
                 let taxa = state.taxa.find((t) => t.id === taxon[0])
                 if(!taxa) return {}
@@ -189,6 +232,18 @@ export default {
             return table_data
             
 
+        },
+        filtered_map_data(state, getters){
+            let op = JSON.parse(JSON.stringify(getters.map_data))
+            if(state.filters.state != null){
+                const state_districts = state.geojson.districts.features.filter((d) => d.properties.state === state.filters.state).map((d) => d.properties.district)
+                op.states = op.states.filter(d => d.name === state.filters.state)
+                op.districts = op.districts.filter(d => state_districts.includes(d.name))
+            }
+            if(state.filters.district != null){
+                op.districts = op.districts.filter(d => d.name === state.filters.district)
+            }
+            return op
         }
     },
     mutations: {
@@ -227,56 +282,9 @@ export default {
             })
             state.observations = updatedObservations
         },
-        SET_FILTERED_OBSERVATIONS(state){
-            let op = {}
-            if(state.filters.year){
-                Object.keys(state.observations).forEach((portal) => {
-                    op[portal] = state.observations[portal].filter((d) => {
-                        const dateParts = d[2].split("-");
-                        const yearInDate = dateParts[0];
-                        return yearInDate == state.filters.year;
-                    })
-                })
-            } else {
-                op = state.observations
-            }
-            if(state.filters.state){
-                Object.keys(op).forEach((portal) => {
-                    op[portal] = op[portal].filter((d) => {
-                        return d[4] == state.filters.state;
-                    })
-                })
-                console.log(op)
-            }
-            state.filtered_observations = op
-        },
         SET_GEOJSON(state, value) {
             state.geojson = value
             // console.log("Set_geojson", value)
-        },
-        SET_MAP_DATA(state) {
-            const flatData = Object.values(state.filtered_observations).flat()
-            const mapData = flatData.reduce((acc, observation) => {
-                const stateName = observation[4]
-                const districtName = observation[3]
-                
-                if (!acc.states[stateName]) {
-                    acc.states[stateName] = 0
-                }
-                acc.states[stateName]++
-                
-                if (!acc.districts[districtName]) {
-                    acc.districts[districtName] = 0
-                }
-                acc.districts[districtName]++
-                
-                return acc
-            }, { states: {}, districts: {} })
-
-            state.map_data = {
-                states: Object.entries(mapData.states).map(([name, value]) => ({ name, value })),
-                districts: Object.entries(mapData.districts).map(([name, value]) => ({ name, value })),
-            }
         },
         SET_FILTER(state, data){
             state.filters[data.field] = data.value
@@ -290,7 +298,7 @@ export default {
             await dispatch('getObservations')
         },
         async getObservations({ commit }) {
-            console.group("Loading Data")
+            console.groupCollapsed("Loading Data")
             commit('SET_LOADING', 'Getting Observations')
             
             await smallDelay()
@@ -312,14 +320,7 @@ export default {
             commit('SET_LOADING', 'Setting Observations')
             await smallDelay()
             commit('SET_OBSERVATIONS', data.observations)
-
-            commit('SET_LOADING', 'Setting Filtered Observations')
-            await smallDelay()
-            commit('SET_FILTERED_OBSERVATIONS')
             
-            commit('SET_LOADING', 'Setting Map Data')
-            await smallDelay()
-            commit('SET_MAP_DATA')
             console.groupEnd()
             commit('SET_LOADING', null)
             await smallDelay()
@@ -349,21 +350,8 @@ export default {
             // console.log("setLoading", value)
         },
         async setFilter({commit}, data){
-            console.group("Updating Map Data")
-            
             commit('SET_LOADING', 'Setting Filter')
-            await smallDelay()
             commit('SET_FILTER', data)
-
-            commit('SET_LOADING', 'Setting Filtered Observations')
-            await smallDelay()
-            commit('SET_FILTERED_OBSERVATIONS')
-            
-            commit('SET_LOADING', 'Setting Map Data')
-            await smallDelay()
-            commit('SET_MAP_DATA')
-
-            console.groupEnd()
             commit('SET_LOADING', null)
         },
         async addStoredData({ dispatch, state }) {
