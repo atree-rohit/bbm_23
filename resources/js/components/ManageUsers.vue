@@ -15,7 +15,17 @@
     }
 
     .table-sm{
-        font-size: 0.75rem;
+        font-size: 0.67rem;
+    }
+
+    .table-sm th{
+        white-space: nowrap;
+        border-left: 1px solid rgba(255,255,255,.67);
+    }
+
+    .log-table-container{
+        max-height: 50vh;
+        overflow: scroll;
     }
 </style>
 
@@ -65,7 +75,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="w-100">
+        <div class="w-100 log-table-container">
             <table class="table table-sm table-hover">
                 <thead class="bg-secondary text-light">
                     <tr>
