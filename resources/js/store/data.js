@@ -1,6 +1,7 @@
 import axios from "axios"
 import * as d3 from "d3"
 // import inat_data from "../json/inat_data_2023_09_03.json"
+// import inat_data from "../json/inat_data_2023_09_04.json"
 import { saveData, getData } from "../utils/idb_geojson.js"    
 import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
 
@@ -203,8 +204,18 @@ export default {
             console.groupEnd()
             commit('SET_LOADING', null)
         },
-        async pullInat({ dispatch, state }) {
-            console.log("pullInat")
+        async addStoredData({ dispatch, state }) {
+            // console.log(d3.groups(inat_data, (d) => d.user))
+            const new_data = inat_data
+            console.log(new_data)
+            const store_inat_data = {
+            //     taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
+                observations: await axios.post("/api/data/store_inat_observations", {data:new_data})
+            }
+            console.log(store_inat_data)
+        },
+        async pullInat({ dispatch, state }, pull_all) {
+            console.log("pullInat-pull-all:", pull_all)
             
             console.log("get_maps")
             await dispatch('getMaps')
@@ -221,7 +232,10 @@ export default {
             let last_update_time = response.data.split("T")[0]
             
 
-            const base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated&updated_since=' + last_update_time 
+            let base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated'
+            if(!pull_all) {
+                base_url += `&updated_since=${last_update_time}` 
+            }
             const per_page = 200
             
             console.log("get_initial_response")
@@ -267,10 +281,11 @@ export default {
 
 function getNewObservation(observation, districts){
     let coordinates = observation.location.split(",").map((d) => parseFloat(d))
+    const user = (observation.user.name && observation.user.name.length > 3) ? observation.user.name : observation.user.login
     let op = {
         id: observation.id,
         user_id: observation.user.id,
-        user: observation.user.name || observation.user.login,
+        user: user,
         observed_on: observation.observed_on,
         place: observation.place_guess,
         latitude: coordinates[0],
