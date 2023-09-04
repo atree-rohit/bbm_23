@@ -337,27 +337,27 @@ export default{
 			})
 			return op
 		},
-        clicked(polygon_details) {
-			store.dispatch("data/setLoading", "Working")
+        async clicked(polygon_details) {
 			let op = {
 				name: polygon_details.properties[this.mode_key],
 				value: 0,
 				mode: this.mode_key
 			}
+			
 			let polygon_data = this.mapData.find((d) => d.name == op.name)
 			op.value = polygon_data ? polygon_data.value : 0
+			this.$emit('polygon-clicked', op);
 			
-            this.zoomToPolygon(polygon_details)
-			this.$emit('polygon-clicked', op)
-			setTimeout(() => store.dispatch("data/setLoading", null), 500)
+			this.zoomToPolygon(polygon_details);
 		},
 		zoomToPolygon(polygon_details) {
+			
             let target_polygon = null
             if(this.selected == null || this.selected != polygon_details.properties[this.mode_key]){
                 target_polygon = polygon_details
                 this.selected = polygon_details.properties[this.mode_key]
             } else {
-                target_polygon = this.geojson[this.mode_key]
+                target_polygon = this.geojson[this.mode]
                 this.selected = null
             }
 			let [[x0, y0], [x1, y1]] = this.path.bounds(target_polygon)
@@ -369,15 +369,6 @@ export default{
 				.scale(Math.min(8, 0.9 / Math.max((x1 - x0) / this.width, (y1 - y0) / this.height)))
 				.translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
 			)
-
-			// this.zoomTransform = d3.zoomTransform(this.svg.node()); // Get the current zoom transform
-			// console.log(55, d3.zoomTransform(this.svg.node()))
-			// this.zoomTransform.k = Math.min(8, 0.9 / Math.max((x1 - x0) / this.width, (y1 - y0) / this.height));
-			// this.zoomTransform.x = -(x0 + x1) / 2;
-			// this.zoomTransform.y = -(y0 + y1) / 2;
-
-			// // Apply the updated zoomTransform
-			// this.svg.transition().duration(1500).call(this.zoom.transform, this.zoomTransform);
 		},
 
         drawPolygonBoundary(polygon){
