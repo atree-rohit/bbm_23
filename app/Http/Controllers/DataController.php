@@ -57,15 +57,15 @@ class DataController extends Controller
             "headers" => ["id", "taxa", "user", "date", "district"],
             "observations" => [
                 "counts" => $get["counts"]["observations"],
-                "inats" => $get["inats"]["observations"],
-                "ibps" => $get["ibps"]["observations"],
-                "ifbs" => $get["ifbs"]["observations"],
+                "inat" => $get["inats"]["observations"],
+                "ibp" => $get["ibps"]["observations"],
+                "ifb" => $get["ifbs"]["observations"],
             ],
             "users" => [
                 "counts" => $get["counts"]["users"],
-                "inats" => $get["inats"]["users"],
-                "ibps" => $get["ibps"]["users"],
-                "ifbs" => $get["ifbs"]["users"],
+                "inat" => $get["inats"]["users"],
+                "ibp" => $get["ibps"]["users"],
+                "ifb" => $get["ifbs"]["users"],
             ],
             "districts" => $district_names,
         ];

@@ -48,6 +48,15 @@ export default {
                     })
                 })
             }
+            if(state.filters.portal){
+                console.log(state.filters.portal)
+                Object.keys(op).forEach((portal) => {
+                    if(portal != state.filters.portal){
+                        op[portal] = []
+                    }
+                })
+                console.log(op)
+            }
             return op
         },
         observation_stats(state, getters){
@@ -56,9 +65,9 @@ export default {
             }
             return {
                 counts: getObservationStats(getters.filtered_observations.counts),
-                inat: getObservationStats(getters.filtered_observations.inats),
-                ibp: getObservationStats(getters.filtered_observations.ibps),
-                ifb: getObservationStats(getters.filtered_observations.ifbs),
+                inat: getObservationStats(getters.filtered_observations.inat),
+                ibp: getObservationStats(getters.filtered_observations.ibp),
+                ifb: getObservationStats(getters.filtered_observations.ifb),
                 total: getObservationStats([].concat(...Object.values(getters.filtered_observations))),
             }
         },
@@ -112,7 +121,11 @@ export default {
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[]
+                    rows:[],
+                    total_row: true,
+                    hue: "danger",
+                    click: "portal",
+                    sort_col: 1
                 },
                 locations: {
                     headers: [{
@@ -137,7 +150,11 @@ export default {
                         label: "Portals",
                         sortable: false
                     }],
-                    rows:[]
+                    rows:[],
+                    total_row: false,
+                    hue: "info",
+                    click: "state",
+                    sort_col: 1
                 },
                 taxa: {
                     headers: [{
@@ -172,7 +189,11 @@ export default {
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[]
+                    rows:[],
+                    total_row: false,
+                    hue: "primary",
+                    click: null,
+                    sort_col: 3
                 },
                 date: {
                     headers: [{
@@ -201,7 +222,11 @@ export default {
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[]
+                    rows:[],
+                    total_row: false,
+                    hue: "danger",
+                    click: null,
+                    sort_col: 1
                 },
                 users: {
                     headers: [{
@@ -234,7 +259,11 @@ export default {
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[]
+                    rows:[],
+                    total_row: false,
+                    hue: "warning",
+                    click: null,
+                    sort_col: 2
                 }
             }
             const all_observations_flat = Object.values(getters.filtered_observations).flat()
@@ -270,6 +299,7 @@ export default {
             } else {
                 table_data.locations.headers[0].name = "district"
                 table_data.locations.headers[0].label = "District"
+                table_data.locations.click = "district"
                 if(state.geojson.districts.features){
                     const state_districts = state.geojson.districts.features.filter((d) => d.properties.state === state.filters.state).map((d) => d.properties.district)
                     state_districts.map((district) => {
@@ -365,32 +395,7 @@ export default {
                     states: countUnique(group[1].map((o) => o[4])),
                     districts: countUnique(group[1].map((o) => o[3])),
                 };
-            }).sort((a, b) => b.observations - a.observations)
-            console.log(table_data.users.rows)
-
-
-
-
-
-
-            // table_data.users.rows = d3.groups(all_observations_flat, d => d[0]).map((group) => {
-            //     const portals = Object.keys(getters.filtered_observations).filter((portal) => {
-            //         return getters.filtered_observations[portal].some((o) => o[0] === group[0])
-            //     }).join(", ")
-            //     console.log(portals)
-            //     return{
-            //         user: group[0],
-            //         portals: fixPortalNames(portals),
-            //         observations: group[1].length,
-            //         taxa: countUnique(group[1].map((o) => o[1])),
-            //         years: [...new Set(group[1].map((o) => o[2].slice(0,4)))].join(", "),
-            //         states: countUnique(group[1].map((o) => o[4])),
-            //         districts: countUnique(group[1].map((o) => o[3]))
-            //     }
-            // }).sort((a,b) => b.observations - a.observations)
-            
-
-            
+            })
             return table_data
             
 
@@ -448,7 +453,8 @@ export default {
             state.geojson = value
         },
         SET_FILTER(state, data){
-            state.filters[data.field] = data.value
+            
+            state.filters[data.field] = (state.filters[data.field] == data.value) ? null : data.value
         }
 
     },
@@ -589,11 +595,7 @@ export default {
         }
     }
 }
-// function formatDate(date){
-//     const dateParts = date.split("-")
-//     const months = {"01": "Jan","02": "Feb","03": "Mar","04": "Apr","05": "May","06": "Jun","07": "Jul","08": "Aug","09": "Sep","10": "Oct","11": "Nov","12": "Dec"}
-//     return `${dateParts[2]} ${months[dateParts[1]]}, ${dateParts[0].substring(2)}`
-// }
+
 
 function fixPortalNames(portal){
     return portal.replace("inats", "iNat").replace("ibps", "IBP").replace("ifbs", "IFB")

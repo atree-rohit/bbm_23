@@ -95,6 +95,7 @@ tr.empty-row > td {
                     :key="row_id"
                     :row_id="row_id"
                     :class="totalRowClass(row, row_id)"
+                    @click="rowClick(row, row_id)"
                 >
                     <td
                         v-for="(header, h) in headers"
@@ -109,49 +110,56 @@ tr.empty-row > td {
 </template>
 
 <script>
+import store from '../store'
 export default{
     name: "DataTable",
     props: {
-        headers: {
-            type: Array,
+        content: {
+            type: Object,
             required: true
-        },
-        data: {
-            type: Array,
-            required: true
-        },
-        total_row:{
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        hue:{
-            type: String,
-            required: false,
-            default: "success"
         }
     },
     data(){
         return {
-            sort_key: this.headers.filter(h => h.sortable)[0].name,
+            sort_key: null,
             sort_order: "desc",
         }
     },
     computed:{
         sorted_data(){
             let op = []
-            let data = this.data
-            if(data.length){
+            if(this.data && this.data.length){
                 if(!this.total_row){
-                    op = this.sort_data(data)                             
+                    op = this.sort_data(this.data)                             
                 } else {
-                    let last_row = data.pop()
-                    op = this.sort_data(data)
+                    let last_row = this.data.pop()
+                    op = this.sort_data(this.data)
                     op.push(last_row)
                 }
             }
             return op
-        }
+        },
+        headers(){
+            if(!this.content){
+                return []
+            }
+            return this.content.headers
+        },
+        data(){
+            if(!this.content){
+                return []
+            } 
+            if(this.sort_key == null){
+                this.sort_key = this.headers[this.content.sort_col].name
+            }
+            return this.content.rows
+        },
+        total_row(){
+            return this.content.total_row
+        },
+        hue(){
+            return this.content.hue
+        },
     },
     methods:{
         sort_data(data){
@@ -198,6 +206,26 @@ export default{
                 return `empty-row`
             }
             return
+        },
+        rowClick(row, row_id){
+            if(this.content.click != null && (this.content.total_row == false || row_id < this.content.rows.length - 1)){
+                if(['state', 'district'].indexOf(this.content.click) != -1){
+                    let payload = null
+                    if(this.content.click == 'state'){
+                        payload = row[this.content.click]
+                    }
+                    store.dispatch('data/setFilter', {field:"state", value: payload})
+                } else {
+                    let payload = {
+                        field: this.content.click,
+                        value: row[this.content.click]
+                    }
+                    store.dispatch('data/setFilter', payload)
+                }
+            } else {
+                console.log(this.content.click, this.content.total_row, row_id, this.content.rows.length)
+            }
+            
         }
     }
 }
