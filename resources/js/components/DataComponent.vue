@@ -115,6 +115,14 @@
                             hue="info"
                         />
                     </template>
+                    <template v-else-if="active_filter.name=='Users'">
+                        <data-table
+                            :headers="table_data.users.headers"                    
+                            :data="table_data.users.rows"
+                            :total_row="false"
+                            hue="info"
+                        />
+                    </template>
                     <div v-else>
                         {{ active_filter }}
 
@@ -171,7 +179,7 @@ export default {
                     id: 5,
                     name: "Users",
                     active: false,
-                    disabled: true
+                    disabled: false
                 }
             ],
             selected: null

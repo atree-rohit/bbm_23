@@ -202,6 +202,39 @@ export default {
                         sortable: true
                     }],
                     rows:[]
+                },
+                users: {
+                    headers: [{
+                        name: "user",
+                        label: "User",
+                        sortable: true,
+                        class: "nowrap"
+                    },{
+                        name: "portals",
+                        label: "Portals",
+                        sortable: true
+                    },{
+                        name: "observations",
+                        label: "Observations",
+                        sortable: true
+                    },{
+                        name: "taxa",
+                        label: "Taxa",
+                        sortable: true
+                    },{
+                        name: "years",
+                        label: "Years",
+                        sortable: true
+                    },{
+                        name: "states",
+                        label: "States",
+                        sortable: true
+                    },{
+                        name: "districts",
+                        label: "Districts",
+                        sortable: true
+                    }],
+                    rows:[]
                 }
             }
             const all_observations_flat = Object.values(getters.filtered_observations).flat()
@@ -229,7 +262,7 @@ export default {
                             observations: s[1].length,
                             users: countUnique(s[1].map((o) => o[0])),
                             taxa: countUnique(s[1].map((o) => o[1])),
-                            portals: portals.map((portal) => portal.replace("inats", "iNat").replace("ibps", "IBP").replace("ifbs", "IFB")).join(", ")
+                            portals: portals.map((portal) => fixPortalNames(portal)).join(", ")
                         }
                     })
                 }
@@ -253,11 +286,8 @@ export default {
                             taxa: countUnique(Object.values(data).flat().map((d) => d[1])),
                             portals: Object.entries(data)
                                     .filter((d) => d[1].length > 0)
-                                    .map((d) => d[0])
+                                    .map((d) => fixPortalNames(d[0]))
                                     .join(", ")
-                                    .replace("inats", "iNat")
-                                    .replace("ibps", "IBP")
-                                    .replace("ifbs", "IFB")
                         })
                     })
                 }
@@ -297,6 +327,7 @@ export default {
                 table_data.date.headers[0].label = "Date"
                 op = d3.groups(all_observations_flat, d => d[2]).map((group) => {
                     return {
+                        date_raw: group[0],
                         date: formatDate(group[0]),
                         observations: group[1].length,
                         taxa: countUnique(group[1].map((o) => o[1])),
@@ -304,10 +335,62 @@ export default {
                         states: countUnique(group[1].map((o) => o[4])),
                         districts: countUnique(group[1].map((o) => o[3]))
                     }
-                }).sort((a,b) => a.date - b.date)
+                }).sort((a,b) => a.date_raw - b.date_raw)
+            }
+            table_data.date.rows = op
+
+            //users rows
+            const userToPortals = {};
+            for (const portal in getters.filtered_observations) {
+                for (const observation of getters.filtered_observations[portal]) {
+                    const user = observation[0];
+                    userToPortals[user] = userToPortals[user] || new Set();
+                    userToPortals[user].add(portal)
+                }
             }
 
-            table_data.date.rows = op
+            table_data.users.rows = d3.groups(all_observations_flat, (d) => d[0]).map((group) => {
+                const user = group[0];
+                const portals = userToPortals[user] ? [...userToPortals[user]].join(', ') : '';
+                
+                const uniqueTaxa = countUnique(group[1].map((o) => o[1]));
+                const uniqueYears = [...new Set(group[1].map((o) => o[2].slice(0, 4)))].join(', ');
+                
+                return {
+                    user: user,
+                    portals: fixPortalNames(portals),
+                    observations: group[1].length,
+                    taxa: uniqueTaxa,
+                    years: uniqueYears,
+                    states: countUnique(group[1].map((o) => o[4])),
+                    districts: countUnique(group[1].map((o) => o[3])),
+                };
+            }).sort((a, b) => b.observations - a.observations)
+            console.log(table_data.users.rows)
+
+
+
+
+
+
+            // table_data.users.rows = d3.groups(all_observations_flat, d => d[0]).map((group) => {
+            //     const portals = Object.keys(getters.filtered_observations).filter((portal) => {
+            //         return getters.filtered_observations[portal].some((o) => o[0] === group[0])
+            //     }).join(", ")
+            //     console.log(portals)
+            //     return{
+            //         user: group[0],
+            //         portals: fixPortalNames(portals),
+            //         observations: group[1].length,
+            //         taxa: countUnique(group[1].map((o) => o[1])),
+            //         years: [...new Set(group[1].map((o) => o[2].slice(0,4)))].join(", "),
+            //         states: countUnique(group[1].map((o) => o[4])),
+            //         districts: countUnique(group[1].map((o) => o[3]))
+            //     }
+            // }).sort((a,b) => b.observations - a.observations)
+            
+
+            
             return table_data
             
 
@@ -347,7 +430,7 @@ export default {
         SET_OBSERVATIONS(state, value) {
             const place_names_map = new Map(state.geojson.districts.features.map((d) => [d.properties.district, d.properties.state]))
             let updatedObservations = []
-            Object.entries(value).forEach(([portal, observations]) => {
+            Object.entries(value).map(([portal, observations]) => {
                 updatedObservations[portal] = observations.map((d) => {
                     const district = state.districts[d[4]]
                     return [
@@ -363,7 +446,6 @@ export default {
         },
         SET_GEOJSON(state, value) {
             state.geojson = value
-            // console.log("Set_geojson", value)
         },
         SET_FILTER(state, data){
             state.filters[data.field] = data.value
@@ -507,10 +589,26 @@ export default {
         }
     }
 }
-function formatDate(date){
-    const dateParts = date.split("-")
-    const months = {"01": "Jan","02": "Feb","03": "Mar","04": "Apr","05": "May","06": "Jun","07": "Jul","08": "Aug","09": "Sep","10": "Oct","11": "Nov","12": "Dec"}
-    return `${dateParts[2]} ${months[dateParts[1]]}, ${dateParts[0].substring(2)}`
+// function formatDate(date){
+//     const dateParts = date.split("-")
+//     const months = {"01": "Jan","02": "Feb","03": "Mar","04": "Apr","05": "May","06": "Jun","07": "Jul","08": "Aug","09": "Sep","10": "Oct","11": "Nov","12": "Dec"}
+//     return `${dateParts[2]} ${months[dateParts[1]]}, ${dateParts[0].substring(2)}`
+// }
+
+function fixPortalNames(portal){
+    return portal.replace("inats", "iNat").replace("ibps", "IBP").replace("ifbs", "IFB")
+}
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    const dayOfWeek = daysOfWeek[date.getUTCDay()];
+    const dayOfMonth = date.getUTCDate();
+    const month = months[date.getUTCMonth()];
+    const year = date.getUTCFullYear().toString().substring(2);
+    
+    return `${dayOfMonth} ${month}, ${year}`;
 }
 
 function getObservationStats(data){
