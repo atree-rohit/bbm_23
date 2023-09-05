@@ -83,7 +83,23 @@
                 </ul>
                 <div class="tables">
                     <h1 class="bg-warning text-center py-0">{{ selected }}</h1>
-                    <template v-if="active_filter.name=='Taxa'">
+                    <template v-if="active_filter.name == 'Portals'">
+                        <data-table
+                            :headers="table_data.portals.headers"                    
+                            :data="table_data.portals.rows"
+                            :total_row="true"
+                            hue="danger"
+                        />
+                    </template>
+                    <template v-else-if="active_filter.name=='Location'">
+                        <data-table
+                            :headers="table_data.locations.headers"
+                            :data="table_data.locations.rows"
+                            :total_row="false"
+                            hue="info"
+                        />
+                    </template>
+                    <template v-else-if="active_filter.name=='Taxa'">
                         <data-table
                             :headers="table_data.taxa.headers"                    
                             :data="table_data.taxa.rows"
@@ -91,12 +107,12 @@
                             hue="info"
                         />
                     </template>
-                    <template v-else-if="active_filter.name == 'Portals'">
+                    <template v-else-if="active_filter.name=='Date'">
                         <data-table
-                            :headers="table_data.portals.headers"                    
-                            :data="table_data.portals.rows"
-                            :total_row="true"
-                            hue="danger"
+                            :headers="table_data.date.headers"                    
+                            :data="table_data.date.rows"
+                            :total_row="false"
+                            hue="info"
                         />
                     </template>
                     <div v-else>
@@ -137,7 +153,7 @@ export default {
                     id: 2,
                     name: "Location",
                     active: false,
-                    disabled: true
+                    disabled: false
                 },
                 {
                     id: 3,
@@ -149,7 +165,7 @@ export default {
                     id: 4,
                     name: "Date",
                     active: false,
-                    disabled: true
+                    disabled: false
                 },
                 {
                     id: 5,
@@ -166,63 +182,11 @@ export default {
             geojson: state => state.data.geojson,
         }),
         ...mapGetters({
-            filtered_observations: 'data/filtered_observations',
             table_data: 'data/table_data'
         }),
         active_filter(){
             return this.filters.filter((f) => f.active)[0]
         },
-        state_table_data(){
-            let op = {
-                portals: [],
-                districts: [],
-            }
-            let portal_data = {}
-            Object.keys(this.filtered_observations).map((portal) => {
-                portal_data[portal] = this.filtered_observations[portal].filter((o) => {
-                    return o[4] === this.selected
-                })
-            })
-            Object.keys(portal_data).map((portal) => {
-                op.portals.push({
-                    portal: portal,
-                    observations: portal_data[portal].length,
-                    users: this.countUnique(portal_data[portal].map(x => x[2])),
-                    districts: this.countUnique(portal_data[portal].map(x => x[3])),
-                })
-            })
-            op.portals.push({
-                portal: "total",
-                observations: Object.values(portal_data).flat().length,
-                users: this.countUnique(Object.values(portal_data).flat().map(x => x[2])),
-                districts: this.countUnique(Object.values(portal_data).flat().map(x => x[3])),
-            })
-
-            const state_districts = this.geojson.districts.features.filter((d) => d.properties.state === this.selected).map((d) => d.properties.district)
-            state_districts.map((district) => {
-                let data = {}
-                Object.keys(this.filtered_observations).map((portal) => {
-                    data[portal] = this.filtered_observations[portal].filter((o) => {
-                        return o[3] === district
-                    })
-                })
-                op.districts.push({
-                    district: district,
-                    observations: Object.values(data).flat().length,
-                    users: this.countUnique(Object.values(data).flat().map((d) => d[2])),
-                    taxa: this.countUnique(Object.values(data).flat().map((d) => d[1])),
-                    portals: Object.entries(data)
-                            .filter((d) => d[1].length > 0)
-                            .map((d) => d[0])
-                            .join(", ")
-                            .replace("inats", "iNat")
-                            .replace("ibps", "IBP")
-                            .replace("ifbs", "IFB")
-                })
-            })
-            
-            return op
-        }
     },
     created(){
         store.dispatch('data/getAllData')
