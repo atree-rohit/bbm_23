@@ -291,23 +291,23 @@ export default {
                         states: countUnique(group[1].map((o) => o[4])),
                         districts: countUnique(group[1].map((o) => o[3]))
                     }
-                })
+                }).sort((a,b) => a.year - b.year)
             } else {
                 table_data.date.headers[0].name = "date"
                 table_data.date.headers[0].label = "Date"
                 op = d3.groups(all_observations_flat, d => d[2]).map((group) => {
                     return {
-                        date: group[0],
+                        date: formatDate(group[0]),
                         observations: group[1].length,
                         taxa: countUnique(group[1].map((o) => o[1])),
                         users: countUnique(group[1].map((o) => o[0])),
                         states: countUnique(group[1].map((o) => o[4])),
                         districts: countUnique(group[1].map((o) => o[3]))
                     }
-                })
+                }).sort((a,b) => a.date - b.date)
             }
 
-            table_data.date.rows = op.sort((a,b) => b.year - a.year)
+            table_data.date.rows = op
             return table_data
             
 
@@ -506,6 +506,11 @@ export default {
             }
         }
     }
+}
+function formatDate(date){
+    const dateParts = date.split("-")
+    const months = {"01": "Jan","02": "Feb","03": "Mar","04": "Apr","05": "May","06": "Jun","07": "Jul","08": "Aug","09": "Sep","10": "Oct","11": "Nov","12": "Dec"}
+    return `${dateParts[2]} ${months[dateParts[1]]}, ${dateParts[0].substring(2)}`
 }
 
 function getObservationStats(data){
