@@ -16,9 +16,16 @@
     font-size: 1rem;
 }
 
-th, td{
+table tr th:first-child,
+table tr td:first-child {
+    text-align: left;
+}
+
+table tr th:not(:first-child),
+table tr td:not(:first-child) {
     text-align: center;
 }
+
 /* Prevent Text Wrapping */
 .nowrap {
     white-space: nowrap;
