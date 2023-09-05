@@ -31,7 +31,7 @@ class DataController extends Controller
     public function observations()
     {
         ini_set('memory_limit', '256M');
-        $cache_data = true;
+        $cache_data = false;
         if($cache_data){
             $cacheKey = 'observations_data';
             $cacheDuration = now()->addSeconds(3600);
@@ -175,7 +175,12 @@ class DataController extends Controller
 
     public function get_ibp_data($limit, $district_names)
     {
-        $data = IBP::limit($limit)->where('validated',1)->get();
+        $data = IBP::where('validated', 1)
+            ->where(DB::raw('YEAR(observed_on)'), '>=', 2020)
+            ->where(DB::raw('MONTH(observed_on)'), 9)
+            ->limit($limit)
+            ->get();
+
         $op = [];
         $users = [];
         foreach($data as $row){
@@ -202,7 +207,10 @@ class DataController extends Controller
 
     public function get_ifb_data($limit, $district_names)
     {
-        $data = IFB::where("validated",1)->limit($limit)->get();
+        $data = IFB::where("validated",1)
+            ->where(DB::raw('YEAR(observed_on)'), '>=', 2020)
+            ->where(DB::raw('MONTH(observed_on)'), 9)
+            ->limit($limit)->get();
         $op = [];
         $users = [];
         foreach($data as $row){
