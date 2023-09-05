@@ -16,6 +16,9 @@
     font-size: 1rem;
 }
 
+th, td{
+    text-align: center;
+}
 /* Prevent Text Wrapping */
 .nowrap {
     white-space: nowrap;
