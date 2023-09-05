@@ -110,15 +110,15 @@
     "src": "resources/js/pages/about.js"
   },
   "resources/js/pages/butterfly_counts.css": {
-    "file": "assets/butterfly_counts-0df9ed6f.css",
+    "file": "assets/butterfly_counts-da7c2669.css",
     "src": "resources/js/pages/butterfly_counts.css"
   },
   "resources/js/pages/butterfly_counts.js": {
     "css": [
-      "assets/butterfly_counts-0df9ed6f.css",
+      "assets/butterfly_counts-da7c2669.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/butterfly_counts-eb3dfdbe.js",
+    "file": "assets/butterfly_counts-5e3133f0.js",
     "imports": [
       "__plugin-vue_export-helper-41ba9596.js",
       "_ModalShowCountForm-95905a79.js"
