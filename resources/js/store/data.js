@@ -2,8 +2,8 @@ import axios from "axios"
 import * as d3 from "d3"
 // import inat_data from "../json/inat_data_2023_09_03.json"
 // import inat_data from "../json/inat_data_2023_09_04.json"
-import { saveData, getData } from "../utils/idb_geojson.js"    
-import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
+import { saveData, getData } from "../utils/idb_geojson.js"
+import { saveObservationData, getObservationData } from "../utils/idb_observations.js"
 
 export default {
     namespaced: true,
@@ -19,7 +19,7 @@ export default {
             states: {},
             districts: {}
         },
-        filters:{
+        filters: {
             year: 2023,
             portal: null,
             state: null,
@@ -27,66 +27,66 @@ export default {
         },
         shouldPersist: false,
     },
-    getters:{
-        filtered_observations(state){
+    getters: {
+        filtered_observations(state) {
+            console.time("filtered_observations")
             let op = {}
-            if(state.filters.year){
-                Object.keys(state.observations).forEach((portal) => {
-                    op[portal] = state.observations[portal].filter((d) => {
-                        const dateParts = d[2].split("-")
-                        const yearInDate = dateParts[0]
-                        return yearInDate == state.filters.year
-                    })
-                })
+            if (state.filters.year) {
+                for (const portal in state.observations) {
+                    const data = state.observations[portal];
+                    const groupedData = d3.group(data, (d) => parseInt(d[2].substring(0, 4))); // Group by year
+                    op[portal] = (groupedData.get(state.filters.year) || []);
+                }
             } else {
-                op = state.observations
+                op = { ...state.observations };
             }
-            if(state.filters.state){
-                Object.keys(op).forEach((portal) => {
-                    op[portal] = op[portal].filter((d) => {
-                        return d[4] == state.filters.state
-                    })
-                })
+            if (state.filters.state) {
+                for (const portal in op) {
+                    op[portal] = op[portal].filter((d) => d[4] == state.filters.state)
+                }
             }
-            if(state.filters.portal){
-                console.log(state.filters.portal)
+            if (state.filters.portal && op[state.filters.portal]) {
                 Object.keys(op).forEach((portal) => {
-                    if(portal != state.filters.portal){
+                    if (portal != state.filters.portal) {
                         op[portal] = []
                     }
                 })
-                console.log(op)
             }
+            console.timeEnd("filtered_observations")
             return op
         },
-        observation_stats(state, getters){
-            if(Object.keys(getters.filtered_observations).length === 0) {
+        observation_stats(state, getters) {
+            console.time("observations_stats")
+            if (Object.keys(getters.filtered_observations).length === 0) {
+                console.timeEnd("observations_stats")
                 return {}
             }
-            return {
+            const data = {
                 counts: getObservationStats(getters.filtered_observations.counts),
                 inat: getObservationStats(getters.filtered_observations.inat),
                 ibp: getObservationStats(getters.filtered_observations.ibp),
                 ifb: getObservationStats(getters.filtered_observations.ifb),
                 total: getObservationStats([].concat(...Object.values(getters.filtered_observations))),
             }
+            console.timeEnd("observations_stats")
+            return data
         },
-        map_data(state, getters){
+        map_data(state, getters) {
             const flatData = Object.values(getters.filtered_observations).flat()
             const mapData = flatData.reduce((acc, observation) => {
                 const stateName = observation[4]
                 const districtName = observation[3]
-                
+
                 if (!acc.states[stateName]) {
                     acc.states[stateName] = 0
                 }
                 acc.states[stateName]++
-                
+
                 if (!acc.districts[districtName]) {
                     acc.districts[districtName] = 0
                 }
                 acc.districts[districtName]++
-                
+
                 return acc
             }, { states: {}, districts: {} })
 
@@ -95,33 +95,38 @@ export default {
                 districts: Object.entries(mapData.districts).map(([name, value]) => ({ name, value })),
             }
         },
-        table_data(state, getters){
+        table_data(state, getters) {
+            console.group("table_data getter Execution Time")
+            console.time("total")
+            console.time("init")
+            const { filters, geojson } = state
+            const { filtered_observations, observation_stats } = getters
             let op = []
             const table_data = {
                 portals: {
                     headers: [{
-                        name: "portal", 
+                        name: "portal",
                         label: "Portals",
                         sortable: false,
                         class: "nowrap"
-                    },{
-                        name: "observations", 
+                    }, {
+                        name: "observations",
                         label: "Observations",
                         sortable: true
-                    },{
-                        name: "users", 
+                    }, {
+                        name: "users",
                         label: "Users",
                         sortable: true
-                    },{
-                        name: "states", 
+                    }, {
+                        name: "states",
                         label: "States",
                         sortable: true
-                    },{
-                        name: "districts", 
+                    }, {
+                        name: "districts",
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[],
+                    rows: [],
                     total_row: true,
                     hue: "danger",
                     click: "portal",
@@ -133,24 +138,24 @@ export default {
                         label: "State",
                         sortable: false,
                         class: "nowrap"
-                    },{
+                    }, {
                         name: "observations",
                         label: "Observations",
                         sortable: true
-                    },{
+                    }, {
                         name: "users",
                         label: "Users",
                         sortable: true
-                    },{
+                    }, {
                         name: "taxa",
                         label: "Taxa",
                         sortable: true
-                    },{
+                    }, {
                         name: "portals",
                         label: "Portals",
                         sortable: false
                     }],
-                    rows:[],
+                    rows: [],
                     total_row: false,
                     hue: "info",
                     click: "state",
@@ -162,34 +167,34 @@ export default {
                         label: "Name",
                         sortable: true,
                         class: "nowrap"
-                    },{
+                    }, {
                         name: "scientific_name",
                         label: "Scientific Name",
                         sortable: true,
                         class: "nowrap"
-                    },{
+                    }, {
                         name: "rank",
                         label: "Rank",
                         sortable: true,
                         class: "nowrap"
-                    },{
+                    }, {
                         name: "observations",
                         label: "Observations",
                         sortable: true
-                    },{
+                    }, {
                         name: "users",
                         label: "Users",
                         sortable: true
-                    },{
+                    }, {
                         name: "states",
                         label: "States",
                         sortable: true
-                    },{
+                    }, {
                         name: "districts",
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[],
+                    rows: [],
                     total_row: false,
                     hue: "primary",
                     click: null,
@@ -201,32 +206,32 @@ export default {
                         label: "Year",
                         sortable: true,
                         class: "nowrap"
-                    },{
+                    }, {
                         name: "observations",
                         label: "Observations",
                         sortable: true
-                    },{
+                    }, {
                         name: "taxa",
                         label: "Taxa",
                         sortable: true
-                    },{
+                    }, {
                         name: "users",
                         label: "Users",
                         sortable: true
-                    },{
+                    }, {
                         name: "states",
                         label: "States",
                         sortable: true
-                    },{
+                    }, {
                         name: "districts",
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[],
+                    rows: [],
                     total_row: false,
                     hue: "danger",
                     click: null,
-                    sort_col: 1
+                    sort_col: 0
                 },
                 users: {
                     headers: [{
@@ -234,115 +239,143 @@ export default {
                         label: "User",
                         sortable: true,
                         class: "nowrap"
-                    },{
+                    }, {
                         name: "portals",
                         label: "Portals",
                         sortable: true
-                    },{
+                    }, {
                         name: "observations",
                         label: "Observations",
                         sortable: true
-                    },{
+                    }, {
                         name: "taxa",
                         label: "Taxa",
                         sortable: true
-                    },{
+                    }, {
                         name: "years",
                         label: "Years",
                         sortable: true
-                    },{
+                    }, {
                         name: "states",
                         label: "States",
                         sortable: true
-                    },{
+                    }, {
                         name: "districts",
                         label: "Districts",
                         sortable: true
                     }],
-                    rows:[],
+                    rows: [],
                     total_row: false,
                     hue: "warning",
                     click: null,
                     sort_col: 2
                 }
             }
-            const all_observations_flat = Object.values(getters.filtered_observations).flat()
+            const all_observations_flat = Object.values(filtered_observations).flat()
+            console.timeEnd("init")
+            if (all_observations_flat.length === 0) {
+                console.timeEnd("total")
+                console.groupEnd()
+                return table_data
+            }
 
             //portal rows
-            table_data.portals.rows = Object.entries(getters.observation_stats).map(([key, value]) => ({
+            console.time("portal")
+            table_data.portals.rows = Object.entries(observation_stats).map(([key, value]) => ({
                 portal: key,
-                observations: value.observations,
-                users: value.users,
-                states: value.states,
-                districts: value.districts,
+                ...value
             }))
+            console.timeEnd("portal")
 
             //locations rows
+            console.time("locations")
             op = []
-            if(state.filters.state == null){
-                if(state.geojson.states.features){
-                    let grouped_states = d3.groups(all_observations_flat, (o) => o[4])  
-                    op = grouped_states.map((s) => {
-                        const portals = Object.keys(getters.filtered_observations).filter((portal) => {
-                            return getters.filtered_observations[portal].some((o) => o[4] === s[0])
-                        });
-                        return {
-                            state: s[0],
-                            observations: s[1].length,
-                            users: countUnique(s[1].map((o) => o[0])),
-                            taxa: countUnique(s[1].map((o) => o[1])),
-                            portals: portals.map((portal) => fixPortalNames(portal)).join(", ")
-                        }
-                    })
-                }
+            if (filters.state == null) {
+                if (geojson.states.features) {
+                    let grouped_states = d3.groups(all_observations_flat, (o) => o[4])
+                    op = grouped_states.reduce((result, [stateName, stateObservations]) => {
+                        const portals = Object.keys(filtered_observations).filter((portal) => stateObservations.some((o) => o[4] === stateName))
+                        const uniqueUsers = new Set()
+                        const uniqueTaxa = new Set()
 
+                        stateObservations.forEach((o) => {
+                            uniqueUsers.add(o[0])
+                            uniqueTaxa.add(o[1])
+                        })
+
+                        result.push({
+                            state: stateName,
+                            observations: stateObservations.length,
+                            users: uniqueUsers.size,
+                            taxa: uniqueTaxa.size,
+                            portals: portals.map(fixPortalNames).join(", "),
+                        })
+
+                        return result
+                    }, [])
+                }
             } else {
-                table_data.locations.headers[0].name = "district"
-                table_data.locations.headers[0].label = "District"
-                table_data.locations.click = "district"
-                if(state.geojson.districts.features){
-                    const state_districts = state.geojson.districts.features.filter((d) => d.properties.state === state.filters.state).map((d) => d.properties.district)
+                if (geojson.districts.features) {
+                    table_data.locations.headers[0].name = "district"
+                    table_data.locations.headers[0].label = "District"
+                    table_data.locations.click = "district"
+
+                    const state_districts = geojson.districts.features
+                        .filter((d) => d.properties.state === filters.state)
+                        .map((d) => d.properties.district)
+
                     state_districts.map((district) => {
                         let data = {}
-                        Object.keys(getters.filtered_observations).map((portal) => {
-                            data[portal] = getters.filtered_observations[portal].filter((o) => {
-                                return o[3] === district
-                            })
-                        })
+
+                        for (const portal of Object.keys(filtered_observations)) {
+                            data[portal] = filtered_observations[portal]
+                                .filter((o) => o[3] === district)
+                        }
+                        const allDataFlat = Object.values(data).flat()
+                        const uniqueUsers = countUnique(allDataFlat.map((d) => d[2]))
+                        const uniqueTaxa = countUnique(allDataFlat.map((d) => d[1]))
                         op.push({
                             district: district,
-                            observations: Object.values(data).flat().length,
-                            users: countUnique(Object.values(data).flat().map((d) => d[2])),
-                            taxa: countUnique(Object.values(data).flat().map((d) => d[1])),
+                            observations: allDataFlat.length,
+                            users: uniqueUsers,
+                            taxa: uniqueTaxa,
                             portals: Object.entries(data)
-                                    .filter((d) => d[1].length > 0)
-                                    .map((d) => fixPortalNames(d[0]))
-                                    .join(", ")
+                                .filter((d) => d[1].length > 0)
+                                .map((d) => fixPortalNames(d[0]))
+                                .join(", ")
                         })
                     })
                 }
             }
             table_data.locations.rows = op
-            
+            console.timeEnd("locations")
+
             //taxa rows
+            console.time("taxa")
             op = d3.groups(all_observations_flat, d => d[1]).map((taxon) => {
                 let taxa = state.taxa.find((t) => t.id === taxon[0])
-                if(!taxa) return {}
+                if (!taxa) return {}
+                const observations = taxon[1].length
+                const users = observations === 1 ? 1 : countUnique(taxon[1].map((o) => o[0]))
+                const states = observations === 1 ? 1 : countUnique(taxon[1].map((o) => o[4]))
+                const districts = observations === 1 ? 1 : countUnique(taxon[1].map((o) => o[3]))
                 return {
                     common_name: taxa.common_name,
                     scientific_name: taxa.name,
                     rank: taxa.rank,
-                    observations: taxon[1].length,
-                    users: countUnique(taxon[1].map((o) => o[0])),
-                    states: countUnique(taxon[1].map((o) => o[4])),
-                    districts: countUnique(taxon[1].map((o) => o[3])),
+                    observations: observations,
+                    users: users,
+                    states: states,
+                    districts: districts,
                 }
             })
-            table_data.taxa.rows = op.sort((a,b) => b.observations - a.observations)
-            
+            table_data.taxa.rows = op
+            console.timeEnd("taxa")
+
             //date rows
-            if(state.filters.year == null){
-                op = d3.groups(all_observations_flat, d => d[2].slice(0,4)).map((group) => {
+            console.time("date")
+            if (filters.year == null) {
+                op = d3.groups(all_observations_flat, d => d[2].slice(0, 4)).map((group) => {
                     return {
                         year: group[0],
                         observations: group[1].length,
@@ -351,7 +384,7 @@ export default {
                         states: countUnique(group[1].map((o) => o[4])),
                         districts: countUnique(group[1].map((o) => o[3]))
                     }
-                }).sort((a,b) => a.year - b.year)
+                })
             } else {
                 table_data.date.headers[0].name = "date"
                 table_data.date.headers[0].label = "Date"
@@ -365,14 +398,16 @@ export default {
                         states: countUnique(group[1].map((o) => o[4])),
                         districts: countUnique(group[1].map((o) => o[3]))
                     }
-                }).sort((a,b) => a.date_raw - b.date_raw)
+                })
             }
             table_data.date.rows = op
+            console.timeEnd("date")
 
             //users rows
+            console.time("user")
             const userToPortals = {};
-            for (const portal in getters.filtered_observations) {
-                for (const observation of getters.filtered_observations[portal]) {
+            for (const portal in filtered_observations) {
+                for (const observation of filtered_observations[portal]) {
                     const user = observation[0];
                     userToPortals[user] = userToPortals[user] || new Set();
                     userToPortals[user].add(portal)
@@ -382,10 +417,10 @@ export default {
             table_data.users.rows = d3.groups(all_observations_flat, (d) => d[0]).map((group) => {
                 const user = group[0];
                 const portals = userToPortals[user] ? [...userToPortals[user]].join(', ') : '';
-                
+
                 const uniqueTaxa = countUnique(group[1].map((o) => o[1]));
                 const uniqueYears = [...new Set(group[1].map((o) => o[2].slice(0, 4)))].join(', ');
-                
+
                 return {
                     user: user,
                     portals: fixPortalNames(portals),
@@ -396,18 +431,21 @@ export default {
                     districts: countUnique(group[1].map((o) => o[3])),
                 };
             })
+            console.timeEnd("user")
+            console.timeEnd("total")
+            console.groupEnd()
             return table_data
-            
+
 
         },
-        filtered_map_data(state, getters){
+        filtered_map_data(state, getters) {
             let op = JSON.parse(JSON.stringify(getters.map_data))
-            if(state.filters.state != null){
+            if (state.filters.state != null) {
                 const state_districts = state.geojson.districts.features.filter((d) => d.properties.state === state.filters.state).map((d) => d.properties.district)
                 op.states = op.states.filter(d => d.name === state.filters.state)
                 op.districts = op.districts.filter(d => state_districts.includes(d.name))
             }
-            if(state.filters.district != null){
+            if (state.filters.district != null) {
                 op.districts = op.districts.filter(d => d.name === state.filters.district)
             }
             return op
@@ -415,7 +453,7 @@ export default {
     },
     mutations: {
         SET_LOADING(state, value) {
-            if(value != null){
+            if (value != null) {
                 console.info("Loading:", value)
             }
             state.loading = value
@@ -452,8 +490,8 @@ export default {
         SET_GEOJSON(state, value) {
             state.geojson = value
         },
-        SET_FILTER(state, data){
-            
+        SET_FILTER(state, data) {
+
             state.filters[data.field] = (state.filters[data.field] == data.value) ? null : data.value
         }
 
@@ -467,7 +505,7 @@ export default {
         async getObservations({ commit }) {
             console.groupCollapsed("Loading Data")
             commit('SET_LOADING', 'Getting Observations')
-            
+
             await smallDelay()
 
             const response = await axios.get('/api/data/observations');
@@ -475,19 +513,19 @@ export default {
             saveObservationData(data)
             commit('SET_LOADING', 'Setting Headers')
             commit('SET_HEADERS', data.headers)
-            
+
             commit('SET_LOADING', 'Setting Users')
             await smallDelay()
             commit('SET_USERS', data.users)
-            
+
             commit('SET_LOADING', 'Setting Districts')
             await smallDelay()
             commit('SET_DISTRICTS_LIST', data.districts)
-            
+
             commit('SET_LOADING', 'Setting Observations')
             await smallDelay()
             commit('SET_OBSERVATIONS', data.observations)
-            
+
             console.groupEnd()
             commit('SET_LOADING', null)
             await smallDelay()
@@ -504,7 +542,7 @@ export default {
         async getMaps({ commit }) {
             commit('SET_LOADING', 'Getting Map Data')
             let data = await getData("geojson")
-            if(!data){
+            if (!data) {
                 const response = await axios.get('/api/maps/geojson');
                 data = response.data;
                 console.log('getMaps', response)
@@ -516,7 +554,7 @@ export default {
             commit('SET_LOADING', value)
             // console.log("setLoading", value)
         },
-        async setFilter({commit}, data){
+        async setFilter({ commit }, data) {
             commit('SET_LOADING', 'Setting Filter')
             commit('SET_FILTER', data)
             commit('SET_LOADING', null)
@@ -526,17 +564,17 @@ export default {
             const new_data = inat_data
             console.log(new_data)
             const store_inat_data = {
-            //     taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
-                observations: await axios.post("/api/data/store_inat_observations", {data:new_data})
+                //     taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
+                observations: await axios.post("/api/data/store_inat_observations", { data: new_data })
             }
             console.log(store_inat_data)
         },
         async pullInat({ dispatch, state }, pull_all) {
             console.log("pullInat-pull-all:", pull_all)
-            
+
             console.log("get_maps")
             await dispatch('getMaps')
-            
+
             console.log("get_taxa")
             await dispatch('getTaxa')
 
@@ -547,37 +585,37 @@ export default {
             console.log("get_last_update_time")
             let response = await axios.get('/api/data/inat_last_updated')
             let last_update_time = response.data.split("T")[0]
-            
+
 
             let base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated'
-            if(!pull_all) {
-                base_url += `&updated_since=${last_update_time}` 
+            if (!pull_all) {
+                base_url += `&updated_since=${last_update_time}`
             }
             const per_page = 200
-            
+
             console.log("get_initial_response")
             let url = getUrl(base_url, 1, 1)
 
             const initial_response = await axios.get(url)
-            
+
             console.log("base_url", base_url)
 
-            if(initial_response){
+            if (initial_response) {
                 console.log("total_results", initial_response.data.total_results)
                 const total_pages = Math.ceil(initial_response.data.total_results / per_page) + 1
                 let new_data = {
                     taxa: [],
                     observations: []
                 }
-                for(let p = 1 ; p <= total_pages ; p++){
+                for (let p = 1; p <= total_pages; p++) {
                     url = getUrl(base_url, p, per_page)
                     const response = await axios.get(url)
                     console.log("url", url)
-                    if(response){
+                    if (response) {
                         console.log("response", response.data.results)
                         response.data.results.forEach((o) => {
                             let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
-                            if(taxa_is_new){
+                            if (taxa_is_new) {
                                 new_data.taxa.push(taxa_is_new)
                             }
                             new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
@@ -587,8 +625,8 @@ export default {
                     console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
                 }
                 const store_inat_data = {
-                    taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
-                    observations: await axios.post("/api/data/store_inat_observations", {data:new_data.observations})
+                    taxa: await axios.post("/api/data/store_taxa", { data: new_data.taxa }),
+                    observations: await axios.post("/api/data/store_inat_observations", { data: new_data.observations })
                 }
                 console.log("store_inat_data", store_inat_data)
             }
@@ -597,37 +635,59 @@ export default {
 }
 
 
-function fixPortalNames(portal){
+function fixPortalNames(portal) {
     return portal.replace("inats", "iNat").replace("ibps", "IBP").replace("ifbs", "IFB")
 }
 function formatDate(dateString) {
     const date = new Date(dateString);
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
+
     const dayOfWeek = daysOfWeek[date.getUTCDay()];
     const dayOfMonth = date.getUTCDate();
     const month = months[date.getUTCMonth()];
     const year = date.getUTCFullYear().toString().substring(2);
-    
-    return `${dayOfMonth} ${month}, ${year}`;
+
+    return `${dayOfMonth}-${month}, ${year} (${dayOfWeek})`;
 }
 
-function getObservationStats(data){
+function getObservationStats(data) {
+    const stats = {
+        users: new Set(),
+        states: new Set(),
+        districts: new Set(),
+    };
+
+    for (const item of data) {
+        stats.users.add(item[0]);
+        stats.states.add(item[4]);
+        stats.districts.add(item[3]);
+    }
+
     return {
         observations: data.length,
-        users: countUnique(data.map(x => x[0])),
-        states: countUnique(data.map(x => x[4])),
-        districts: countUnique(data.map(x => x[3])),
+        users: stats.users.size,
+        states: stats.states.size,
+        districts: stats.districts.size,
+    };
+}
+
+function countUnique(arr) {
+    const uniqueValues = {};
+    let count = 0;
+
+    for (const item of arr) {
+        if (!uniqueValues[item]) {
+            uniqueValues[item] = true;
+            count++;
+        }
     }
+
+    return count;
 }
 
-function countUnique(arr){
-    return [...new Set(arr)].length
-}
 
-
-function getNewObservation(observation, districts){
+function getNewObservation(observation, districts) {
     let coordinates = observation.location.split(",").map((d) => parseFloat(d))
     const user = (observation.user.name && observation.user.name.length > 3) ? observation.user.name : observation.user.login
     let op = {
@@ -642,13 +702,13 @@ function getNewObservation(observation, districts){
         img_url: observation.photos[0].url,
         inat_created_at: observation.created_at,
         inat_updated_at: observation.updated_at
-        
+
     }
 
     districts.forEach((district) => {
         district.geometry.coordinates.forEach((polygon) => {
             let result = pointInPolygon(op.longitude, op.latitude, polygon);
-            if(result){
+            if (result) {
                 op.state = district.properties.state;
                 op.district = district.properties.district;
                 op.validated = true;
@@ -694,8 +754,8 @@ function pointInPolygon(longitude, latitude, polygonVertices) {
 }
 
 
-function getNewTaxa(taxa, taxon, new_taxa){
-    if(taxa.filter((d) => d.id == taxon.id).length > 0 || new_taxa.filter((d) => d.id == taxon.id).length > 0){
+function getNewTaxa(taxa, taxon, new_taxa) {
+    if (taxa.filter((d) => d.id == taxon.id).length > 0 || new_taxa.filter((d) => d.id == taxon.id).length > 0) {
         return false
     } else {
         return {
@@ -708,10 +768,10 @@ function getNewTaxa(taxa, taxon, new_taxa){
     }
 }
 
-function getUrl(base_url, page, per_page){
+function getUrl(base_url, page, per_page) {
     return base_url + "&page=" + page + "&per_page=" + per_page
 }
 
-async function smallDelay(){
+async function smallDelay() {
     await new Promise(resolve => setTimeout(resolve, 500));
 }
