@@ -117,6 +117,7 @@
             </div>
         </div>
     </div>
+    <loading-data />
 </template>
 
 <script>
@@ -124,6 +125,7 @@ import { mapState, mapGetters } from 'vuex'
 import store from '../store'
 
 import MapBBMData from './MapBBMData.vue'
+import LoadingData from './LoadingData.vue'
 import DataTable from './DataTable.vue'
 
 
@@ -131,7 +133,8 @@ export default {
     name: "DataComponent",
     components: {
         MapBBMData,
-        DataTable
+        DataTable,
+        LoadingData
     },
     data() {
         return {
