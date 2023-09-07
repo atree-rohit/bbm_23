@@ -2,6 +2,7 @@ import axios from "axios"
 import * as d3 from "d3"
 // import inat_data from "../json/inat_data_2023_09_03.json"
 // import inat_data from "../json/inat_data_2023_09_04.json"
+import inat_data from "../json/inat_data_2023_09_07.json"
 import { saveData, getData } from "../utils/idb_geojson.js"    
 import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
 
@@ -365,35 +366,8 @@ export default {
                     states: countUnique(group[1].map((o) => o[4])),
                     districts: countUnique(group[1].map((o) => o[3])),
                 };
-            }).sort((a, b) => b.observations - a.observations)
-            console.log(table_data.users.rows)
-
-
-
-
-
-
-            // table_data.users.rows = d3.groups(all_observations_flat, d => d[0]).map((group) => {
-            //     const portals = Object.keys(getters.filtered_observations).filter((portal) => {
-            //         return getters.filtered_observations[portal].some((o) => o[0] === group[0])
-            //     }).join(", ")
-            //     console.log(portals)
-            //     return{
-            //         user: group[0],
-            //         portals: fixPortalNames(portals),
-            //         observations: group[1].length,
-            //         taxa: countUnique(group[1].map((o) => o[1])),
-            //         years: [...new Set(group[1].map((o) => o[2].slice(0,4)))].join(", "),
-            //         states: countUnique(group[1].map((o) => o[4])),
-            //         districts: countUnique(group[1].map((o) => o[3]))
-            //     }
-            // }).sort((a,b) => b.observations - a.observations)
-            
-
-            
+            }).sort((a, b) => b.observations - a.observations)            
             return table_data
-            
-
         },
         filtered_map_data(state, getters){
             let op = JSON.parse(JSON.stringify(getters.map_data))
@@ -520,7 +494,7 @@ export default {
             const new_data = inat_data
             console.log(new_data)
             const store_inat_data = {
-            //     taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
+                taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
                 observations: await axios.post("/api/data/store_inat_observations", {data:new_data})
             }
             console.log(store_inat_data)
@@ -566,6 +540,7 @@ export default {
                 for(let p = 1 ; p <= total_pages ; p++){
                     url = getUrl(base_url, p, per_page)
                     const response = await axios.get(url)
+                    console.group("Pull page", p, "of", total_pages)
                     console.log("url", url)
                     if(response){
                         console.log("response", response.data.results)
@@ -577,8 +552,9 @@ export default {
                             new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
                         })
                     }
-                    console.log("new_data", new_data)
+                    console.log("new_data", Object.entries(new_data).map(([key, value]) => [key, value.length]))
                     console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
+                    console.groupEnd()
                 }
                 const store_inat_data = {
                     taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
@@ -699,7 +675,7 @@ function getNewTaxa(taxa, taxon, new_taxa){
         return {
             id: taxon.id,
             name: taxon.name || '',
-            common_name: taxon.preferred_common_name,
+            common_name: taxon.preferred_common_name || '',
             rank: taxon.rank,
             ancestry: taxon.ancestry
         }

@@ -116,10 +116,10 @@
                 @keyup="resetAKeyPressed"
             >Pull Inat</button>
     
-            <!-- <button
-                class="btn btn-sm btn-outline-secondary mx-3"
+            <button
+                class="btn btn-sm btn-danger mx-3"
                 @click="addStoredData"
-            >addStoredData</button> -->
+            >addStoredData</button>
         </div>
  
     </div>
