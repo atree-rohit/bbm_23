@@ -620,33 +620,33 @@ export default {
             const per_page = 200
             
 
-        //     const total_pages = Math.ceil(state.inat_total_results / per_page) + 1
-        //     let new_data = {
-        //         taxa: [],
-        //         observations: []
-        //     }
-        //     for (let p = 1; p <= total_pages; p++) {
-        //         url = getUrl(base_url, p, per_page)
-        //         const response = await axios.get(url)
-        //         console.log("url", url)
-        //         if (response) {
-        //             console.log("response", response.data.results)
-        //             response.data.results.forEach((o) => {
-        //                 let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
-        //                 if (taxa_is_new) {
-        //                     new_data.taxa.push(taxa_is_new)
-        //                 }
-        //                 new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
-        //             })
-        //         }
-        //         console.log("new_data", new_data)
-        //         console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
-        //     }
-        //     const store_inat_data = {
-        //         taxa: await axios.post("/api/data/store_taxa", { data: new_data.taxa }),
-        //         observations: await axios.post("/api/data/store_inat_observations", { data: new_data.observations })
-        //     }
-        //     console.log("store_inat_data", store_inat_data)
+            const total_pages = Math.ceil(state.inat_total_results / per_page) + 1
+            let new_data = {
+                taxa: [],
+                observations: []
+            }
+            for (let p = 1; p <= total_pages; p++) {
+                url = getUrl(base_url, p, per_page)
+                const response = await axios.get(url)
+                console.log("url", url)
+                if (response) {
+                    console.log("response", response.data.results)
+                    response.data.results.forEach((o) => {
+                        let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
+                        if (taxa_is_new) {
+                            new_data.taxa.push(taxa_is_new)
+                        }
+                        new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
+                    })
+                }
+                console.log("new_data", new_data)
+                console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
+            }
+            const store_inat_data = {
+                taxa: await axios.post("/api/data/store_taxa", { data: new_data.taxa }),
+                observations: await axios.post("/api/data/store_inat_observations", { data: new_data.observations })
+            }
+            console.log("store_inat_data", store_inat_data)
         },
         async getLastUpdateTimes({commit}){
             let response = await axios.get('/api/data/last_updated')
