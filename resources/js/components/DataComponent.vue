@@ -175,7 +175,7 @@ export default {
                     disabled: false
                 }
             ],
-            show_modal:true,
+            show_modal:false,
             selected: null
         }
     },
