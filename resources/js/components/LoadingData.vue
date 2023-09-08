@@ -14,6 +14,7 @@
     overflow: hidden;
     background: rgb(0,0,0);
     background: radial-gradient(circle, rgba(15,5,5,1) 0%, rgba(0,0,0,0.75) 65%, rgba(0,0,0,0.5) 100%);
+    z-index: 100;
 }
 .loading-container .circle {
     position: absolute;

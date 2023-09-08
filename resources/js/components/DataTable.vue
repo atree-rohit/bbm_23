@@ -1,9 +1,14 @@
 <style scoped>
+
+.table-wrapper {
+    max-height: 50vh; /* You can adjust this value as needed */
+    margin-top: 2rem;
+    padding: 1rem;
+}
 .table-container{
-    max-height: 50vh;
+    max-height: 50vh; /* You can adjust this value as needed */
     overflow: auto;
     width: 100%;
-    padding: 1rem;
     flex-grow: 10;
 }
 
@@ -11,9 +16,14 @@
 .table-container .table thead {
     position: sticky;
     top: 0;
-    background-color: #fff; /* You can adjust the background color as needed */
     z-index: 1; /* Ensure it's on top of the table cells */
 }
+
+.table-container .table tbody tr:first-child {
+    margin-top: 2rem; /* Adjust this value as needed to match the height of your header */
+}
+
+
 /* Table Header Styles */
 .table-container .table thead tr th {
     padding: 0.25rem 0.5rem !important;
@@ -84,36 +94,38 @@ tr.empty-row > td {
 </style>
 
 <template>
-    <div class="table-container">
-        <table class="table table-sm table-hover">
-            <thead :class="`bg-${hue} text-light`">
-                <tr>
-                    <th
-                        v-for="(header, h) in headers"
-                        :key="h"
-                        v-text="header.label"
-                        :class="headerSortClass(header)"
-                        @click="headerClick(header)"
-                    />
-                </tr>
-            </thead>
-            <tbody :class="`table-${hue}`">
-                <tr
-                    v-for="(row, row_id) in sorted_data"
-                    :key="row_id"
-                    :row_id="row_id"
-                    :class="totalRowClass(row, row_id)"
-                    @click="rowClick(row, row_id)"
-                >
-                    <td
-                        v-for="(header, h) in headers"
-                        :key="h"
-                        :class="header?.class"
-                        v-text="cellText(row, header)"
-                    />
-                </tr>
-            </tbody>
-        </table>
+    <div class="table-wrapper">
+        <div class="table-container">
+            <table class="table table-sm table-hover">
+                <thead :class="`bg-${hue} text-light`">
+                    <tr>
+                        <th
+                            v-for="(header, h) in headers"
+                            :key="h"
+                            v-text="header.label"
+                            :class="headerSortClass(header)"
+                            @click="headerClick(header)"
+                        />
+                    </tr>
+                </thead>
+                <tbody :class="`table-${hue}`">
+                    <tr
+                        v-for="(row, row_id) in sorted_data"
+                        :key="row_id"
+                        :row_id="row_id"
+                        :class="totalRowClass(row, row_id)"
+                        @click="rowClick(row, row_id)"
+                    >
+                        <td
+                            v-for="(header, h) in headers"
+                            :key="h"
+                            :class="header?.class"
+                            v-text="cellText(row, header)"
+                        />
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
