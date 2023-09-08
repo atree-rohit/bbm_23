@@ -6,6 +6,14 @@
     padding: 1rem;
     flex-grow: 10;
 }
+
+/* Sticky Table Header */
+.table-container .table thead {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* You can adjust the background color as needed */
+    z-index: 1; /* Ensure it's on top of the table cells */
+}
 /* Table Header Styles */
 .table-container .table thead tr th {
     padding: 0.25rem 0.5rem !important;

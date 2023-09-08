@@ -54,7 +54,10 @@
     .canvas{
         flex-direction:column;
     }
+    .canvas .map{   
+    flex: 0 1 0;
     }
+}
 </style>
 
 <template>
