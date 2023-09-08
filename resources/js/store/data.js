@@ -26,8 +26,25 @@ export default {
             district: null,
         },
         shouldPersist: false,
+        last_update_time: {
+            counts: null,
+            inat: null,
+            ibp: null,
+            ifb:null
+        },
+        total_results: {
+            counts: null,
+            inat: null,
+            ibp: null,
+            ifb:null     
+        },
+        inat_total_results: 0,
+        inat_bbm_total:0,
     },
     getters: {
+        inat_new_total(state){
+            return state.inat_total_results - state.inat_bbm_total
+        },
         filtered_observations(state) {
             console.time("filtered_observations")
             let op = {}
@@ -470,6 +487,18 @@ export default {
         SET_DISTRICTS_LIST(state, value) {
             state.districts = value
         },
+        SET_LAST_UPDATE_TIME(state,value){
+            state.last_update_time = value
+        },
+        SET_TOTAL_RESULTS(state,value){
+            state.total_results = value
+        },
+        SET_INAT_TOTAL_RESULTS(state, value){
+            state.inat_total_results = value
+        },
+        SET_INAT_BBM_TOTAL(state, value){
+            state.inat_bbm_total = value
+        },
         SET_OBSERVATIONS(state, value) {
             const place_names_map = new Map(state.geojson.districts.features.map((d) => [d.properties.district, d.properties.state]))
             let updatedObservations = []
@@ -491,7 +520,6 @@ export default {
             state.geojson = value
         },
         SET_FILTER(state, data) {
-
             state.filters[data.field] = (state.filters[data.field] == data.value) ? null : data.value
         }
 
@@ -569,7 +597,12 @@ export default {
             }
             console.log(store_inat_data)
         },
-        async pullInat({ dispatch, state }, pull_all) {
+        async initInatPull({dispatch}){
+            await dispatch('getTotalResultsInternal')
+            await dispatch('getInatNewTotal')
+            await dispatch('getInatTotalResults')
+        },
+        async pullInat({ commit, dispatch, state }, pull_all) {
             console.log("pullInat-pull-all:", pull_all)
 
             console.log("get_maps")
@@ -578,57 +611,70 @@ export default {
             console.log("get_taxa")
             await dispatch('getTaxa')
 
-            // console.log(inat_data)
-            // let add = await axios.post("/api/data/store_inat_observations", {data:inat_data})
-            // console.log(add)
-
-            console.log("get_last_update_time")
-            let response = await axios.get('/api/data/inat_last_updated')
-            let last_update_time = response.data.split("T")[0]
-
-
             let base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated'
+            const last_update_time = await dispatch('getLastUpdateTimes').inat
+
             if (!pull_all) {
                 base_url += `&updated_since=${last_update_time}`
             }
             const per_page = 200
+            
 
-            console.log("get_initial_response")
-            let url = getUrl(base_url, 1, 1)
-
-            const initial_response = await axios.get(url)
-
-            console.log("base_url", base_url)
-
-            if (initial_response) {
-                console.log("total_results", initial_response.data.total_results)
-                const total_pages = Math.ceil(initial_response.data.total_results / per_page) + 1
-                let new_data = {
-                    taxa: [],
-                    observations: []
-                }
-                for (let p = 1; p <= total_pages; p++) {
-                    url = getUrl(base_url, p, per_page)
-                    const response = await axios.get(url)
-                    console.log("url", url)
-                    if (response) {
-                        console.log("response", response.data.results)
-                        response.data.results.forEach((o) => {
-                            let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
-                            if (taxa_is_new) {
-                                new_data.taxa.push(taxa_is_new)
-                            }
-                            new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
-                        })
-                    }
-                    console.log("new_data", new_data)
-                    console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
-                }
-                const store_inat_data = {
-                    taxa: await axios.post("/api/data/store_taxa", { data: new_data.taxa }),
-                    observations: await axios.post("/api/data/store_inat_observations", { data: new_data.observations })
-                }
-                console.log("store_inat_data", store_inat_data)
+        //     const total_pages = Math.ceil(state.inat_total_results / per_page) + 1
+        //     let new_data = {
+        //         taxa: [],
+        //         observations: []
+        //     }
+        //     for (let p = 1; p <= total_pages; p++) {
+        //         url = getUrl(base_url, p, per_page)
+        //         const response = await axios.get(url)
+        //         console.log("url", url)
+        //         if (response) {
+        //             console.log("response", response.data.results)
+        //             response.data.results.forEach((o) => {
+        //                 let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
+        //                 if (taxa_is_new) {
+        //                     new_data.taxa.push(taxa_is_new)
+        //                 }
+        //                 new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
+        //             })
+        //         }
+        //         console.log("new_data", new_data)
+        //         console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
+        //     }
+        //     const store_inat_data = {
+        //         taxa: await axios.post("/api/data/store_taxa", { data: new_data.taxa }),
+        //         observations: await axios.post("/api/data/store_inat_observations", { data: new_data.observations })
+        //     }
+        //     console.log("store_inat_data", store_inat_data)
+        },
+        async getLastUpdateTimes({commit}){
+            let response = await axios.get('/api/data/last_updated')
+            if(response){
+                const last_update_time = response.data
+                commit("SET_LAST_UPDATE_TIME", last_update_time)
+                return last_update_time
+            }
+        },
+        async getTotalResultsInternal({commit}){
+            let response = await axios.get('/api/data/total_results')
+            if(response){
+                console.log("total_results", response.data)
+                const total_results = response.data
+                commit("SET_TOTAL_RESULTS", total_results)
+            }
+        },
+        async getInatTotalResults({commit}){
+            let response = await axios.get("https://api.inaturalist.org/v1/observations?project_id=big-butterfly-month-2023&verifiable=any&per_page=0")
+            if(response){
+                commit("SET_INAT_TOTAL_RESULTS", response.data.total_results)
+                return response.data
+            }
+        },
+        async getInatNewTotal({commit, state}){
+            let response = await axios.get("/api/data/inat_new_total_2023")
+            if(response){
+                commit("SET_INAT_BBM_TOTAL", response.data)
             }
         }
     }

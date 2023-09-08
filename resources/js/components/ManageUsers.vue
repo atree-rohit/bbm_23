@@ -108,18 +108,22 @@
             :data="modal_data"
             @close="show_modal=false"
         />
+        
+        <br><hr><br>
+        {{ inat_new_total }}
+        <br><hr><br>
         <div v-if="is_super_admin" class="w-100 d-flex justify-content-center py-3 my-2 border border-danger">
             <button
                 class="btn btn-sm btn-outline-secondary mx-3"
                 @click="pullInat"
                 @keydown="pullInatAll"
                 @keyup="resetAKeyPressed"
-            >Pull Inat</button>
+            >Pull Inat ({{ inat_new_total }})</button>
     
-            <!-- <button
+            <button
                 class="btn btn-sm btn-outline-secondary mx-3"
                 @click="addStoredData"
-            >addStoredData</button> -->
+            >addStoredData</button>
         </div>
  
     </div>
@@ -130,7 +134,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import store from '../store'
 import ModalEditUser from './ModalEditUser.vue'
 
@@ -154,6 +158,9 @@ export default defineComponent({
             all_users: state => state.manage_users.all_data,
             all_logs: state => state.logs.all_data,
         }),
+        ...mapGetters({
+            inat_new_total: 'data/inat_new_total',
+        }),
         log_table_data(){
             let op = []
             for(let log of this.all_logs){
@@ -172,6 +179,7 @@ export default defineComponent({
         }
     },
     mounted(){
+        store.dispatch('data/initInatPull')
         store.dispatch('manage_users/getAllData')
         store.dispatch('logs/getAllData')
     },
