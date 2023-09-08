@@ -2,14 +2,9 @@ import axios from "axios"
 import * as d3 from "d3"
 // import inat_data from "../json/inat_data_2023_09_03.json"
 // import inat_data from "../json/inat_data_2023_09_04.json"
-<<<<<<< HEAD
-import inat_data from "../json/inat_data_2023_09_07.json"
+import inat_data from "../json/inat_data_2023_09_08.json"
 import { saveData, getData } from "../utils/idb_geojson.js"    
 import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
-=======
-import { saveData, getData } from "../utils/idb_geojson.js"
-import { saveObservationData, getObservationData } from "../utils/idb_observations.js"
->>>>>>> origin/master
 
 export default {
     namespaced: true,
@@ -579,7 +574,7 @@ export default {
             if (!data) {
                 const response = await axios.get('/api/maps/geojson');
                 data = response.data;
-                console.log('getMaps', response)
+                console.log('getMaps', data)
                 saveData("geojson", data);
             }
             commit('SET_GEOJSON', data)
@@ -608,7 +603,7 @@ export default {
             await dispatch('getInatNewTotal')
             await dispatch('getInatTotalResults')
         },
-        async pullInat({ commit, dispatch, state }, pull_all) {
+        async pullInat({ commit, dispatch, state, getters }, pull_all) {
             console.log("pullInat-pull-all:", pull_all)
 
             console.log("get_maps")
@@ -620,38 +615,28 @@ export default {
             let base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated'
             const last_update_time = await dispatch('getLastUpdateTimes').inat
 
-            if (!pull_all) {
+            if(last_update_time)
+            if (pull_all) {
                 base_url += `&updated_since=${last_update_time}`
             }
             const per_page = 200
-            
+            let url = ""           
 
-            const total_pages = Math.ceil(state.inat_total_results / per_page) + 1
-            let new_data = {
-                taxa: [],
-                observations: []
-            }
-            for (let p = 1; p <= total_pages; p++) {
-                url = getUrl(base_url, p, per_page)
-                const response = await axios.get(url)
-                console.log("url", url)
-                if (response) {
-                    console.log("response", response.data.results)
-                    response.data.results.forEach((o) => {
-                        let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
-                        if (taxa_is_new) {
-                            new_data.taxa.push(taxa_is_new)
-                        }
-                        new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
-                    })
-                }
+            const total_observations = await axios.get(base_url + "&per_page=0")
+            if(total_observations){
+                const total_pages = Math.ceil(total_observations.data.total_results / per_page) + 1
+                let store_inat_data = []
                 for(let p = 1 ; p <= total_pages ; p++){
+                    let new_data = {
+                        taxa: [],
+                        observations: []
+                    }
                     url = getUrl(base_url, p, per_page)
                     const response = await axios.get(url)
                     console.group("Pull page", p, "of", total_pages)
                     console.log("url", url)
                     if(response){
-                        console.log("response", response.data.results)
+                        console.log("responses", response.data.results.length)
                         response.data.results.forEach((o) => {
                             let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
                             if(taxa_is_new){
@@ -661,14 +646,43 @@ export default {
                         })
                     }
                     console.log("new_data", Object.entries(new_data).map(([key, value]) => [key, value.length]))
+                    store_inat_data.push({
+                        taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
+                        observations: await axios.post("/api/data/store_inat_observations", {data:new_data.observations})
+                    })
                     console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
+                    console.log("store_inat_data", store_inat_data)
                     console.groupEnd()
                 }
-                const store_inat_data = {
-                    taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
-                    observations: await axios.post("/api/data/store_inat_observations", {data:new_data.observations})
-                }
-                console.log("store_inat_data", store_inat_data)
+            }
+        },
+        async getLastUpdateTimes({commit}){
+            let response = await axios.get('/api/data/last_updated')
+            if(response){
+                const last_update_time = response.data
+                commit("SET_LAST_UPDATE_TIME", last_update_time)
+                return last_update_time
+            }
+        },
+        async getTotalResultsInternal({commit}){
+            let response = await axios.get('/api/data/total_results')
+            if(response){
+                console.log("total_results", response.data)
+                const total_results = response.data
+                commit("SET_TOTAL_RESULTS", total_results)
+            }
+        },
+        async getInatTotalResults({commit}){
+            let response = await axios.get("https://api.inaturalist.org/v1/observations?project_id=big-butterfly-month-2023&verifiable=any&per_page=0")
+            if(response){
+                commit("SET_INAT_TOTAL_RESULTS", response.data.total_results)
+                return response.data
+            }
+        },
+        async getInatNewTotal({commit, state}){
+            let response = await axios.get("/api/data/inat_new_total_2023")
+            if(response){
+                commit("SET_INAT_BBM_TOTAL", response.data)
             }
         }
     }
@@ -745,16 +759,16 @@ function getNewObservation(observation, districts) {
 
     }
 
-    districts.forEach((district) => {
-        district.geometry.coordinates.forEach((polygon) => {
-            let result = pointInPolygon(op.longitude, op.latitude, polygon);
-            if (result) {
-                op.state = district.properties.state;
-                op.district = district.properties.district;
-                op.validated = true;
+    for(const district of districts){
+        for(const polygon of district.geometry.coordinates){
+            if (pointInPolygon(op.longitude, op.latitude, polygon)) {
+                op.state = district.properties.state
+                op.district = district.properties.district
+                op.validated = true
+                break
             }
-        })
-    })
+        }
+    }
     return op
 }
 
@@ -765,25 +779,24 @@ function pointInPolygon(longitude, latitude, polygonVertices) {
     for (let i = 0; i < vertexCount; i++) {
         const j = (i + 1) % vertexCount;
 
-        const vertexI = polygonVertices[i];
-        const vertexJ = polygonVertices[j];
+        const [xi, yi] = polygonVertices[i];
+        const [xj, yj] = polygonVertices[j];
 
-        if (vertexI[1] === vertexJ[1]) {
-            // Skip horizontal edges
+        if (yi === yj) {
             continue;
         }
 
-        if (latitude < Math.min(vertexI[1], vertexJ[1])) {
+        if (latitude < Math.min(yi, yj)) {
             // Skip if point is below the edge
             continue;
         }
 
-        if (latitude >= Math.max(vertexI[1], vertexJ[1])) {
+        if (latitude >= Math.max(yi, yj)) {
             // Skip if point is above the edge
             continue;
         }
 
-        const xIntersect = (latitude - vertexI[1]) * (vertexJ[0] - vertexI[0]) / (vertexJ[1] - vertexI[1]) + vertexI[0];
+        const xIntersect = (latitude - yi) * (xj - xi) / (yj - yi) + xi
 
         if (xIntersect > longitude) {
             intersections++;
