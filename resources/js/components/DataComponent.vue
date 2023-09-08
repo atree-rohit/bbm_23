@@ -79,7 +79,9 @@
                             @click="selectFilterTab(filter)"
                         />
                     </li>
-                    
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" @click="show_modal = true">Data Policy</a>
+                    </li>
                 </ul>
                 <div class="tables">
                     <h1 class="bg-warning text-center py-0">{{ selected }}</h1>
@@ -118,6 +120,7 @@
         </div>
     </div>
     <loading-data />
+    <ModalDataPolicy :show="show_modal" @close="show_modal = false"/>
 </template>
 
 <script>
@@ -127,6 +130,7 @@ import store from '../store'
 import MapBBMData from './MapBBMData.vue'
 import LoadingData from './LoadingData.vue'
 import DataTable from './DataTable.vue'
+import ModalDataPolicy from './ModalDataPolicy.vue'
 
 
 export default {
@@ -134,7 +138,8 @@ export default {
     components: {
         MapBBMData,
         DataTable,
-        LoadingData
+        LoadingData,
+        ModalDataPolicy
     },
     data() {
         return {
@@ -170,6 +175,7 @@ export default {
                     disabled: false
                 }
             ],
+            show_modal:true,
             selected: null
         }
     },
