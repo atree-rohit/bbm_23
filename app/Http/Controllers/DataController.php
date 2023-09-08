@@ -57,15 +57,15 @@ class DataController extends Controller
             "headers" => ["id", "taxa", "user", "date", "district"],
             "observations" => [
                 "counts" => $get["counts"]["observations"],
-                "inats" => $get["inats"]["observations"],
-                "ibps" => $get["ibps"]["observations"],
-                "ifbs" => $get["ifbs"]["observations"],
+                "inat" => $get["inats"]["observations"],
+                "ibp" => $get["ibps"]["observations"],
+                "ifb" => $get["ifbs"]["observations"],
             ],
             "users" => [
                 "counts" => $get["counts"]["users"],
-                "inats" => $get["inats"]["users"],
-                "ibps" => $get["ibps"]["users"],
-                "ifbs" => $get["ifbs"]["users"],
+                "inat" => $get["inats"]["users"],
+                "ibp" => $get["ibps"]["users"],
+                "ifb" => $get["ifbs"]["users"],
             ],
             "districts" => $district_names,
         ];
@@ -480,13 +480,38 @@ class DataController extends Controller
         return response()->json(Activity::all());
     }
 
-    public function inat_last_updated()
+    public function last_updated()
     {
-        return response()->json(INat::orderBy('inat_updated_at', 'desc')->first()->inat_updated_at);
+        $counts = CountForm::orderBy('updated_at', 'desc')->first()->updated_at;
+        $inat = INat::orderBy('inat_updated_at', 'desc')->first()->inat_updated_at;
+        $op = [
+            "counts" => explode(" ", $counts)[0],
+            "inat" => explode("T", $inat)[0],
+            "ibp" => IBP::orderBy('ibp_created_at', 'desc')->first()->ibp_created_at,
+            "ifb" => ifb::orderBy('ifb_created_at', 'desc')->first()->ifb_created_at,
+        ];
+        
+        return response()->json($op);
+    }
+
+    public function total_results()
+    {
+        $op = [];
+        $observations_data = $this->observations();
+        // return response()->json($observations_data->original);
+        foreach($observations_data->original["observations"] as $portal => $data ){
+            $op[$portal] = count($data);
+        }
+        return response()->json($op);
     }
 
     // store_taxa
     // store_inat_observations
+
+    public function inat_new_total_2023(){
+        $inat = INat::where("inat_created_at", "like", "%2023-09%")->count();
+        return response()->json($inat);
+    }
 
     public function store_taxa(Request $request)
     {

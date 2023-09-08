@@ -55,7 +55,9 @@ Route::get('/maps/geojson', [MapsController::class, 'index']);
 Route::get('/data/observations', [DataController::class, 'observations']);
 Route::get('/data/taxa', [DataController::class, 'taxa']);
 // Route::get('/data/pull_inat', [DataController::class, 'pull_inat']);
-Route::get('/data/inat_last_updated', [DataController::class, 'inat_last_updated']);
+Route::get('/data/last_updated', [DataController::class, 'last_updated']);
+Route::get('/data/total_results', [DataController::class, 'total_results']);
+Route::get('/data/inat_new_total_2023', [DataController::class, 'inat_new_total_2023']);
 Route::post('/data/store_taxa', [DataController::class, 'store_taxa']);
 Route::post('/data/store_inat_observations', [DataController::class, 'store_inat_observations']);
 

@@ -18,7 +18,6 @@
 
             </button>            
         </div>
-        <loading-data />
         <map-data
             :geojson='geojson'
             :data='filtered_map_data'
@@ -34,13 +33,11 @@
 import { mapState, mapGetters } from 'vuex'
 import store from '../store'
 import MapData from './MapData.vue'
-import LoadingData from './LoadingData.vue'
 
 export default {
     name: "MapBBMData",
     components: {
-        MapData,
-        LoadingData
+        MapData
     },
     emits: ["state-selected"],
     data() {

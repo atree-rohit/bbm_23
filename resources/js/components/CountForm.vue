@@ -494,7 +494,7 @@ export default{
             }
 
         },
-        submitForm(){
+        async submitForm(){
             if(!this.form_completed){
                 return
             }
@@ -502,8 +502,14 @@ export default{
                 ...this.form_data,
                 species_list: this.species_list
             }
-            store.dispatch('butterfly_counts/submitForm', data)
+            // setLoading
+            store.dispatch('data/setLoading', "Submitting Form")
+            let submitted = await store.dispatch('butterfly_counts/submitForm', data)
+            
+            store.dispatch('data/setLoading', null)
+            await new Promise((resolve) => setTimeout(resolve, 100));
             this.initFormData()
+            alert(submitted.message)
         }
         
     }

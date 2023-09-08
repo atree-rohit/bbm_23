@@ -40,9 +40,12 @@ export default {
             if(form.end_time == null){
                 form.end_time = new Date().toLocaleTimeString()
             }
-            await axios.post("/api/butterfly-counts/submit-form", form)
-            dispatch("setUserDetails", form)
-            await saveForm({...form, live:true})
+            let response = await axios.post("/api/butterfly-counts/submit-form", form)
+            if(response){
+                dispatch("setUserDetails", form)
+                await saveForm({...form, live:true})
+                return response.data
+            }
         },
         setUserDetails({commit}, form){
             const user_details = {

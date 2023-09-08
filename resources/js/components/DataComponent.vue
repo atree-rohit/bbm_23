@@ -85,42 +85,27 @@
                     <h1 class="bg-warning text-center py-0">{{ selected }}</h1>
                     <template v-if="active_filter.name == 'Portals'">
                         <data-table
-                            :headers="table_data.portals.headers"                    
-                            :data="table_data.portals.rows"
-                            :total_row="true"
-                            hue="danger"
+                            :content="table_data.portals"
                         />
                     </template>
                     <template v-else-if="active_filter.name=='Location'">
                         <data-table
-                            :headers="table_data.locations.headers"
-                            :data="table_data.locations.rows"
-                            :total_row="false"
-                            hue="info"
+                            :content="table_data.locations"
                         />
                     </template>
                     <template v-else-if="active_filter.name=='Taxa'">
                         <data-table
-                            :headers="table_data.taxa.headers"                    
-                            :data="table_data.taxa.rows"
-                            :total_row="false"
-                            hue="info"
+                            :content="table_data.taxa"
                         />
                     </template>
                     <template v-else-if="active_filter.name=='Date'">
                         <data-table
-                            :headers="table_data.date.headers"                    
-                            :data="table_data.date.rows"
-                            :total_row="false"
-                            hue="info"
+                            :content="table_data.date"
                         />
                     </template>
                     <template v-else-if="active_filter.name=='Users'">
                         <data-table
-                            :headers="table_data.users.headers"                    
-                            :data="table_data.users.rows"
-                            :total_row="false"
-                            hue="info"
+                            :content="table_data.users"
                         />
                     </template>
                     <div v-else>
@@ -132,6 +117,7 @@
             </div>
         </div>
     </div>
+    <loading-data />
 </template>
 
 <script>
@@ -139,6 +125,7 @@ import { mapState, mapGetters } from 'vuex'
 import store from '../store'
 
 import MapBBMData from './MapBBMData.vue'
+import LoadingData from './LoadingData.vue'
 import DataTable from './DataTable.vue'
 
 
@@ -146,7 +133,8 @@ export default {
     name: "DataComponent",
     components: {
         MapBBMData,
-        DataTable
+        DataTable,
+        LoadingData
     },
     data() {
         return {
@@ -222,7 +210,7 @@ export default {
         },
         async stateSelected(data){
             this.selected = data.state
-            store.dispatch('data/setFilter', {field:"state", value: this.selected})            
+            store.dispatch('data/setFilter', {field:"state", value: this.selected})
         }
     }
 }

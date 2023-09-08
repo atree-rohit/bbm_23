@@ -73,7 +73,7 @@ export default {
     methods: {
         handleInput() {
             clearTimeout(this.typingTimer)
-            if (this.searchText.length >= 1) {
+            if (this.searchText.length >= 2) {
                 this.typingTimeout = setTimeout(() => {
                     this.filteredSuggestions = this.suggestions.filter(suggestion =>
                         suggestion.toLowerCase().includes(this.searchText.toLowerCase())

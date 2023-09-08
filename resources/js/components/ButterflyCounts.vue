@@ -34,6 +34,7 @@
         <ModalAboutBBMApp :show="show_modal.about" @close="show_modal.about = false"/>
         <ModalUserCountsData :show="show_modal.user_data" @close="show_modal.user_data = false"/>
     </div>
+    <loading-data />
 </template>
 
 <script>
@@ -41,13 +42,15 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import CountForm from "./CountForm.vue"
 import ModalAboutBBMApp from "./ModalAboutBBMApp.vue"
 import ModalUserCountsData from "./ModalUserCountsData.vue"
+import LoadingData from "./LoadingData.vue"
 
 export default {
     name: "ButterflyCounts",
     components: {
         CountForm,
         ModalAboutBBMApp,
-        ModalUserCountsData
+        ModalUserCountsData,
+        LoadingData
     },
     data() {
         return {
