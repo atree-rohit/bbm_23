@@ -39,4 +39,8 @@ Route::get('/validate-forms', [PageController::class, 'validate_forms']);
 // Route::get('/get_district', [CountFormController::class, 'get_district']);
 Route::get('/fileupload', [FileController::class, 'index']);
 Route::post('/fileupload', [FileController::class, 'upload'])->name('upload');
+
+Route::get('/clean-data', [PageController::class, 'clean_data']);
 // Route::get('/{any}', [PageController::class, 'home']);
+
+Route::get('/add-country', [DataCleaningController::class, 'add_country']);
