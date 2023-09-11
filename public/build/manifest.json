@@ -124,15 +124,15 @@
     "src": "resources/js/pages/about.js"
   },
   "resources/js/pages/butterfly_counts.css": {
-    "file": "assets/butterfly_counts-dfd96c29.css",
+    "file": "assets/butterfly_counts-57b81b7c.css",
     "src": "resources/js/pages/butterfly_counts.css"
   },
   "resources/js/pages/butterfly_counts.js": {
     "css": [
-      "assets/butterfly_counts-dfd96c29.css",
+      "assets/butterfly_counts-57b81b7c.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/butterfly_counts-8711f945.js",
+    "file": "assets/butterfly_counts-84adf4e8.js",
     "imports": [
       "__plugin-vue_export-helper-91cf5b34.js",
       "_ModalShowCountForm-1f67ab98.js",
