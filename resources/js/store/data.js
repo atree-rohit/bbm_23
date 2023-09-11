@@ -16,7 +16,7 @@ export default {
         districts: [],
         loading: null,
         geojson: {
-            regions: {},
+            countries: {},
             states: {},
             districts: {}
         },
