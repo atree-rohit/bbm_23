@@ -4,6 +4,9 @@ import butterfly_lists from "../json/butterfly_lists.json"
 
 import { saveData, getData } from "../utils/idb_user.js"
 import { saveForm, getForms } from "../utils/idb_count_forms"
+import { saveCurrentFormData, getCurrentFormData, clearCurrentForm } from "../utils/idb_current_form"
+import { saveCurrentSpeciesData, getCurrentSpeciesData, clearCurrentSpeciesData } from "../utils/idb_current_species"
+import { saveSpeciesList, getSpeciesList, clearSpeciesList } from "../utils/idb_species_list"
 
 export default {
     namespaced: true,
@@ -14,6 +17,9 @@ export default {
         common_names: [],
         user_details: {},
         user_data: [],
+        form_data:{},
+        current_species: {},
+        species_list: [],
     },
     mutations: {
         INIT_NAMES(state){
@@ -25,6 +31,19 @@ export default {
         },
         SET_USER_DATA(state, user_data){
             state.user_data = user_data
+        },
+        SET_CURRENT_FORM_DATA(state, data){
+            state.form_data = data
+        },
+        SET_CURRENT_SPECIES_DATA(state, data){
+            state.current_species = data
+        },
+        SET_SPECIES_LIST(state, list){
+            state.species_list = list
+        },
+        ADD_SPECIES_TO_LIST(state){
+            state.species_list.push(state.current_species)
+            state.current_species = {}
         }
     },
     actions: {
@@ -32,6 +51,9 @@ export default {
             // console.log("init")
             dispatch("initNames")
             dispatch("initUserDetails")
+            dispatch("getCurrentFormData")
+            dispatch("getCurrentSpeciesData")
+            dispatch("getCurrentSpeciesList")
         },
         initNames({commit}){
             commit("INIT_NAMES")
@@ -44,6 +66,10 @@ export default {
             if(response){
                 dispatch("setUserDetails", form)
                 await saveForm({...form, live:true})
+                await clearCurrentForm()
+                await clearCurrentSpeciesData()
+                await clearSpeciesList()
+
                 return response.data
             }
         },
@@ -78,6 +104,40 @@ export default {
                     await saveForm(d)
                 })
             }
+        },
+        async getCurrentFormData({commit}){
+            const data = await getCurrentFormData()
+            if(data){
+                commit("SET_CURRENT_FORM_DATA", data)
+            }
+        },
+        async saveCurrentFormData({commit}, data){
+            await saveCurrentFormData({id: 1, ...data})
+            commit("SET_CURRENT_FORM_DATA", )
+        },
+        async getCurrentSpeciesData({commit}){
+            const data = await getCurrentSpeciesData()
+            if(data){
+                commit("SET_CURRENT_SPECIES_DATA", data)
+            }
+        },
+        async saveCurrentSpeciesData({commit}, data){
+            await saveCurrentSpeciesData({id: 1, ...data})
+            commit("SET_CURRENT_SPECIES_DATA", data)
+        },
+        async addCurrentSpeciesToList({commit}){
+            commit("ADD_SPECIES_TO_LIST")
+            await clearCurrentSpeciesData()
+        },
+        async getCurrentSpeciesList({commit}){
+            const data = await getSpeciesList()
+            if(data){
+                commit("SET_SPECIES_LIST", JSON.parse(data.data))
+            }
+        },
+        async saveCurrentSpeciesList({commit}, data){
+            await saveSpeciesList(data)
+            commit("SET_SPECIES_LIST", data)
         }
     }
 }

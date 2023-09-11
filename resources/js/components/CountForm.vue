@@ -1,89 +1,89 @@
 <style scoped>
-.form-container{
-    display: flex;
-    flex-direction: column;
-}
-
-.nav-item{
-    flex: 1 0 0;
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    border-radius: 0.5rem 0.5rem  0 0 ;
-    border-bottom: 0px solid transparent;
-}
-
-.nav-link{
-    display: flex;
-    justify-content: center;
-}
-
-.nav-link.active{
-    background-color: rgb(50, 150, 50);
-    color: white;
-}
-
-.nav-link.disabled{
-    background-color: rgba(200,50,50,1);
-    color: white;
-}
-.required::after{
-    content: '*';
-    color: red;
-    font-size: 1.5rem;
-    line-height: 1rem;
-    margin-left: 0.5rem;
-}
-
-.btns-section{
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    padding: 2rem;
-}
-
-.btn-disabled{
-    border: 1px solid #c66;
-    background-color: #fdd;
-    color: #e99;
-}
-
-.form-floating:has(.w-75){
-    display: flex;
-    justify-content: space-between;
-}
-
-.individuals-cell .btn{
-    display: none;
-}
-
-.individuals-cell:hover .btn{
-    display: block;
-}
-
-.form-floating:has(.form-check){
-    display: flex;
-    justify-content: center;
-}
-
-@media screen and (min-width: 768px) {
-    .form-check{
-        margin-right: auto;
-    }        
-}
-
-@media screen and (max-width: 768px) {
-    .container-fluid{
-        padding: 1px 2px !important;
+    .form-container{
+        display: flex;
+        flex-direction: column;
     }
 
-    .species-table{
-        font-size: 75%;
+    .nav-item{
+        flex: 1 0 0;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        border-radius: 0.5rem 0.5rem  0 0 ;
+        border-bottom: 0px solid transparent;
+    }
+
+    .nav-link{
+        display: flex;
+        justify-content: center;
+    }
+
+    .nav-link.active{
+        background-color: rgb(50, 150, 50);
+        color: white;
+    }
+
+    .nav-link.disabled{
+        background-color: rgba(200,50,50,1);
+        color: white;
+    }
+    .required::after{
+        content: '*';
+        color: red;
+        font-size: 1.5rem;
+        line-height: 1rem;
+        margin-left: 0.5rem;
+    }
+
+    .btns-section{
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 2rem;
+    }
+
+    .btn-disabled{
+        border: 1px solid #c66;
+        background-color: #fdd;
+        color: #e99;
+    }
+
+    .form-floating:has(.w-75){
+        display: flex;
+        justify-content: space-between;
     }
 
     .individuals-cell .btn{
+        display: none;
+    }
+
+    .individuals-cell:hover .btn{
         display: block;
     }
-}
+
+    .form-floating:has(.form-check){
+        display: flex;
+        justify-content: center;
+    }
+
+    @media screen and (min-width: 768px) {
+        .form-check{
+            margin-right: auto;
+        }        
+    }
+
+    @media screen and (max-width: 768px) {
+        .container-fluid{
+            padding: 1px 2px !important;
+        }
+
+        .species-table{
+            font-size: 75%;
+        }
+
+        .individuals-cell .btn{
+            display: block;
+        }
+    }
 
 </style>
 
@@ -287,6 +287,11 @@ export default{
             form_data: {},
             species_list: [],
             current_species: {},
+            initial: {
+                form_data: {},
+                current_species: {},
+                species_list_length: 0,
+            }
         }
     },
     computed: {
@@ -298,6 +303,9 @@ export default{
             user_details: state => state.butterfly_counts.user_details,
             latitude: state => state.locations.latitude,
             longitude: state => state.locations.longitude,
+            store_form_data: state => state.butterfly_counts.form_data,
+            store_current_species: state => state.butterfly_counts.current_species,
+            store_species_list: state => state.butterfly_counts.species_list,
         }),
         page_questions(){
             let op = []
@@ -350,6 +358,34 @@ export default{
         }
     },
     watch:{
+        form_data: {
+            handler(){
+                this.updateFormData()                
+            },
+            deep: true,
+        },
+        current_species: {
+            handler(){
+                this.updateCurrentSpecies()
+            },
+            deep: true,
+        },
+        species_list: {
+            handler(){
+                this.updateSpeciesList()
+            },
+            deep: true,
+        },
+        store_form_data(){
+            this.initFormData()
+        },
+        store_species_list(n,o){
+            // this.species_list = n
+            if(o.length != n.length){
+                // console.log("this.species_list",this.species_list, o, n)
+                this.species_list = this.store_species_list
+            }
+        },
         latitude(){
             this.form_data.coordinates = this.latitude + ',' + this.longitude
         },
@@ -368,17 +404,29 @@ export default{
     },
     methods:{
         initFormData(){
-            let debug = ''
-            this.page_questions[0].map((q) => {
-                this.form_data[q.name] = q.required ? debug : null
-            })
-            this.page_questions[1].map((q) => {
-                this.form_data[q.name] = q.required ? debug : null
-            })
-            this.form_data.open_access = true
-            this.form_data.date = new Date().toISOString().slice(0, 10)
-            this.form_data.start_time = new Date().toLocaleTimeString()
-            this.species_list = []
+            
+            if(this.store_form_data && this.store_form_data.name){
+                Object.keys(this.store_form_data).forEach((k) => {
+                    this.form_data[k] = this.store_form_data[k]
+                })
+                // if(this.store_species_list.length > 0){
+                //     this.species_list = this.store_species_list
+                //     console.log(this.species_list)
+                // }
+            } else {
+                let debug = ''
+                this.page_questions[0].map((q) => {
+                    this.form_data[q.name] = q.required ? debug : null
+                })
+                this.page_questions[1].map((q) => {
+                    this.form_data[q.name] = q.required ? debug : null
+                })
+                this.form_data.open_access = true
+                this.form_data.date = new Date().toISOString().slice(0, 10)
+                this.form_data.start_time = new Date().toLocaleTimeString()
+                // this.species_list = []
+                this.initial.form_data = JSON.parse(JSON.stringify(this.form_data))
+            }
             this.initCurrentSpecies()
             this.initTab()
         },
@@ -389,6 +437,7 @@ export default{
                 individuals: 1,
                 remarks: null
             }
+            this.initial.current_species = JSON.parse(JSON.stringify(this.current_species))
         },
         initTab(){
             if(this.user_details && Object.keys(this.user_details).length > 0){
@@ -472,8 +521,9 @@ export default{
                 return
             }
             const newSpecies = Object.assign({}, this.current_species)
-            console.log("addSpecies()", newSpecies)
-            this.species_list.push(newSpecies)
+            // console.log("addSpecies()", newSpecies)
+            // this.species_list.push(newSpecies)
+            store.dispatch('butterfly_counts/addCurrentSpeciesToList')
             this.initCurrentSpecies()
         },
         deleteSpecies(index){
@@ -510,8 +560,37 @@ export default{
             await new Promise((resolve) => setTimeout(resolve, 100));
             this.initFormData()
             alert(submitted.message)
+        },
+        updateFormData(){
+            const fields = [ "name", "affiliation", "phone", "email", "team_members", "open_access", "date", "start_time", "end_time", "location", "coordinates", "altitude", "distance", "weather", "photo_link", "comments" ]
+            let changed_fields = []
+            fields.forEach((field) => {
+                if(this.form_data[field] != this.initial.form_data[field]){
+                    changed_fields.push(field)
+                }
+            })
+            if(changed_fields.length > 0){
+                store.dispatch('butterfly_counts/saveCurrentFormData', this.form_data)
+            }
+        },
+        updateCurrentSpecies(){
+            const fields = [ "common_name", "scientific_name", "individuals", "remarks"]
+            let changed_fields = []
+            fields.forEach((field) => {
+                if(this.current_species[field] != this.initial.current_species[field]){
+                    changed_fields.push(field)
+                }
+            })
+            if(changed_fields.length > 0){
+                store.dispatch('butterfly_counts/saveCurrentSpeciesData', this.current_species)
+            }   
+        },
+        updateSpeciesList(){
+            // console.log("here")
+            if(this.species_list.length != 0){
+                store.dispatch('butterfly_counts/saveCurrentSpeciesList', this.species_list)
+            }
         }
-        
     }
 }
 </script>
