@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('team_members')->nullable(true);
             $table->text('photo_link')->nullable(true);
             $table->text('location')->nullable(true);
+            $table->string('country', 100)->nullable(true);
             $table->string('state', 100)->nullable(true);
             $table->string('district', 100)->nullable(true);
             $table->string('coordinates', 100)->nullable(true);

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('latitude', 10, 6)->nullable(true);
             $table->float('longitude', 10, 6)->nullable(true);
             $table->string('place', 200)->nullable(true);
+            $table->string('country', 100)->nullable(true);
             $table->string('state', 100)->nullable(true);
             $table->string('district', 100)->nullable(true);
             $table->string('species', 100)->nullable(true);
