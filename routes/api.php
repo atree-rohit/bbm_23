@@ -53,6 +53,7 @@ Route::get('/maps/geojson', [MapsController::class, 'index']);
 
 
 Route::get('/data/observations', [DataController::class, 'observations']);
+Route::get('/data/portal_observations/{slug}', [DataController::class, 'portal_observations']);
 Route::get('/data/taxa', [DataController::class, 'taxa']);
 // Route::get('/data/pull_inat', [DataController::class, 'pull_inat']);
 Route::get('/data/last_updated', [DataController::class, 'last_updated']);
