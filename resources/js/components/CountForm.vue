@@ -437,6 +437,7 @@ export default{
                 individuals: 1,
                 remarks: null
             }
+            this.species_list = this.store_species_list
             this.initial.current_species = JSON.parse(JSON.stringify(this.current_species))
         },
         initTab(){
