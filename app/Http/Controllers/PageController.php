@@ -62,6 +62,12 @@ class PageController extends Controller
     {
         return view('pages.auth.manage-users');
     }
+    
+    public function clean_data()
+    {
+        return view('pages.auth.clean_data');
+
+    }
 
     public function logout()
     {

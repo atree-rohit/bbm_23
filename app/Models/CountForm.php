@@ -18,6 +18,7 @@ class CountForm extends Model
         'team_members',
         'photo_link',
         'location',
+        'country',
         'state',
         'district',
         'coordinates',

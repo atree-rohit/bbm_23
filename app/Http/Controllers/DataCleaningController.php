@@ -604,7 +604,15 @@ class DataCleaningController extends Controller
     
         return ($intersections % 2) == 1;
     }
-    
+
+
+    public function add_country(){
+        INat::whereNotNull('state')->update(['country' => 'India']);
+        IBP::whereNotNull('state')->update(['country' => 'India']);
+        IFB::whereNotNull('state')->update(['country' => 'India']);
+        IFB::where('state', "like", "%zhemgang%")->update(['country' => 'Bhutan']);
+        CountForm::whereNotNull('state')->update(['country' => 'India']);
+    }
 
     // private function pointInPolygon($lon, $lat, $polygon) {
     //     $intersections = 0;

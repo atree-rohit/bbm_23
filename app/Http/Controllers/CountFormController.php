@@ -21,6 +21,7 @@ class CountFormController extends Controller
         $form->team_members = $request->team_members;
         $form->photo_link = $request->photo_link;
         $form->location = $request->location;
+        $form->country = $admin["country"] ?? null;
         $form->state = $admin["state"] ?? null;
         $form->district = $admin["district"] ?? null;
         $form->coordinates = $request->coordinates;

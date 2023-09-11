@@ -17,6 +17,7 @@ class INat extends Model
         'place',
         'latitude',
         'longitude',
+        'country',
         'state',
         'district',
         'taxa_id',

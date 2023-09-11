@@ -697,4 +697,19 @@ class DataController extends Controller
         $taxa->save();
     }
 
+    public function portal_observations($portal){
+        $op = [];
+        switch($portal){
+            case "inat": $op = INat::all();
+                break;
+            case "ibp": $op = IBP::all();
+                break;
+            case "ifb": $op = IFB::all();
+                break;
+            case "counts": $op = CountForm::all();
+                break;
+        }
+        return response()->json($op);
+    }
+
 }

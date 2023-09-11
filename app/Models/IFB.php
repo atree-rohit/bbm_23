@@ -17,6 +17,7 @@ class IFB extends Model
         'place',
         'latitude',
         'longitude',
+        'country',
         'state',
         'district',
         'species',

@@ -22,7 +22,7 @@ class MapsController extends Controller
         //         $data = [];
         // }
         $data = [
-            "regions" => json_decode(file_get_contents(public_path('maps/regions.json'))),
+            "countries" => json_decode(file_get_contents(public_path('maps/countries.json'))),
             "states" => json_decode(file_get_contents(public_path('maps/states.json'))),
             "districts" => json_decode(file_get_contents(public_path('maps/districts_1.json'))),
         ];
