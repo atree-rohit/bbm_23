@@ -49,6 +49,10 @@
             "link" => "/validate-forms"
         ],[
             "id" => 3,
+            "label" => "Clean Data",
+            "link" => "/clean-data"
+        ],[
+            "id" => 3,
             "label" => "Logout",
             "link" => "/logout"
         ]
