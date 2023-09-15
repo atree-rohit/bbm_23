@@ -604,39 +604,51 @@ export default {
             await dispatch('getInatTotalResults')
         },
         async pullInat({ commit, dispatch, state, getters }, pull_all) {
-            console.log("pullInat-pull-all:", pull_all)
-
-            console.log("get_maps")
+            
+            commit('SET_LOADING', 'iNatPull ' + pull_all)
+            // console.groupCollapsed("Loading Data")
+            // console.log("pullInat-pull-all:", pull_all)
+            
+            // console.log("get_maps")
+            commit('SET_LOADING', 'getMaps')
             await dispatch('getMaps')
-
-            console.log("get_taxa")
+            
+            // console.log("get_taxa")
+            commit('SET_LOADING', 'getTaxa')
             await dispatch('getTaxa')
-
+            
             let base_url = 'https://api.inaturalist.org/v1/observations?place_id=any&project_id=big-butterfly-month-2023&verifiable=any&order=desc&order_by=updated'
-            const last_update_time = await dispatch('getLastUpdateTimes').inat
-
+            const last_update_time = await dispatch('getLastUpdateTimes')
             if(last_update_time)
-            if (pull_all) {
-                base_url += `&updated_since=${last_update_time}`
+            {
+                if (!pull_all) {
+                    base_url += "&updated_since=" + last_update_time.inat
+                }
             }
             const per_page = 200
             let url = ""           
-
+            
             const total_observations = await axios.get(base_url + "&per_page=0")
             if(total_observations){
                 const total_pages = Math.ceil(total_observations.data.total_results / per_page) + 1
+                // const total_pages = 1
                 let store_inat_data = []
                 for(let p = 1 ; p <= total_pages ; p++){
+                    await smallDelay()
                     let new_data = {
                         taxa: [],
                         observations: []
                     }
                     url = getUrl(base_url, p, per_page)
                     const response = await axios.get(url)
-                    console.group("Pull page", p, "of", total_pages)
-                    console.log("url", url)
+                    let loading_message_base = `Pulling data from: Page ${p} of ${total_pages}`
+                    console.groupCollapsed(loading_message_base)
+                    // console.group("Pull page", p, "of", total_pages)
+                    // console.log("url", url)
+                    commit('SET_LOADING', `${loading_message_base}<br>Pull Url: ${url}`)
                     if(response){
-                        console.log("responses", response.data.results.length)
+                        // console.log("responses", response.data.results.length)
+                        commit('SET_LOADING', `${loading_message_base}<br>Observations: ${response.data.results.length}`)
                         response.data.results.forEach((o) => {
                             let taxa_is_new = getNewTaxa(state.taxa, o.taxon, new_data.taxa)
                             if(taxa_is_new){
@@ -645,16 +657,19 @@ export default {
                             new_data.observations.push(getNewObservation(o, state.geojson.districts.features))
                         })
                     }
-                    console.log("new_data", Object.entries(new_data).map(([key, value]) => [key, value.length]))
+                    const new_data_arr = Object.entries(new_data).map(([key, value]) => [key, value.length])
+                    commit('SET_LOADING', `${loading_message_base}<br>New Data<br> Taxa: ${new_data_arr[0][1]}<br> Observations: ${new_data_arr[1][1]}`)
+                    // console.log("new_data", new_data_arr)
                     store_inat_data.push({
                         taxa: await axios.post("/api/data/store_taxa", {data: new_data.taxa}),
                         observations: await axios.post("/api/data/store_inat_observations", {data:new_data.observations})
                     })
-                    console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
-                    console.log("store_inat_data", store_inat_data)
+                    // console.log("admin", d3.group(new_data.observations, (d) => d.state, (d) => d.district))
+                    // console.log("store_inat_data", store_inat_data)
                     console.groupEnd()
                 }
             }
+            commit('SET_LOADING', null)
         },
         async getLastUpdateTimes({commit}){
             let response = await axios.get('/api/data/last_updated')
