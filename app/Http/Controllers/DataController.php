@@ -539,37 +539,24 @@ class DataController extends Controller
 
     public function store_inat_observations(Request $request)
     {
-        $existing_inat_ids = INat::all()->pluck("id")->toArray();
         $count = [
             "added" => 0,
             "skipped" => 0
         ];
         foreach($request->data as $i){
-            if(in_array($i["id"], $existing_inat_ids)){
-                $inat = INat::where('id', $i["id"])->first();
-                $count["skipped"]++;
-            } else {
-                $inat = new INat();
-                $inat->id = $i["id"];
-                $count["added"]++;
-            }
-            $place = Str::limit($i["place"], 195);
-
-
-            $inat->user_id = $i["user_id"];
-            $inat->user = $i["user"];
-            $inat->observed_on = $i["observed_on"];
-            $inat->place = $place;
-            $inat->latitude = $i["latitude"];
-            $inat->longitude = $i["longitude"];
-            $inat->taxa_id = $i["taxa_id"];
-            $inat->img_url = $i["img_url"];
-            $inat->inat_created_at = $i["inat_created_at"];
-            $inat->inat_updated_at = $i["inat_updated_at"];
-            $inat->state = $i["state"] ?? null;
-            $inat->district = $i["district"] ?? null;
-            $inat->validated = $i["validated"] ?? false;
+            $i["place"] = Str::limit($i["place"], 195);
+            
+            $inat = INat::firstOrCreate(
+                ['id' => $i["id"]],
+                $i
+            );
             $inat->save();
+    
+            if ($inat->wasRecentlyCreated) {
+                $count["added"]++;
+            } else {
+                $count["skipped"]++;
+            }
         }
         return response()->json(["status" => "success", "count" => $count]);
     }

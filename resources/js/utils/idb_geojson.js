@@ -2,7 +2,7 @@
 
 function openDB(storeName) {
     const DB_NAME = 'BBMCountsDBGeojson';
-    let DB_VERSION = 4; // Ensure that this version is updated when making changes
+    let DB_VERSION = 5; // Ensure that this version is updated when making changes
 
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);

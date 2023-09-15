@@ -44,6 +44,7 @@
                     v-for="row in unvalidated"
                     :key="row.id"
                     @click="rowClick(row)"
+                    :class="rowClass(row)"
                 >
                     <td
                         v-for="header in headers"
@@ -54,6 +55,11 @@
             </tbody>
         </table>
     </div>
+    <MapCleanData
+        :data="unvalidated"
+        :modes="['countries', 'states', 'districts']"
+        tooltip_third_row_label=""
+    />
     <ModalEditObservation
         :show="show_modal"
         :data="modal_observation_data"
@@ -66,6 +72,7 @@
 import { ref, watch, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import ModalEditObservation from './ModalEditObservation.vue'
+import MapCleanData from './MapCleanData.vue'
 
 const store = useStore()
 const portals = ["counts", "inat", "ibp", "ifb"]
@@ -89,7 +96,8 @@ const geojson = computed(() => store.state.data.geojson)
 const data = computed(() => store.state.clean_data.data)
 const headers = computed(() => {
     if(data && data.value && data.value[0]){
-        return Object.keys(data.value[0])
+        return ["id", "user", "observed_on", "place", "country", "state", "district", "latitude", "longitude", "taxa_id", "validated"]
+        // return Object.keys(data.value[0])
     } else {
         return []
     }
@@ -105,4 +113,6 @@ const closeModal = () => {
     modal_observation_data.value = {}
     show_modal.value = false    
 }
+
+const rowClass = (row) =>  row.validated ? "table-success" : "table-danger"
 </script>

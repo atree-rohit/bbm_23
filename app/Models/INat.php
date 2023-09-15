@@ -23,7 +23,8 @@ class INat extends Model
         'taxa_id',
         'img_url',
         'inat_created_at',
-        'inat_updated_at'
+        'inat_updated_at',
+        'validated'
     ];
 
     public function taxa(){

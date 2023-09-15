@@ -20,6 +20,7 @@ export default defineConfig({
                 'resources/js/pages/register.js',
                 'resources/js/pages/resources.js',
                 'resources/js/pages/validate_forms.js',
+                'resources/js/pages/clean_data.js',
             ],
             refresh: true,
         }),
