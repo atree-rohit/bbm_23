@@ -703,6 +703,10 @@ export default {
     }
 }
 
+function formatFloat(num){
+    return parseFloat(num.toFixed(4))
+}
+const getCurrentTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
 function fixPortalNames(portal) {
     return portal.replace("inats", "iNat").replace("ibps", "IBP").replace("ifbs", "IFB")
@@ -716,8 +720,9 @@ function formatDate(dateString) {
     const dayOfMonth = date.getUTCDate();
     const month = months[date.getUTCMonth()];
     const year = date.getUTCFullYear().toString().substring(2);
+    const day = dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth
 
-    return `${dayOfMonth}-${month}, ${year} (${dayOfWeek})`;
+    return `${day}-${month}, ${year} (${dayOfWeek})`;
 }
 
 function getObservationStats(data) {
@@ -756,7 +761,7 @@ function countUnique(arr) {
 }
 
 
-function getNewObservation(observation, districts) {
+function getNewObservation(observation) {
     let coordinates = observation.location.split(",").map((d) => parseFloat(d))
     const user = (observation.user.name && observation.user.name.length > 3) ? observation.user.name : observation.user.login
     let op = {
@@ -773,21 +778,37 @@ function getNewObservation(observation, districts) {
         inat_updated_at: observation.updated_at
 
     }
-
-    for(const district of districts){
-        for(const polygon of district.geometry.coordinates){
-            if (pointInPolygon(op.longitude, op.latitude, polygon)) {
-                op.state = district.properties.state
-                op.district = district.properties.district
-                op.validated = true
-                break
-            }
-        }
-    }
     return op
 }
 
+function getObservationPolygon(field, coordinates, all_polygons) {
+    const lat_lon = coordinates.split(",").map(d => parseFloat(d))
+    for(const place of all_polygons){
+        for(const polygons of place.geometry.coordinates){
+            for(const polygon of polygons){
+                if (pointInPolygon(lat_lon[1], lat_lon[0], polygon)) {
+                    return place.properties[field]
+                }
+            }
+        }
+    }
+    return null
+}
+
+function getObservationDistrict(field, coordinates, all_polygons) {
+    const lat_lon = coordinates.split(",").map(d => parseFloat(d))
+    for(const place of all_polygons){
+        for(const polygons of place.geometry.coordinates){
+            if (pointInPolygon(lat_lon[1], lat_lon[0], polygons)) {
+                return place.properties[field]
+            }
+        }
+    }
+    return null
+}
+
 function pointInPolygon(longitude, latitude, polygonVertices) {
+    // console.log(longitude, latitude, polygonVertices)
     let intersections = 0;
     const vertexCount = polygonVertices.length;
 

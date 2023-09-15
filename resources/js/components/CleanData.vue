@@ -104,6 +104,7 @@ const headers = computed(() => {
 })
 const unvalidated = computed(() => data.value.filter((d) => d.validated == false))
 
+
 const rowClick = (row) => {
     modal_observation_data.value = row
     show_modal.value = true
