@@ -75,6 +75,22 @@
                 </tr>
             </tbody>
         </table>
+
+        <div v-if="is_super_admin" class="w-100 d-flex justify-content-center py-3 my-2 border border-danger">
+            <button
+                class="btn btn-sm btn-outline-secondary mx-3"
+                @click="pullInat"
+                @keydown="pullInatAll"
+                @keyup="resetAKeyPressed"
+            >Pull Inat ({{ inat_new_total }})</button>
+    
+            <!-- <button
+                class="btn btn-sm btn-danger mx-3"
+                @click="addStoredData"
+            >addStoredData</button> -->
+        </div>
+
+
         <div class="w-100 log-table-container">
             <table class="table table-sm table-hover">
                 <thead class="bg-secondary text-light">
@@ -108,28 +124,12 @@
             :data="modal_data"
             @close="show_modal=false"
         />
-        
-        <br><hr><br>
-        {{ inat_new_total }}
-        <br><hr><br>
-        <div v-if="is_super_admin" class="w-100 d-flex justify-content-center py-3 my-2 border border-danger">
-            <button
-                class="btn btn-sm btn-outline-secondary mx-3"
-                @click="pullInat"
-                @keydown="pullInatAll"
-                @keyup="resetAKeyPressed"
-            >Pull Inat ({{ inat_new_total }})</button>
-    
-            <button
-                class="btn btn-sm btn-danger mx-3"
-                @click="addStoredData"
-            >addStoredData</button>
-        </div>
  
     </div>
     <div class="main-container btn-danger d-flex justify-content-center align-items-center" style="height: 20rem; font-size: 3.5vw; font-weight: 100;" v-else>
         You Need to be Logged In to View This Page
     </div>
+    <loading-data />
 </template>
 
 <script>
@@ -137,11 +137,13 @@ import { defineComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
 import store from '../store'
 import ModalEditUser from './ModalEditUser.vue'
+import LoadingData from './LoadingData.vue'
 
 export default defineComponent({
     name: 'ManageUsers',
     components: {
-        ModalEditUser
+        ModalEditUser,
+        LoadingData
     },
     data(){
         return {
