@@ -56,6 +56,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     height: 100%;
     font-size: 1.75rem;
     margin-top: 5rem;
@@ -77,7 +78,7 @@
         <div class="circle"></div>
         <div class="circle"></div>
         <ButterflyAnimation>
-            <div class="loading-text">{{loading}}</div>
+            <div class="loading-text" v-html="loading" />
         </ButterflyAnimation>
     </div>
 
