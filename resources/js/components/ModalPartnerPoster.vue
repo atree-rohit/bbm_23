@@ -55,7 +55,7 @@
     }
 
     .logo-container img{
-        min-height: 4rem;
+        /* min-height: 4rem; */
         border: 2px solid rgba(0,0,0,0.25);
         border-radius: 0.5rem;
         padding: .25rem;
