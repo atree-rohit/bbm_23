@@ -187,15 +187,15 @@
     "src": "resources/js/pages/data.js"
   },
   "resources/js/pages/home.css": {
-    "file": "assets/home-0dab0171.css",
+    "file": "assets/home-319226a7.css",
     "src": "resources/js/pages/home.css"
   },
   "resources/js/pages/home.js": {
     "css": [
-      "assets/home-0dab0171.css",
+      "assets/home-319226a7.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/home-f073f0a3.js",
+    "file": "assets/home-68d4fd7c.js",
     "imports": [
       "__plugin-vue_export-helper-a40c10a7.js",
       "_FileUploadComponent-0ed41fe7.js",
