@@ -7,8 +7,27 @@
     min-height: 10rem;
 }
 
-.btn-group>* {
-    margin: 0 1rem;
+.form-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.form-container input{
+    border-width: 2px!important;
+}
+
+.form-switch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    background: #aaa;
+}
+
+.form-check-input:checked {
+    background-color: green!important;
+    border-color: green!important;
 }
 </style>
 <template>
@@ -16,38 +35,100 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLiveLabel">View Observation Details</h3>
+                    <h3 class="modal-title" id="exampleModalLiveLabel">Observation Details [{{ data.portal }} # {{ data.id }}]</h3>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
-                <div class="modal-body d-flex">
-                    <div>
-                        Validate Data
-                        <pre>
-                            {{ validate_data }}
-                        </pre>
+                <div class="modal-body">
+                    <div class="form-container">
+                        <div
+                            class="form-floating"
+                            v-for="field in fields"
+                            :key="field"
+                        >
+                            <input class="form-control" v-model="form_values[field]" :class="fieldClass(field)">
+                            <label for="exampleInputEmail1" class="form-label">{{capitalizeWords(field)}}</label>
+                        </div>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" v-model="form_values.validated">
+                        <label class="form-check-label" for="flexSwitchCheckChecked">validated</label>
                     </div>
                     <div>
-                        Location
-                        <div class="btn-continer">
-                            <button
-                                class="btn btn-success mx-1"
-                                v-for="level in levels"
-                                :key="level"
-                                @click="check(level)"
-                                v-text="level"
-                            />
-                        </div>
+                        <MapCleanData
+                            :data="[form_values]"
+                            :modes="['countries', 'states', 'districts']"
+                        />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
-                    <!-- <button type="button" class="btn btn-success" @click="submit">Save changes</button> -->
+                    <button type="button" class="btn btn-success" @click="submit">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-backdrop fade show" v-if="show"></div>
 </template>
+
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { capitalizeWords } from '../utils/string_fns.js'
+import MapCleanData from './MapCleanData.vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false
+    },
+    data: {
+        type: Object,
+        required: true
+    }
+})
+
+const emit = defineEmits(['close'])
+const closeModal = () => emit('close')
+
+const form_values = ref({})
+
+const levels = ["countries", "states", "districts"]
+
+const fields = ["user", "observed_on", "place", "country", "state", "district", "latitude", "longitude", "taxa_id", "species"]
+
+const location_missing = computed(() =>  (props.data.state == null || props.data.district == null))
+
+watch(() => props.data, (newVal) => {
+    form_values.value = JSON.parse(JSON.stringify(newVal))
+    
+})
+
+const fieldClass = (field) => {
+    const COLORS = {
+        present: 'border border-success',
+        absent: 'border border-danger',
+    }
+    if (field === 'place' || field === 'species') {
+        return 'border border-secondary'
+    }
+    
+    const value = form_values.value[field]
+    if(field === 'observed_on'){
+        return dateClass(value) ? COLORS.present : COLORS.absent
+    }
+    return (value && (typeof value === 'string' && value.length > 1) || (typeof value === 'number' && value > 0)) ? COLORS.present : COLORS.absent
+}
+
+const dateClass = (date) =>  (!date || /^(202[0-3])-09-\d{2}$/.test(date))
+
+const submit = () => {
+    store.dispatch('clean_data/updateData', form_values.value)
+    closeModal()
+}
+
+</script>
 
 <script>
 
@@ -62,25 +143,11 @@ export default {
         data: {
             type: Object,
             required: true
-        },
-        geojson: {
-            type: Object,
-            required: true
-        }
-    },
-    emits: ["close"],
-    data() {
-        return {
-            levels: ["countries", "states", "districts"]
         }
     },
     mounted() {
     },
     computed: {
-        validate_data() {
-            const { latitude, longitude, state, district, observed_on, date, taxa_id } = this.data
-            return { latitude, longitude, state, district, observed_on, date, taxa_id }
-        },
         show_map() {
             return (this.data.latitude && this.data.longitude) && (this.data.state == null || this.data.district == null)
         }
@@ -97,71 +164,6 @@ export default {
         }
     },
     methods: {
-        valueFromLabel(str) {
-            return str.replace(/\s/g, '_').toLowerCase()
-        },
-        closeModal() {
-            this.$emit('close')
-        },
-        check(level){
-            let matching_polygon = null
-            for(const country of this.geojson[level].features){
-                // console.log(level, this.geojson[level])
-                for(let polygons of country.geometry.coordinates){
-                    if(level == "districts"){
-                        polygons = [polygons]
-                    }
-                    for(const polygon of polygons){
-                        console.log(polygon)
-                        if (this.pointInPolygon(this.data.longitude, this.data.latitude, polygon)) {
-                            switch(level){
-                                case "countries": matching_polygon = country.properties.ADMIN
-                                    break
-                                case "states": matching_polygon = country.properties.state
-                                    break
-                                case "districts": matching_polygon = country.properties.districts
-                                    break
-                            }
-                            break
-                        }
-                    }
-                }
-            }
-            console.log(matching_polygon)
-        },  
-        pointInPolygon(longitude, latitude, polygonVertices) {
-            let intersections = 0;
-            const vertexCount = polygonVertices.length;
-
-            for (let i = 0; i < vertexCount; i++) {
-                const j = (i + 1) % vertexCount;
-
-                const [xi, yi] = polygonVertices[i];
-                const [xj, yj] = polygonVertices[j];
-
-                if (yi === yj) {
-                    continue;
-                }
-
-                if (latitude < Math.min(yi, yj)) {
-                    // Skip if point is below the edge
-                    continue;
-                }
-
-                if (latitude >= Math.max(yi, yj)) {
-                    // Skip if point is above the edge
-                    continue;
-                }
-
-                const xIntersect = (latitude - yi) * (xj - xi) / (yj - yi) + xi
-
-                if (xIntersect > longitude) {
-                    intersections++;
-                }
-            }
-
-            return (intersections % 2) === 1;
-        }
     }
 }
 </script>
