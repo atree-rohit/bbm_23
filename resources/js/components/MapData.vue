@@ -176,7 +176,7 @@ export default{
 			return this.mode.slice(0, -1)
 		}
     },
-	mounted(){
+	created(){
 		console.log("Map mounted: initializing")
 		if(this.geojson && this.mapData){
 			this.init()
@@ -458,9 +458,6 @@ export default{
 		},
         format_number(num){
 			return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		},
-        capitalizeWords(str){
-			return str ? str.charAt(0).toUpperCase() + str.slice(1) : ""
 		},
     }
 }
