@@ -686,7 +686,7 @@ class DataController extends Controller
 
     public function portal_observations($portal){
         $op = [];
-        $limit = 10;
+        $limit = -1;
         switch($portal){
             case "inat": $op = INat::limit($limit)->get();
                 break;
@@ -737,4 +737,115 @@ class DataController extends Controller
         return response()->json($op);
     }
 
+    public function update_portal_observation(Request $request) {
+        $all_data = $request->all();
+        $op = null;
+        switch($all_data["portal"]){
+            case "counts": $op = $this->update_count_observation($all_data);
+                break;
+            case "inat": $op = $this->update_inat_observation($all_data);
+                break;
+            case "ibp": $op = $this->update_ibp_observation($all_data);
+                break;
+            case "ifb": $op = $this->update_ifb_observation($all_data);
+                break;
+        }
+
+        return response()->json($op);
+    }
+    
+    public function update_count_observation($data){
+        $count_species = CountSpecies::find($data["id"]);
+        $count_form = $count_species->count_form;
+        
+        $count_form->name = $data["user"];
+        $count_form->date = $data["observed_on"];
+        $count_form->location = $data["place"];
+        $count_form->country = $data["country"];
+        $count_form->state = $data["state"];
+        $count_form->district = $data["district"];
+        $count_form->latitude = $data["latitude"];
+        $count_form->longitude = $data["longitude"];
+        $count_form->save();
+
+        $count_species->taxa_id = $data["taxa_id"];
+        $count_species->scientific_name = $data["species"];
+        $count_species->validated = $data["validated"];
+        $count_species->save();
+        
+
+        $observation = [
+            "id" => $count_species->id,
+            "taxa_id" => $count_species->taxa_id,
+            "species" => $count_species->scientific_name_cleaned, // You may need to adjust this based on your actual data structure
+            "validated" => $count_species->validated || $count_species->status == "approved",
+            "user" => $count_form->name,
+            "place" => $count_form->location,
+            "country" => $count_form->country,
+            "state" => $count_form->state,
+            "district" => $count_form->district,
+            "latitude" => $count_form->latitude,
+            "longitude" => $count_form->longitude,
+            "form_validated" => $count_form->validated,
+            "date" => $count_form->date,
+            "date_cleaned" => $count_form->date_cleaned,
+            "observed_on" => ($count_form->date_cleaned)
+                ? DateTime::createFromFormat('d-m-Y', $count_form->date_cleaned)->format('Y-m-d')
+                : null
+        ];
+    
+        return $observation;
+    }
+
+    public function update_inat_observation($data){
+        $observation = INat::find($data["id"]);
+        $observation->user = $data["user"];
+        $observation->observed_on = $data["observed_on"];
+        $observation->place = $data["place"];
+        $observation->country = $data["country"];
+        $observation->state = $data["state"];
+        $observation->district = $data["district"];
+        $observation->latitude = $data["latitude"];
+        $observation->longitude = $data["longitude"];
+        $observation->taxa_id = $data["taxa_id"];
+        $observation->validated = $data["validated"];
+        $observation->save();
+        return $observation;
+    }
+
+    public function update_ibp_observation($data){
+        $observation = IBP::find($data["id"]);
+        $observation->user = $data["user"];
+        $observation->observed_on = $data["observed_on"];
+        $observation->place = $data["place"];
+        $observation->country = $data["country"];
+        $observation->state = $data["state"];
+        $observation->district = $data["district"];
+        $observation->latitude = $data["latitude"];
+        $observation->longitude = $data["longitude"];
+        $observation->taxa_id = $data["taxa_id"];
+        $observation->species = $data["species"];
+        $observation->validated = $data["validated"];
+
+        $observation->save();
+        return $observation;
+        
+    }
+
+    public function update_ifb_observation($data){
+        $observation = IFB::find($data["id"]);
+        $observation->user = $data["user"];
+        $observation->observed_on = $data["observed_on"];
+        $observation->place = $data["place"];
+        $observation->country = $data["country"];
+        $observation->state = $data["state"];
+        $observation->district = $data["district"];
+        $observation->latitude = $data["latitude"];
+        $observation->longitude = $data["longitude"];
+        $observation->taxa_id = $data["taxa_id"];
+        $observation->species = $data["species"];
+        $observation->validated = $data["validated"];
+        $observation->save();
+        return $observation;
+    }
 }
