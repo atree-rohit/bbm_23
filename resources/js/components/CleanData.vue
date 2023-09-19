@@ -1,8 +1,16 @@
 <style scoped>
+
+    .page-info{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem;        
+    }
     .table-container{
         max-width: 100%;
         overflow: auto;
-        max-height: 80vh;
+        max-height: 60vh;
     }
 
     .table-container .table thead {
@@ -17,28 +25,33 @@
 </style>
 
 <template>
-    <div class="btn-rows">
-        <div class="btn-group border border-secondary w-100 p-3">
+    <div class="btn-rows bg-secondary">
+        <div class="btn-group w-100 p-1">
             <button
-                class="btn mx-2 rounded"
+                class="btn btn-sm mx-2 rounded"
                 v-for="portal in portals"
                 :key="portal"
-                :class="{'btn-success': portal === selected_portal, 'btn-outline-secondary': portal !== selected_portal}"
+                :class="{'btn-success': portal === selected_portal, 'btn-outline-light': portal !== selected_portal}"
                 v-text="portal"
                 @click="selected_portal = (selected_portal == portal) ? null : portal"
             />
         </div>
-        <div class="btn-group border border-secondary w-100 p-3">
+        <div class="btn-group w-100 p-1">
             <button
-                class="btn mx-2 rounded"
+                class="btn btn-sm mx-2 rounded"
                 v-for="filter in data_filters"
                 :key="filter"
-                :class="{'btn-success': filter === selected_filter, 'btn-outline-secondary': filter !== selected_filter}"
+                :class="{'btn-success': filter === selected_filter, 'btn-outline-light': filter !== selected_filter}"
                 v-text="filter"
                 @click="selected_filter = (selected_filter == filter) ? null : filter"
             />
         </div>
-
+        <div class="page-info">
+            <button class="btn btn-sm btn-info" @click="page_no--"> &lt; </button>
+            <span>Page {{page_no}} of {{Math.ceil(filtered_data.length / per_page)}}</span>
+            <button class="btn btn-sm btn-info" @click="page_no++"> &gt; </button>
+            Total Records: {{filtered_data.length}}
+        </div>
     </div>
     <div class="table-container border border-danger" v-if="selected_portal">
         <table class="table table-sm table-hover">
@@ -69,15 +82,9 @@
             </tbody>
         </table>
     </div>
-    <MapCleanData
-        :data="filtered_data"
-        :modes="['countries', 'states', 'districts']"
-        tooltip_third_row_label=""
-    />
     <ModalEditObservation
         :show="show_modal"
         :data="modal_observation_data"
-        :geojson="geojson"
         @close="closeModal"
     />
     <pre>
@@ -89,15 +96,16 @@
 import { ref, watch, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import ModalEditObservation from './ModalEditObservation.vue'
-import MapCleanData from './MapCleanData.vue'
 
 const store = useStore()
 const portals = ["counts", "inat", "ibp", "ifb"]
-const selected_portal = ref("")
+const selected_portal = ref(null)
 const data_filters = ["all", "validated", "unvalidated"]
-const selected_filter = ref("all")
+const selected_filter = ref("unvalidated")
 const sort_col = ref("id")
 const sort_dir = ref("asc")
+const per_page = ref(1000)
+const page_no = ref(1)
 
 const show_modal = ref(false)
 const modal_observation_data = ref({})
@@ -113,26 +121,32 @@ watch(selected_portal, (newVal, oldVal) => {
     }
 })
 
-const geojson = computed(() => store.state.data.geojson)
 const data = computed(() => store.getters["clean_data/data_with_classes"])
 
 const filtered_data = computed(() => {
+    let op = []
     if(data && data.value && data.value[0]){
         switch(selected_filter.value){
-            case "all":
-                return data.value
-            case "validated":
-                return data.value.filter(row => row.validated)
-            case "unvalidated":
-                return data.value.filter(row => !row.validated)
+            case "all": op = data.value
+                break
+            case "validated": op = data.value.filter(row => row.validated)
+                break
+            case "unvalidated": op = data.value.filter(row => !row.validated)
+                break
         }
     }
-    return []
+    return op
+})
+
+const paginated_data = computed(() => {
+    const start = (page_no.value - 1) * per_page.value
+    const end = start + per_page.value
+    return filtered_data.value.slice(start, end)
 })
 
 const sorted_data = computed(() => {
     if (data && data.value && data.value[0]) {
-        return filtered_data.value.sort((a, b) => {
+        return paginated_data.value.sort((a, b) => {
             const valA = a[sort_col.value];
             const valB = b[sort_col.value];
 
@@ -179,7 +193,11 @@ const sortCol = (col) => {
 }
 
 const rowClick = (row) => {
-    modal_observation_data.value = row
+    console.log(row)
+    modal_observation_data.value = {
+        ...row,
+        portal: selected_portal.value
+    }
     show_modal.value = true
 }
 
