@@ -686,7 +686,7 @@ class DataController extends Controller
 
     public function portal_observations($portal){
         $op = [];
-        $limit = -10;
+        $limit = 10;
         switch($portal){
             case "inat": $op = INat::limit($limit)->get();
                 break;
@@ -708,12 +708,10 @@ class DataController extends Controller
                         if ($dateTime instanceof DateTime) {
                             $item["observed_on"] = $dateTime->format('Y-m-d');
                         } else {
-                            // Handle the case where date creation failed (e.g., invalid date format)
-                            $item["observed_on"] = null; // Set it to null or handle the error as needed
+                            $item["observed_on"] = null;
                         }
                     } catch (Exception $e) {
-                        // Handle any exceptions that may occur during date parsing
-                        $item["observed_on"] = null; // Set it to null or handle the error as needed
+                        $item["observed_on"] = null;
                     }
                     
                     unset($item["date_cleaned"]);
@@ -722,7 +720,6 @@ class DataController extends Controller
                 });
                 $op = [];
                 foreach($count_data as $form){
-                    // dd($count_data->toArray());
                     $observation_base = $form->toArray();
                     unset($observation_base["species_list"]);
                     foreach($form->species_list as $species){
@@ -735,7 +732,6 @@ class DataController extends Controller
                         $op[] = $observation;
                     }
                 }
-                // dd($op);
                 break;
         }
         return response()->json($op);
