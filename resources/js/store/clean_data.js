@@ -29,8 +29,15 @@ export default {
     },
     mutations: {
         SET_DATA(state, data){
-            console.log(data)
             state.data = data
+        },
+        UPDATE_DATA(state, data){
+            state.data = state.data.map((d) => {
+                if(d.id === data.id){
+                    return data
+                }
+                return d
+            })
         }
     },
     actions: {
@@ -38,6 +45,13 @@ export default {
             let response = await axios.get("/api/data/portal_observations/" + portal)
             if(response){
                 commit("SET_DATA", response.data)
+            }
+        }, async updateData({commit}, data){
+            const { classes, ...data_without_classes } = data
+            let response = await axios.post("/api/data/portal_observations/update", data_without_classes)
+            if(response){
+                console.log(response.data)
+                commit("UPDATE_DATA", response.data)
             }
         }
     }
