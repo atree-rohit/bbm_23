@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('taxa_id')->nullable(true)->constrained(
                 table: 'taxas', indexName: 'ibp_taxa_id'
             );
+            $table->string('species', 100)->nullable(true);
             $table->string('img_url', 500)->nullable(true);
             $table->string('ibp_created_at', 100)->nullable(false);
             $table->boolean('validated')->nullable(true)->default(null);

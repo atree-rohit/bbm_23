@@ -20,6 +20,7 @@ class IBP extends Model
         'state',
         'district',
         'taxa_id',
+        'species',
         'img_url',
         'ibp_created_at',
     ];
