@@ -1,9 +1,30 @@
 <style>
+	#map-container{
+		background: hsl(180, 75%, 85%);
+		overflow: hidden;
+	}
+	.polygon{
+		stroke: #555;
+		stroke-width: .25px;
+		fill: transparent;
+		transition: all 100ms;
+	}
+
+	.polygon:hover{
+		fill: green;
+		cursor: grab;
+	}
     .point{
-        fill: red;
-        stroke: yellow;
-        stroke-width: 1rem;;
+        fill: rgba(230, 15, 15, 0.644);
+        stroke: rgba(255, 0, 255, 0.25);
+        stroke-width: 0.5px;
     }
+
+	.d3-tooltip, .d3-tooltip td{
+		border: 1px solid red;
+		border-collapse: collapse;
+		padding: 0.25rem 0.5rem;
+	}	
 </style>
 <template>
     <div class="switcher switcher-sm text-center py-2 bg-dark">
@@ -16,14 +37,17 @@
             v-text="pm"
         />
     </div>
-    <div id="map">
+	<div id="map">
         <div id="map-container"></div>
     </div>
 </template>
 
+<script setup>
+</script>
 <script>
 import { defineComponent } from 'vue'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
+import { capitalizeWords } from '../utils/string_fns.js'
 import * as d3 from 'd3'
 import * as d3Legend from 'd3-svg-legend'
 
@@ -38,16 +62,12 @@ export default defineComponent({
         modes:{
             type: Array,
             required: true
-        },
-		tooltip_third_row_label: {
-			type: String,
-			default: ""
-		},
+        }
     },
     emits: ['mode-change', 'polygon-clicked'],
     data() {
         return {
-            mode: this.modes[0],
+            mode: "districts",
             polygons: null,
             path: null,
             svg: null,
@@ -74,6 +94,9 @@ export default defineComponent({
             geojson: state => state.data.geojson,
         }),
         current_geojson(){
+			if(!this.geojson || !this.mode){
+				return{}
+			}
             return this.geojson[this.mode]
         },
         zoom(){
@@ -91,11 +114,11 @@ export default defineComponent({
 			return op[this.mode]
 		}
     },
-	mounted(){
-		// console.log("mounted: initializing")
-		// if(this.geojson && this.geojson.features){
-		// 	this.init()
-		// }
+	created(){
+		if(this.geojson && this.geojson.features){
+			console.log("mounted: initializing")
+			this.init()
+		}
 	},
     updated(){
 		console.log("updated: re-initializing")
@@ -118,7 +141,7 @@ export default defineComponent({
             this.path = null
             this.svg = {}
             this.height = window.innerHeight * 0.8
-            this.width = window.innerWidth
+            this.width = window.innerWidth * 0.5
             if(window.innerWidth < 800){
 				this.height = window.innerHeight * 0.6
 				this.projection = d3.geoMercator().scale(600).center([110, 20])
@@ -138,7 +161,7 @@ export default defineComponent({
 						.attr('class', 'd3-tooltip')
 						.style('position', 'absolute')
 						.style('top', '0')
-						.style('z-index', '10')
+						.style('z-index', '2000')
 						.style('visibility', 'hidden')
 						.style('padding', '10px')
 						.style('background', 'rgba(0,0,0,0.75)')
@@ -146,24 +169,6 @@ export default defineComponent({
 						.style('color', '#fff')
 						.text('a simple tooltip')
 		},
-        // init_legend(){
-        //     this.colors = {}
-        //     this.legend = {}
-        //     this.max = d3.max(this.mapData, (d) => d.value) 
-        //     this.colors = d3.scaleLinear()
-        //         .domain([0,1, this.max/3, this.max])
-        //         .range(["#c33", "#488", "#fd0", "#24ff00"])
-        //         .clamp(true)
-        //     this.legend = d3Legend.legendColor()
-		// 						.shapeHeight(20)
-		// 						.shapeWidth(60)
-		// 						.scale(this.colors)
-		// 						.labelFormat(d3.format(",.0f"))
-		// 						.orient('horizontal')
-		// 						.labelOffset(-10)
-		// 						.labelAlign("middle")
-		// 						.cells(6)
-        // },
         init_svg(){
             if (!d3.select("#map-container svg.svg-content").empty()) {
 				d3.select("#map-container svg.svg-content").remove()
@@ -176,11 +181,6 @@ export default defineComponent({
 							.classed("svg-content", true)
 			if(!this.zoomTransform){
 				this.zoomTransform =  d3.zoomTransform(this.svg.node())
-			}
-
-			if(this.height > this.width){
-				this.legend.shapeWidth(35)
-				.cells(4)
 			}
         },
         render_map(){
@@ -206,7 +206,7 @@ export default defineComponent({
         drawPoints() {
             // Create a new group for the points
             const pointsGroup = this.svg.append("g")
-            	.classed("points", true)
+					.classed("points", true)
 			const missing_coordinates = []
             
             // Loop through the pointsArray and add circles for each point
@@ -222,7 +222,7 @@ export default defineComponent({
 					pointsGroup.append("circle")
 						.attr("cx", x)
 						.attr("cy", y)
-						.attr("r", "0.15rem") // Adjust the radius as needed
+						.attr("r", "10px") // Adjust the radius as needed
 						.classed("point", true)
 				} else {
 					missing_coordinates.push(point)
@@ -238,18 +238,17 @@ export default defineComponent({
 				.data([polygon])
 				.enter().append("path")
 				.attr("d", this.path)
-				// .attr("id", this.getPolygonId(polygon.properties))
-				// .attr("fill", (d) => this.color_polygon(polygon.properties))
-				// .on('mouseover', (d, i) => {
-				// 	this.tooltip.html(this.hover_text(polygon.properties))
-				// 		.style('visibility', 'visible')
-				// })
-				// .on('mousemove', (event, d) => {
-				// 	this.tooltip
-				// 		.style('top', event.pageY - 10 + 'px')
-				// 		.style('left', event.pageX + 10 + 'px')
-				// })
-				// .on('mouseout', () => this.tooltip.html(``).style('visibility', 'hidden'))
+				.classed("polygon", true)
+				.on('mouseover', (d, i) => {
+					this.tooltip.html(this.hover_text(polygon.properties))
+						.style('visibility', 'visible')
+				})
+				.on('mousemove', (event, d) => {
+					this.tooltip
+						.style('top', event.pageY - 10 + 'px')
+						.style('left', event.pageX + 10 + 'px')
+				})
+				.on('mouseout', () => this.tooltip.html(``).style('visibility', 'hidden'))
 				.on("click", (d, polygon_details) => this.clicked(polygon_details))
 		},
         getPolygonId(polygon){
@@ -268,12 +267,19 @@ export default defineComponent({
 		},
         clicked(polygon_details) {
             console.log(polygon_details)
-			let op = {
-				name: polygon_details.properties[this.mode_key],
-				mode: this.mode
+			const {state, district} = polygon_details.properties
+			let op = []
+			if(state){
+				op.push(state)
 			}
-            console.log(op)
-			this.$emit('polygon-clicked', op)
+			if(district){
+				op.push(district)
+			}
+			if(op.length){
+				op = op.join(" ")
+				navigator.clipboard.writeText(op)
+			} 
+			// this.$emit('polygon-clicked', op)
 		},
 
         drawPolygonBoundary(polygon){
@@ -337,20 +343,20 @@ export default defineComponent({
                 .attr('transform', e.transform)
             this.svg.selectAll('circle')
                 .attr('transform', e.transform)
-				// .attr("r", text_size)
+				.attr("r", text_size * 5)
         },
         hover_text(properties){
-			let op = ["state", "district"].map((key) => `<tr><td>${this.capitalizeWords(key)}</td><td>${properties[key] ? properties[key]: "-"}</td></tr>`)	
-            op.push(`<tr><td>${this.tooltip_third_row_label}</td><td>${this.mapData.find((d) => d.name == properties[this.mode_key])?.value || 0}</td></tr>`)
+			let op = Object.entries(properties).filter(([key, value]) =>  key != 'id')
+			
+			op = op.map(([key, value]) => {
+					return `<tr><td>${capitalizeWords(key)}</td><td>${capitalizeWords(value)}</td></tr>`
+				})
 			return `<table border='1' class='d3-tooltip'>${op.join('\n')}</table>`
 			
 		},
         format_number(num){
 			return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		},
-        capitalizeWords(str){
-			return str ? str.charAt(0).toUpperCase() + str.slice(1) : ""
-		},
+		}
     }
 })
 </script>
