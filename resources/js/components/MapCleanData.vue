@@ -206,23 +206,32 @@ export default defineComponent({
         drawPoints() {
             // Create a new group for the points
             const pointsGroup = this.svg.append("g")
-            .classed("points", true)
+            	.classed("points", true)
+			const missing_coordinates = []
             
             // Loop through the pointsArray and add circles for each point
             this.data.forEach((point) => {
                 const {longitude, latitude} = point
-                
+				
+				if(latitude && !isNaN(latitude) && longitude&& !isNaN(longitude)){
+					// Convert latitude and longitude to screen coordinates
+					const [x, y] = this.projection([longitude, latitude])
+	
+					// Add a circle for each point
+					
+					pointsGroup.append("circle")
+						.attr("cx", x)
+						.attr("cy", y)
+						.attr("r", "0.15rem") // Adjust the radius as needed
+						.classed("point", true)
+				} else {
+					missing_coordinates.push(point)
+				}
+            })
+			if(missing_coordinates.length){
+				console.warn("Missing Coordinates:", missing_coordinates)
+			}
 
-                // Convert latitude and longitude to screen coordinates
-                const [x, y] = this.projection([longitude, latitude])
-
-                // Add a circle for each point
-                pointsGroup.append("circle")
-                    .attr("cx", x)
-                    .attr("cy", y)
-                    .attr("r", "0.15rem") // Adjust the radius as needed
-                    .classed("point", true)
-                })
         },
         drawPolygon(polygon){
 			this.polygons.append("g")
