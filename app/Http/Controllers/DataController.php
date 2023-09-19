@@ -14,7 +14,7 @@ use App\Models\Taxa;
 use Illuminate\Support\Facades\Cache;
 
 use Illuminate\Support\Str;
-
+use DateTime;
 
 use Spatie\Activitylog\Models\Activity;
 
@@ -686,14 +686,56 @@ class DataController extends Controller
 
     public function portal_observations($portal){
         $op = [];
+        $limit = -10;
         switch($portal){
-            case "inat": $op = INat::all();
+            case "inat": $op = INat::limit($limit)->get();
                 break;
-            case "ibp": $op = IBP::all();
+            case "ibp": $op = IBP::limit($limit)->get();
                 break;
-            case "ifb": $op = IFB::all();
+            case "ifb": $op = IFB::limit($limit)->get();
                 break;
-            case "counts": $op = CountForm::all();
+            case "counts": $count_data = CountForm::select("id", "name as user", "location as place", "country", "state", "district", "latitude", "longitude", "validated as form_validated", "date", "date_cleaned")
+                ->limit($limit)
+                ->get();
+                $count_data->map(function ($item) {
+                    if($item["date_cleaned"]){
+                        $date = $item["date_cleaned"];
+                    } else {
+                        $date = $item["date"];
+                    }
+                    try {
+                        $dateTime = DateTime::createFromFormat('d-m-Y', $date);
+                        if ($dateTime instanceof DateTime) {
+                            $item["observed_on"] = $dateTime->format('Y-m-d');
+                        } else {
+                            // Handle the case where date creation failed (e.g., invalid date format)
+                            $item["observed_on"] = null; // Set it to null or handle the error as needed
+                        }
+                    } catch (Exception $e) {
+                        // Handle any exceptions that may occur during date parsing
+                        $item["observed_on"] = null; // Set it to null or handle the error as needed
+                    }
+                    
+                    unset($item["date_cleaned"]);
+                    unset($item["date"]);
+                    return $item;
+                });
+                $op = [];
+                foreach($count_data as $form){
+                    // dd($count_data->toArray());
+                    $observation_base = $form->toArray();
+                    unset($observation_base["species_list"]);
+                    foreach($form->species_list as $species){
+                        $validated = $species->validated || $species->status == "approved";
+                        $observation = $observation_base;
+                        $observation["id"] = $species->id;
+                        $observation["taxa_id"] = $species->taxa_id;
+                        $observation["species"] = $species->scientific_name_cleaned;
+                        $observation["validated"] = $validated;
+                        $op[] = $observation;
+                    }
+                }
+                // dd($op);
                 break;
         }
         return response()->json($op);
