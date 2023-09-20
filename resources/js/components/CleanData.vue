@@ -152,8 +152,21 @@ const filtered_data = computed(() => {
 const sorted_data = computed(() => {
     if (data && data.value && data.value[0]) {
         return filtered_data.value.sort((a, b) => {
-            const valA = a[sort_col.value];
-            const valB = b[sort_col.value];
+            const convertNullToDefault = (value) => {
+                if (value === null) {
+                    if (typeof value === 'number') {
+                        return 0;
+                    } else if (typeof value === 'boolean') {
+                        return false;
+                    } else {
+                        return '';
+                    }
+                }
+                return value;
+            }
+            const valA = convertNullToDefault(a[sort_col.value])
+            const valB = convertNullToDefault(b[sort_col.value])
+
 
             // Check data types
             const isNumber = (value) => !isNaN(value);
