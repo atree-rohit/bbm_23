@@ -74,7 +74,7 @@
                     </div>
                     <div>
                         <MapCleanData
-                            :data="[form_values]"
+                            :data="map_data"
                             :modes="['countries', 'states', 'districts']"
                         />
                     </div>
@@ -110,6 +110,13 @@ const props = defineProps({
         required: true
     }
 })
+
+
+const map_data = computed(() => {
+    const {latitude, longitude} = form_values.value
+    return [{latitude, longitude}]
+
+}) 
 
 const emit = defineEmits(['close'])
 const closeModal = () => {
