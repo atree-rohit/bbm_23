@@ -723,11 +723,15 @@ class DataController extends Controller
                     $observation_base = $form->toArray();
                     unset($observation_base["species_list"]);
                     foreach($form->species_list as $species){
+                        $species_name = $species->scientific_name_cleaned;
+                        if($species_name == ""){
+                            $species_name = $species->scientific_name;
+                        }
                         $validated = $species->validated || $species->status == "approved";
                         $observation = $observation_base;
                         $observation["id"] = $species->id;
                         $observation["taxa_id"] = $species->taxa_id;
-                        $observation["species"] = $species->scientific_name_cleaned;
+                        $observation["species"] = $species_name;
                         $observation["validated"] = $validated;
                         $op[] = $observation;
                     }
