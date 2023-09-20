@@ -282,6 +282,7 @@ export default defineComponent({
 				payload.country = country
 				this.$emit('polygon-clicked', payload)
 				this.showMap = false
+				this.tooltip.html(``).style('visibility', 'hidden')
 			} 
 			let op = []
 			if(state){
@@ -297,6 +298,7 @@ export default defineComponent({
 				op = op.join(" ")
 				navigator.clipboard.writeText(op)
 				this.showMap = false
+				this.tooltip.html(``).style('visibility', 'hidden')
 			} 
 		},
 
