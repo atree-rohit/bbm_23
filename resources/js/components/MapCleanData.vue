@@ -27,23 +27,32 @@
 	}	
 </style>
 <template>
-    <div class="switcher switcher-sm text-center py-2 bg-dark">
-        <button
-            class="btn mx-1"
-            v-for="pm in modes"
-            :key="pm"
-            :class="pm === mode ? 'btn-success' : 'btn-outline-success bg-light'"
-            @click="mode = pm"
-            v-text="pm"
-        />
-    </div>
-	<div id="map">
-        <div id="map-container"></div>
-    </div>
+	<div class="text-center">
+		<button
+		  class="btn "
+		  :class="showMap ? 'btn-danger btn-sm' : 'btn-success btn-lg'"
+		  @click="showMap = !showMap"
+		>
+			{{ showMap ? 'Hide' : 'Show' }} Map
+		</button>
+	</div>
+	<div class="main-container" v-if="showMap">
+		<div class="switcher switcher-sm text-center py-2 bg-dark">
+			<button
+				class="btn mx-1"
+				v-for="pm in modes"
+				:key="pm"
+				:class="pm === mode ? 'btn-success' : 'btn-outline-success bg-light'"
+				@click="mode = pm"
+				v-text="pm"
+			/>
+		</div>
+		<div id="map">
+			<div id="map-container"></div>
+		</div>
+	</div>
 </template>
 
-<script setup>
-</script>
 <script>
 import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
@@ -78,6 +87,7 @@ export default defineComponent({
             width: 500,
             zoomTransform: 0,
             tooltip: null,
+			showMap: false,
         }      
     },
     watch:{
@@ -126,8 +136,7 @@ export default defineComponent({
 	},
     methods: {
         init(){
-			console.log("init")
-            if(this.current_geojson.features){
+            if(this.showMap && this.current_geojson.features){
 				this.init_variables()
                 // this.init_legend()
                 this.init_svg()
