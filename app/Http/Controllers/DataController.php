@@ -769,7 +769,7 @@ class DataController extends Controller
         $count_form->save();
 
         $count_species->taxa_id = $data["taxa_id"];
-        $count_species->scientific_name = $data["species"];
+        $count_species->scientific_name_cleaned = $data["species"];
         $count_species->validated = $data["validated"];
         $count_species->save();
         
