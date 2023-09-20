@@ -87,9 +87,9 @@
         :data="modal_observation_data"
         @close="closeModal"
     />
-    <pre>
+    <!-- <pre>
         {{ data[0] }}
-    </pre>
+    </pre> -->
 </template>
 
 <script setup>
