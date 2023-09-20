@@ -49,6 +49,25 @@
                             <label for="exampleInputEmail1" class="form-label">{{capitalizeWords(field)}}</label>
                         </div>
                     </div>
+
+
+
+                    <div class="taxa-lookup-container p-2 row mx-0" style="background-color: #aaa;">
+                        <div class="col">
+                            <auto-complete-taxon
+                                :suggestions="allTaxa"
+                                :value="selectedTaxa"
+                                @selected="scientificNameSelected"
+                            />
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-success px-2 ms-3" @click="copySpecies">📋</button>
+                        </div>
+                    </div>
+
+
+                    {{ selectedTaxa }}
+
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" v-model="form_values.validated">
                         <label class="form-check-label" for="flexSwitchCheckChecked">validated</label>
@@ -71,12 +90,15 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { capitalizeWords } from '../utils/string_fns.js'
-import MapCleanData from './MapCleanData.vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { capitalizeWords } from '../utils/string_fns.js'
+
+import MapCleanData from './MapCleanData.vue'
+import AutoCompleteTaxon from './AutoCompleteTaxon.vue'
 
 const store = useStore()
+
 
 const props = defineProps({
     show: {
@@ -90,7 +112,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
-const closeModal = () => emit('close')
+const closeModal = () => {
+    selectedTaxa.value = ''
+    emit('close')
+}
 
 const form_values = ref({})
 
@@ -128,7 +153,46 @@ const submit = () => {
     closeModal()
 }
 
+
+
+
+
+onMounted(() => {
+    store.dispatch('data/getTaxa', form_values.value)
+})
+
+
+
+
+const allTaxa = computed(() =>  store.state.data.taxa.map((t) => `${t.name}-${t.id}`))
+
+const selectedTaxa = ref('')
+const scientificNameSelected = (taxa) => {
+    const nameParts = taxa.split('-')
+    console.log(form_values.value, nameParts)
+    if(form_values.value.species === nameParts[0] && form_values.value.taxa_id == null){
+        form_values.value.taxa_id = nameParts[1]
+    }    
+    selectedTaxa.value = taxa
+}
+
+const copySpecies = () => {
+    selectedTaxa.value = form_values.value.species
+    // console.log(form_values.value, selectedTaxa.value)
+}
+
+
 </script>
+
+
+
+
+
+
+
+
+
+
 
 <script>
 
