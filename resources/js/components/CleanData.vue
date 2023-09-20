@@ -48,9 +48,9 @@
         </div>
         <div class="page-info">
             <button class="btn btn-sm btn-info" @click="page_no--"> &lt; </button>
-            <span>Page {{page_no}} of {{Math.ceil(filtered_data.length / per_page)}}</span>
+            <span>Page {{page_no}} of {{Math.ceil(total_records / per_page)}}</span>
             <button class="btn btn-sm btn-info" @click="page_no++"> &gt; </button>
-            Total Records: {{filtered_data.length}}
+            Total Records: {{total_records}}
         </div>
     </div>
     <div class="table-container border border-danger" v-if="selected_portal">
@@ -101,7 +101,7 @@ const store = useStore()
 const portals = ["counts", "inat", "ibp", "ifb"]
 const selected_portal = ref(null)
 const data_filters = ["all", "validated", "unvalidated"]
-const selected_filter = ref("unvalidated")
+const selected_filter = ref("all")
 const sort_col = ref("id")
 const sort_dir = ref("asc")
 const per_page = ref(1000)
@@ -114,14 +114,25 @@ onMounted(() => {
     store.dispatch("data/getMaps")
 })
 
-watch(selected_portal, (newVal, oldVal) => {
+const pull_options = computed(() => {
+    if(selected_portal.value){
+        return {
+            portal: selected_portal.value,
+            per_page: per_page.value,
+            page_no: page_no.value
+        }
+    }
+    return {}
+})
+
+watch(pull_options, (newVal, oldVal) => {
     if (newVal !== oldVal) {
-        store.dispatch('clean_data/getData', newVal)
-        // console.log(newVal)
+        store.dispatch('clean_data/getData', pull_options.value)
     }
 })
 
 const data = computed(() => store.getters["clean_data/data_with_classes"])
+const total_records = computed(() => store.state.clean_data.total_records)
 
 const filtered_data = computed(() => {
     let op = []
@@ -138,15 +149,9 @@ const filtered_data = computed(() => {
     return op
 })
 
-const paginated_data = computed(() => {
-    const start = (page_no.value - 1) * per_page.value
-    const end = start + per_page.value
-    return filtered_data.value.slice(start, end)
-})
-
 const sorted_data = computed(() => {
     if (data && data.value && data.value[0]) {
-        return paginated_data.value.sort((a, b) => {
+        return filtered_data.value.sort((a, b) => {
             const valA = a[sort_col.value];
             const valB = b[sort_col.value];
 

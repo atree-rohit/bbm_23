@@ -3,7 +3,8 @@ import axios from "axios"
 export default {
     namespaced: true,
     state: {
-        data: []
+        data: [],
+        total_records: 0,
     },
     getters: {
         data_with_classes(state){
@@ -28,6 +29,9 @@ export default {
         }
     },
     mutations: {
+        SET_TOTAL_RECORDS(state, total_records){
+            state.total_records = total_records
+        },
         SET_DATA(state, data){
             state.data = data
         },
@@ -41,10 +45,18 @@ export default {
         }
     },
     actions: {
-        async getData({commit}, portal){
-            let response = await axios.get("/api/data/portal_observations/" + portal)
+        async getData({commit}, options){
+            const { portal, per_page, page_no } = options
+            let response = await axios.get(`/api/data/portal_observations/${portal}?per_page=${per_page}&page=${page_no}`)
             if(response){
-                commit("SET_DATA", response.data)
+                if(portal == 'counts'){
+                    commit("SET_TOTAL_RECORDS", response.data.length)
+                    commit("SET_DATA", response.data)
+                } else {
+                    console.log(response)
+                    commit("SET_TOTAL_RECORDS", response.data.total)
+                    commit("SET_DATA", response.data.data)
+                }
             }
         }, async updateData({commit}, data){
             const { classes, ...data_without_classes } = data

@@ -687,12 +687,20 @@ class DataController extends Controller
     public function portal_observations($portal){
         $op = [];
         $limit = -1;
+        $page = 1;
+        if(isset($_GET["per_page"])){
+            $limit = $_GET["per_page"];
+        }
+        if(isset($_GET["page"])){
+            $page = $_GET["page"];
+        }
+        
         switch($portal){
-            case "inat": $op = INat::limit($limit)->get();
+            case "inat": $op = INat::paginate($limit, ['*'], 'page', $page);
                 break;
-            case "ibp": $op = IBP::limit($limit)->get();
+            case "ibp": $op = IBP::paginate($limit, ['*'], 'page', $page);
                 break;
-            case "ifb": $op = IFB::limit($limit)->get();
+            case "ifb": $op = IFB::paginate($limit, ['*'], 'page', $page);
                 break;
             case "counts": $count_data = CountForm::select("id", "name as user", "location as place", "country", "state", "district", "latitude", "longitude", "validated as form_validated", "date", "date_cleaned")
                 ->limit($limit)
