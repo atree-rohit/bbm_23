@@ -276,19 +276,26 @@ export default defineComponent({
 		},
         clicked(polygon_details) {
             console.log(polygon_details)
-			const {state, district} = polygon_details.properties
+			const {state, district, country} = polygon_details.properties
+			let payload = {}
+			if(country != undefined){
+				payload.country = country
+				this.$emit('polygon-clicked', payload)
+			} 
 			let op = []
 			if(state){
 				op.push(state)
+				payload.state = state
 			}
 			if(district){
-				op.push(district)
+				payload.district = district
+				payload.country = "India"
 			}
 			if(op.length){
+				this.$emit('polygon-clicked', payload)
 				op = op.join(" ")
 				navigator.clipboard.writeText(op)
 			} 
-			// this.$emit('polygon-clicked', op)
 		},
 
         drawPolygonBoundary(polygon){

@@ -76,6 +76,7 @@
                         <MapCleanData
                             :data="map_data"
                             :modes="['countries', 'states', 'districts']"
+                            @polygon-clicked="polygonClicked"
                         />
                     </div>
                 </div>
@@ -186,6 +187,20 @@ const scientificNameSelected = (taxa) => {
 const copySpecies = () => {
     selectedTaxa.value = form_values.value.species
     // console.log(form_values.value, selectedTaxa.value)
+}
+
+const polygonClicked = (data) => {
+    console.log(data, form_values.value)
+    if(form_values.value.country == null){
+        form_values.value.country = data.country
+    }
+    if(form_values.value.state == null){
+        form_values.value.state = data.state
+    }
+
+    if(form_values.value.district == null){
+        form_values.value.district = data.district
+    }
 }
 
 
