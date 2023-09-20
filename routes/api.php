@@ -11,6 +11,7 @@ use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\DistrictCoordinatorController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\TaxaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,8 @@ Route::get('/data/total_results', [DataController::class, 'total_results']);
 Route::get('/data/inat_new_total_2023', [DataController::class, 'inat_new_total_2023']);
 Route::post('/data/store_taxa', [DataController::class, 'store_taxa']);
 Route::post('/data/store_inat_observations', [DataController::class, 'store_inat_observations']);
+
+Route::get('/pull_taxa/{slug}', [TaxaController::class, 'pull']);
 
 
 

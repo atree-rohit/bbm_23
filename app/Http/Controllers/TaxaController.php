@@ -62,4 +62,17 @@ class TaxaController extends Controller
     {
         //
     }
+
+    public function pull($taxa_id){
+        $url = "https://www.inaturalist.org/taxa/$taxa_id.json";
+        $data = json_decode(file_get_contents($url));
+        $taxa = new Taxa();
+        $taxa->id = $data->id;
+        $taxa->name = $data->name;
+        $taxa->common_name = $data->common_name->name ?? null;
+        $taxa->rank = $data->rank;
+        $taxa->ancestry = $data->ancestry;
+        $taxa->save();
+        return response()->json($taxa);
+    }
 }
