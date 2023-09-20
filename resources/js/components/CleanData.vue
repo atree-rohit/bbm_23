@@ -193,7 +193,6 @@ const sortCol = (col) => {
 }
 
 const rowClick = (row) => {
-    console.log(row)
     modal_observation_data.value = {
         ...row,
         portal: selected_portal.value
