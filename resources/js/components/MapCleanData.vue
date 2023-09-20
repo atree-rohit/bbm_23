@@ -281,6 +281,7 @@ export default defineComponent({
 			if(country != undefined){
 				payload.country = country
 				this.$emit('polygon-clicked', payload)
+				this.showMap = false
 			} 
 			let op = []
 			if(state){
@@ -295,6 +296,7 @@ export default defineComponent({
 				this.$emit('polygon-clicked', payload)
 				op = op.join(" ")
 				navigator.clipboard.writeText(op)
+				this.showMap = false
 			} 
 		},
 
