@@ -62,12 +62,10 @@ export default {
     watch:{
         value(newVal, oldVal){
             this.searchText = newVal
-            console.log(newVal, oldVal, newVal.length - oldVal.length, this.showSuggestions)
+            // console.log(newVal, oldVal, newVal.length - oldVal.length, this.showSuggestions)
             if(oldVal.length == 0){
                 this.handleInput()
-            } else {
-                console.log(newVal, oldVal, newVal.length - oldVal.length)
-            }
+            } 
         }
     },
     methods: {
