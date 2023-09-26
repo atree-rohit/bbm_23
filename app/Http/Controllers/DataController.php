@@ -825,9 +825,10 @@ class DataController extends Controller
         $matching_updated = 0;
         if($observation->isDirty("district")){
             $matching_updated = $this->update_inat_matching_coords($observation);
+        } else {
+            $observation->save();
         }
         
-        $observation->save();
         return [$observation, $matching_updated];
     }
 
