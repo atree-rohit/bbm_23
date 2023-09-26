@@ -90,7 +90,7 @@
                 <button class="btn btn-sm btn-info" @click="page_no++"> &gt; </button>
             </div>
             <div>
-                Displaying: {{sorted_data.length}} of {{total_records}}
+                Displaying: {{ sorted_data.length }} of {{ total_records }}
             </div>
         </div>
     </div>
@@ -172,6 +172,7 @@ watch(pull_options, (newVal, oldVal) => {
         store.dispatch('clean_data/getData', pull_options.value)
     }
 })
+
 
 watch(input_page_no, (newVal, oldVal) => {
     if (newVal !== oldVal) {
@@ -268,7 +269,8 @@ const rowClick = (row) => {
 
 const closeModal = () => {
     modal_observation_data.value = {}
-    show_modal.value = false    
+    show_modal.value = false
+    store.dispatch('clean_data/getData', pull_options.value)
 }
 
 const rowClass = (row) =>  {
