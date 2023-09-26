@@ -58,7 +58,8 @@ export default {
                     commit("SET_DATA", response.data.data)
                 }
             }
-        }, async updateData({commit}, data){
+        },
+        async updateData({commit}, data){
             const { classes, ...data_without_classes } = data
             let response = await axios.post("/api/data/portal_observations/update", data_without_classes)
             if(response){
@@ -68,6 +69,7 @@ export default {
                     updated_data = updated_data[0]
                 }
                 commit("UPDATE_DATA", updated_data)
+                return true
             }
         }
     }

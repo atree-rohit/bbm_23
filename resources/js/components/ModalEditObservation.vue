@@ -156,9 +156,11 @@ const fieldClass = (field) => {
 
 const dateClass = (date) =>  (!date || /^(202[0-3])-09-\d{2}$/.test(date))
 
-const submit = () => {
-    store.dispatch('clean_data/updateData', form_values.value)
-    closeModal()
+const submit = async () => {
+    const stored = await store.dispatch('clean_data/updateData', form_values.value)
+    if(stored){
+        closeModal()
+    }
 }
 
 
