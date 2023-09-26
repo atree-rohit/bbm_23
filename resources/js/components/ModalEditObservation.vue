@@ -29,55 +29,64 @@
     background-color: green!important;
     border-color: green!important;
 }
+
+.observation-modal{
+    width: auto;
+    max-width: 90vw;
+}
+.btn-close{
+    /* background: rgba(200,0,0,.5); */
+    padding: 1rem;
+}
 </style>
 <template>
     <div v-if="show" class="modal fade show" aria-modal="true" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg observation-modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLiveLabel">Observation Details [{{ data.portal }} # {{ data.id }}]</h3>
                     <button type="button" class="btn-close" @click="closeModal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-container">
-                        <div
-                            class="form-floating"
-                            v-for="field in fields"
-                            :key="field"
-                        >
-                            <input class="form-control" v-model="form_values[field]" :class="fieldClass(field)">
-                            <label for="exampleInputEmail1" class="form-label">{{capitalizeWords(field)}}</label>
+                    <div class="d-flex">
+                        <div class="left">
+                            <div class="form-container">
+                                <div
+                                    class="form-floating"
+                                    v-for="field in fields"
+                                    :key="field"
+                                >
+                                    <input class="form-control" v-model="form_values[field]" :class="fieldClass(field)">
+                                    <label for="exampleInputEmail1" class="form-label">{{capitalizeWords(field)}}</label>
+                                </div>
+                            </div>
+        
+        
+        
+                            <div class="taxa-lookup-container p-2 row mx-0" style="background-color: #aaa;">
+                                <div class="col">
+                                    <auto-complete-taxon
+                                        :suggestions="allTaxa"
+                                        :value="selectedTaxa"
+                                        @selected="scientificNameSelected"
+                                    />
+                                </div>
+                                <div class="col-2">
+                                    <button class="btn btn-success px-2 ms-3" @click="copySpecies">📋</button>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" v-model="form_values.validated">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">validated</label>
+                            </div>
                         </div>
-                    </div>
-
-
-
-                    <div class="taxa-lookup-container p-2 row mx-0" style="background-color: #aaa;">
-                        <div class="col">
-                            <auto-complete-taxon
-                                :suggestions="allTaxa"
-                                :value="selectedTaxa"
-                                @selected="scientificNameSelected"
+                        <div class="right">
+                            <MapCleanData
+                                :data="map_data"
+                                :modes="['countries', 'states', 'districts']"
+                                @polygon-clicked="polygonClicked"
                             />
                         </div>
-                        <div class="col-1">
-                            <button class="btn btn-success px-2 ms-3" @click="copySpecies">📋</button>
-                        </div>
-                    </div>
-
-
-                    {{ selectedTaxa }}
-
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" v-model="form_values.validated">
-                        <label class="form-check-label" for="flexSwitchCheckChecked">validated</label>
-                    </div>
-                    <div>
-                        <MapCleanData
-                            :data="map_data"
-                            :modes="['countries', 'states', 'districts']"
-                            @polygon-clicked="polygonClicked"
-                        />
                     </div>
                 </div>
                 <div class="modal-footer">
