@@ -821,8 +821,13 @@ class DataController extends Controller
         $observation->longitude = $data["longitude"];
         $observation->taxa_id = $data["taxa_id"];
         $observation->validated = $data["validated"];
+
+        if($observation->isDirty("district")){
+            $matching_updated = $this->update_inat_matching_coords($observation);
+        }
+        
         $observation->save();
-        return $observation;
+        return [$observation, $matching_updated];
     }
 
     public function update_ibp_observation($data){
@@ -859,5 +864,22 @@ class DataController extends Controller
         $observation->validated = $data["validated"];
         $observation->save();
         return $observation;
+    }
+
+    private function update_inat_matching_coords($observation){
+        $data = INat::where("latitude", "=", $observation->latitude)
+            ->where("longitude", "=", $observation->longitude)
+            ->where("observed_on", "<>", null)
+            ->where("taxa_id", "<>", null)
+            ->where("validated", "=", null)
+            ->get();
+        foreach($data as $d){
+            $d->country = $observation->country;
+            $d->state = $observation->state;
+            $d->district = $observation->district;
+            $d->validated = true;
+            $d->save();
+        }
+        return count($data);
     }
 }
