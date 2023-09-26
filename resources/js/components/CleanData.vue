@@ -2,10 +2,37 @@
 
     .page-info{
         display: flex;
-        justify-content: center;
+        justify-content: space-around;
         align-items: center;
         gap: 1rem;
-        padding: 0.5rem;        
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem;  
+        transition: all 500ms;
+    }
+
+    .page-info input, 
+    .page-info select{
+        text-align: center;
+        padding: 0.25rem 1rem;
+        border-radius: 1rem;
+        border: 0px dotted transparent;
+    }
+
+    .page-info > *{
+        transition: all 500ms;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    .page-btns{
+        padding: .33rem 1rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 1.25rem;
     }
     .table-container{
         max-width: 100%;
@@ -47,10 +74,24 @@
             />
         </div>
         <div class="page-info">
-            <button class="btn btn-sm btn-info" @click="page_no--"> &lt; </button>
-            <span>Page {{page_no}} of {{Math.ceil(total_records / per_page)}}</span>
-            <button class="btn btn-sm btn-info" @click="page_no++"> &gt; </button>
-            Total Records: {{total_records}}
+            <div>
+                Per Page:
+                <select v-model="per_page">
+                    <option v-for="n in [100, 500, 1000, 5000, 10000]" :key="n" :value="n" v-text="n"></option>
+                </select>
+            </div>
+            <div>
+                Page No:
+                <input type="number" v-model="input_page_no" min="1" :max="Math.ceil(total_records / per_page)" />
+            </div>
+            <div class="page-btns">
+                <button class="btn btn-sm btn-info" @click="page_no--"> &lt; </button>
+                <span>Page {{page_no}} of {{Math.ceil(total_records / per_page)}}</span>
+                <button class="btn btn-sm btn-info" @click="page_no++"> &gt; </button>
+            </div>
+            <div>
+                Displaying: {{sorted_data.length}} of {{total_records}}
+            </div>
         </div>
     </div>
     <div class="table-container border border-danger" v-if="selected_portal">
@@ -106,6 +147,7 @@ const sort_col = ref("id")
 const sort_dir = ref("asc")
 const per_page = ref(1000)
 const page_no = ref(1)
+const input_page_no = ref(1)
 
 const show_modal = ref(false)
 const modal_observation_data = ref({})
@@ -128,6 +170,12 @@ const pull_options = computed(() => {
 watch(pull_options, (newVal, oldVal) => {
     if (newVal !== oldVal) {
         store.dispatch('clean_data/getData', pull_options.value)
+    }
+})
+
+watch(input_page_no, (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+        page_no.value = input_page_no.value
     }
 })
 
