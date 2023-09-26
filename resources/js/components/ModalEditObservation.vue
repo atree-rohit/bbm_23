@@ -89,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-flex justify-content-center">
                     <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
                     <button type="button" class="btn btn-success" @click="submit">Save changes</button>
                 </div>
