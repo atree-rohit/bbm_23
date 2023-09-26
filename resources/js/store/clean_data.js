@@ -62,8 +62,12 @@ export default {
             const { classes, ...data_without_classes } = data
             let response = await axios.post("/api/data/portal_observations/update", data_without_classes)
             if(response){
-                console.log(response.data)
-                commit("UPDATE_DATA", response.data)
+                let updated_data = response.data
+                if(data.portal == 'inat'){
+                    console.log(updated_data[1])
+                    updated_data = updated_data[0]
+                }
+                commit("UPDATE_DATA", updated_data)
             }
         }
     }
