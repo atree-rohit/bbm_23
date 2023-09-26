@@ -822,6 +822,7 @@ class DataController extends Controller
         $observation->taxa_id = $data["taxa_id"];
         $observation->validated = $data["validated"];
 
+        $matching_updated = 0;
         if($observation->isDirty("district")){
             $matching_updated = $this->update_inat_matching_coords($observation);
         }
