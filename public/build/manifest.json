@@ -284,14 +284,14 @@
     "src": "resources/js/pages/resources.js"
   },
   "resources/js/pages/validate_forms.css": {
-    "file": "assets/validate_forms-1272cc37.css",
+    "file": "assets/validate_forms-9c5f0394.css",
     "src": "resources/js/pages/validate_forms.css"
   },
   "resources/js/pages/validate_forms.js": {
     "css": [
-      "assets/validate_forms-1272cc37.css"
+      "assets/validate_forms-9c5f0394.css"
     ],
-    "file": "assets/validate_forms-d6b4621c.js",
+    "file": "assets/validate_forms-a9445f00.js",
     "imports": [
       "__plugin-vue_export-helper-a6d37d24.js",
       "_ModalShowCountForm-657cb6e1.js",
