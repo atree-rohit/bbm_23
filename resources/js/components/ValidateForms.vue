@@ -112,12 +112,12 @@ export default{
         filtered_data(){
             let op = []
             this.all_data.forEach((d) => {
-                if(d.date.includes("2023-09")){
-                    op.push({
-                        ...d,
-                        no_of_species: d.species_list.length
-                    })
-                }
+                op.push({
+                    ...d,
+                    no_of_species: d.species_list.length
+                })
+                // if(d.date.includes("2023-")){
+                // }
             })
             if(this.selected_status != "all"){
                 op = op.filter((d) => d.status == this.selected_status)
