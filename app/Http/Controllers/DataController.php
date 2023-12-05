@@ -31,17 +31,13 @@ class DataController extends Controller
     public function observations()
     {
         ini_set('memory_limit', '256M');
-        $cache_data = false;
+        $cacheKey = 'observations_data';
+        $cacheDuration = now()->addHours(24);
+        $cache_data = Cache::get($cacheKey);
         if($cache_data){
-            $cacheKey = 'observations_data';
-            $cacheDuration = now()->addSeconds(3600);
-    
-            $cachedData = Cache::get($cacheKey);
-    
-            if ($cachedData) {
-                return response()->json($cachedData);
-            }
+            return response()->json($cache_data);
         }
+        
 
 
         $limit = -1;
@@ -70,7 +66,7 @@ class DataController extends Controller
             "districts" => $district_names,
         ];
 
-        if($cache_data){
+        if(!$cache_data){
             Cache::put($cacheKey, $data, $cacheDuration);
         }
         
