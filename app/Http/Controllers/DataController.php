@@ -28,6 +28,11 @@ class DataController extends Controller
         return view('pages.data');
     }
 
+    public function index_new()
+    {
+        return view('pages.data_new');
+    }
+
     public function observations()
     {
         ini_set('memory_limit', '256M');

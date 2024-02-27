@@ -1,15 +1,11 @@
 import axios from "axios"
 import * as d3 from "d3"
 
-import { saveData, getData } from "../utils/idb_geojson.js"    
-import { saveObservationData, getObservationData } from "../utils/idb_observations.js"    
-
 export default {
     namespaced: true,
     state: {
         headers: [],
         observations: {},
-        filtered_observations: [],
         users: [],
         taxa: [],
         districts: [],
@@ -19,16 +15,9 @@ export default {
             states: {},
             districts: {}
         },
-        filters:{
-            year: null,
-            portal: null,
-            state: null,
-            district: null,
-        },
-        map_data: {},
-        shouldPersist: false,
+        shouldPersist: true,
     },
-    mutations: {
+    mutations:{
         SET_LOADING(state, value) {
             if(value != null){
                 console.info("Loading:", value)
@@ -49,7 +38,7 @@ export default {
         },
         SET_OBSERVATIONS(state, value) {
             const place_names_map = new Map(state.geojson.districts.features.map((d) => [d.properties.district, d.properties.state]))
-            let updatedObservations = []
+            let updatedObservations = {}
             Object.entries(value).forEach(([portal, observations]) => {
                 updatedObservations[portal] = observations.map((d) => {
                     const district = state.districts[d[4]]
@@ -62,56 +51,12 @@ export default {
                     ]
                 })
             })
+            console.log(updatedObservations)
             state.observations = updatedObservations
-        },
-        SET_FILTERED_OBSERVATIONS(state){
-            let op = {}
-            if(state.filters.year){
-                Object.keys(state.observations).forEach((portal) => {
-                    op[portal] = state.observations[portal].filter((d) => {
-                        const dateParts = d[2].split("-");
-                        const yearInDate = dateParts[0];
-                        return yearInDate == state.filters.year;
-                    })
-                })
-            } else {
-                op = state.observations
-            }
-            console.log(op)
-            state.filtered_observations = op
         },
         SET_GEOJSON(state, value) {
             state.geojson = value
-            // console.log("Set_geojson", value)
         },
-        SET_MAP_DATA(state) {
-            const flatData = Object.values(state.filtered_observations).flat()
-            const mapData = flatData.reduce((acc, observation) => {
-                const stateName = observation[4]
-                const districtName = observation[3]
-                
-                if (!acc.states[stateName]) {
-                    acc.states[stateName] = 0
-                }
-                acc.states[stateName]++
-                
-                if (!acc.districts[districtName]) {
-                    acc.districts[districtName] = 0
-                }
-                acc.districts[districtName]++
-                
-                return acc
-            }, { states: {}, districts: {} })
-
-            state.map_data = {
-                states: Object.entries(mapData.states).map(([name, value]) => ({ name, value })),
-                districts: Object.entries(mapData.districts).map(([name, value]) => ({ name, value })),
-            }
-        },
-        SET_FILTER(state, data){
-            state.filters[data.field] = data.value
-        }
-
     },
     actions: {
         async getAllData({ commit, dispatch }) {
@@ -142,15 +87,9 @@ export default {
             commit('SET_LOADING', 'Setting Observations')
             await smallDelay()
             commit('SET_OBSERVATIONS', data.observations)
-
-            commit('SET_LOADING', 'Setting Filtered Observations')
-            await smallDelay()
-            commit('SET_FILTERED_OBSERVATIONS')
             
-            commit('SET_LOADING', 'Setting Map Data')
-            await smallDelay()
-            commit('SET_MAP_DATA')
             console.groupEnd()
+
             commit('SET_LOADING', null)
             await smallDelay()
         },
@@ -165,43 +104,14 @@ export default {
         },
         async getMaps({ commit }) {
             commit('SET_LOADING', 'Getting Map Data')
-            let data = await getData("geojson")
-            if(!data){
-                const response = await axios.get('/api/maps/geojson');
-                data = response.data;
-                console.log('getMaps', response)
-                saveData("geojson", data);
-            }
+            const response = await axios.get('/api/maps/geojson');
+            const data = response.data;
+            console.log('getMaps', response)
             commit('SET_GEOJSON', data)
         },
         setLoading({ commit }, value) {
             commit('SET_LOADING', value)
             // console.log("setLoading", value)
-        },
-        async setFilter({commit}, data){
-            console.group("Updating Map Data")
-            
-            commit('SET_LOADING', 'Setting Filter')
-            await smallDelay()
-            commit('SET_FILTER', data)
-
-            commit('SET_LOADING', 'Setting Filtered Observations')
-            await smallDelay()
-            commit('SET_FILTERED_OBSERVATIONS')
-            
-            commit('SET_LOADING', 'Setting Map Data')
-            await smallDelay()
-            commit('SET_MAP_DATA')
-
-            console.groupEnd()
-            commit('SET_LOADING', null)
-        },
-        async pullInat({ commit }) {
-            console.log("pullInat")
-            let response = await axios.get('/api/data/pull_inat');
-            if(response){
-                console.log(response)
-            }
         }
     }
 }
