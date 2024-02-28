@@ -22,6 +22,7 @@ use App\Http\Controllers\DataCleaningController;
 Route::get('/', [PageController::class, 'home']);
 Route::get('/data', [DataController::class, 'index']);
 Route::get('/data_new', [DataController::class, 'index_new']);
+Route::get('/json_for_new_data', [DataController::class, 'json_for_new_data']);
 Route::get('/data/import', [DataController::class, 'import']);
 Route::get('/data/clean', [DataCleaningController::class, 'clean']);
 Route::get('/about', [PageController::class, 'about']);

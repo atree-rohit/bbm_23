@@ -1,5 +1,6 @@
 import axios from "axios"
 import * as d3 from "d3"
+import all_species_json from "../json/species_data.json"
 
 export default {
     namespaced: true,
@@ -15,6 +16,7 @@ export default {
             states: {},
             districts: {}
         },
+        all_species: all_species_json,
         shouldPersist: true,
     },
     mutations:{

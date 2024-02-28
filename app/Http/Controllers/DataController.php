@@ -32,6 +32,87 @@ class DataController extends Controller
     {
         return view('pages.data_new');
     }
+    
+    public function json_for_new_data()
+    {
+        $species = Taxa::where("rank", "=","species")->with("count_observations","inat_observations","ibp_observations","ifb_observations")->get();
+        $all_species = [];
+        foreach($species as $s){
+            $observations = [];
+            foreach($s->count_observations as $o){
+                $observations[] = [
+                    "id" => $o->id,
+                    "taxa" => $o->taxa_id,
+                    "user" => $o->count_form->name,
+                    "date" => $this->fix_date($o->count_form->date_cleaned),
+                    "latitude" => (float) $o->count_form->latitude,
+                    "longitude" => (float) $o->count_form->longitude,
+                    "state" => $o->count_form->state,
+                    "district" => $o->count_form->district,
+                    "portal" => "counts"
+                ];
+            }
+            foreach($s->inat_observations as $o){
+                $observations[] = [
+                    "id" => $o->id,
+                    "taxa" => $o->taxa_id,
+                    "user" => $o->user,
+                    "date" => $this->fix_date($o->observed_on),
+                    "latitude" => (float) $o->latitude,
+                    "longitude" => (float) $o->longitude,
+                    "state" => $o->state,
+                    "district" => $o->district,
+                    "portal" => "inat"
+                ];
+            }
+            foreach($s->ibp_observations as $o){
+                $observations[] = [
+                    "id" => $o->id,
+                    "taxa" => $o->taxa_id,
+                    "user" => $o->user,
+                    "date" => $this->fix_date($o->observed_on),
+                    "latitude" => (float) $o->latitude,
+                    "longitude" => (float) $o->longitude,
+                    "state" => $o->state,
+                    "district" => $o->district,
+                    "portal" => "ibp"
+                ];
+            }
+            foreach($s->ifb_observations as $o){
+                $observations[] = [
+                    "id" => $o->id,
+                    "taxa" => $o->taxa_id,
+                    "user" => $o->user,
+                    "date" => $this->fix_date($o->observed_on),
+                    "latitude" => (float) $o->latitude,
+                    "longitude" => (float) $o->longitude,
+                    "state" => $o->state,
+                    "district" => $o->district,
+                    "portal" => "ifb"
+                ];
+            }
+            $all_species[] = [
+                "id" => $s->id,
+                "name" => $s->name,
+                "common_name" => $s->common_name,
+                "rank" => $s->rank,
+                "ancestry" => $s->ancestry,
+                "observations" => $observations
+            ];
+
+        }
+        file_put_contents(public_path("data/species_data.json"), json_encode($all_species));
+    }
+
+    public function fix_date($date)
+    {
+        $date_arr = explode("-", $date);
+        if((int) $date_arr[0] < 32 && (int) $date_arr[2] > 2000){
+            return $date;
+        } else {
+            return implode("-", array_reverse($date_arr));
+        }
+    }
 
     public function observations()
     {

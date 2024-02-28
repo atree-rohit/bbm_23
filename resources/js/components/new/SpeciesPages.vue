@@ -1,65 +1,36 @@
 <template>
-    <div class="container bg-info">
-        <h1 class="h1">Species Pages</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(value, key) in data">
-                    <td>{{ key }}</td>
-                    <td>{{ typeof value }}</td>
-                    <td>{{ getValue(value) }}</td>
-                </tr>
-            </tbody>
-        </table>
-        {{ portal_stats }}
+    <div class="container-fluid border border-danger rounded">
+        <h1 class="h1">Species Pages ( {{ all_species.length }} )</h1>
+        <div class="container-fluid" v-if="geojson_loaded">
+            <species-page
+                v-for="species in all_species.slice(0, 20)"
+                :key="species.id"
+                :data="species"
+            />
+        </div>
+
+        <!-- {{ portal_stats }} -->
     </div>
 </template>
 
 <script lang="js" setup>
-import {ref, computed, onMounted} from "vue"
+import {ref, computed, onMounted, watch} from "vue"
 import { useStore } from 'vuex'
-import * as d3 from 'd3'
+import SpeciesPage from "./SpeciesPage.vue"
 
-const store = useStore()
-const {headers, observations, users, taxa, districts} = store.state.species_pages
-
-onMounted(() => store.dispatch('species_pages/getAllData'))
-const data = computed(() => store.state.species_pages)
-const portal_stats = computed(() => {
-    const op = {}
-    if(data.value.observations){
-        Object.keys(data.value.observations).forEach((portal) => {
-            op[portal] = data.value.observations[portal].length
-        })
-    }
-    return op
+onMounted(() => {
+    store.dispatch("maps/getAllData");
+    store.dispatch("species_pages/getTaxa");
 })
-
-const getValue = (value) => {
-    const value_type = typeof value
-    let op = null
-    switch (value_type){
-        case'string':
-            op = value
-            break
-        case 'number':
-            op = value.toFixed(2)
-            break
-        case 'boolean':
-            op = value.toString()
-            break
-        case 'object':
-            if(value){
-                op = Object.keys(value).length
-            }
-            break
-    }
-    return op
-
-}
+const geojson_loaded = ref(false);
+const min_observations = 3
+const store = useStore()
+const all_species = computed(() => store.state.species_pages.all_species
+    .filter((s) => s.observations.length >= min_observations)
+    .sort((a,b) => b.observations.length - a.observations.length)
+)
+const geojsons = computed(() => store.state.maps.districts)
+watch(() => geojsons.value, (newVal) => {
+    geojson_loaded.value = true
+})
 </script>
