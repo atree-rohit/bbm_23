@@ -6,9 +6,9 @@
     display: grid;
     min-height: 10vh;
     max-height: 90vh;
-    max-width: 60vw;
+    /* max-width: 60vw; */
     margin: 1rem 0;
-    grid-template-columns: 0.4fr 1fr 0.75fr;
+    grid-template-columns: 0.7fr 0.3fr 1fr;
     grid-template-rows: 0.1fr 0.9fr 2fr;
     padding: 0.5rem 1.5rem;
     gap: 0.5rem;
@@ -37,13 +37,6 @@
     grid-area: species-photo;
     overflow: hidden;
     text-align: center;
-}
-
-.species-photo img {
-    border-radius: 1.5rem;
-    object-fit: scale-down;
-    max-height: 100%;
-    max-width: 100%;
 }
 
 .species-map {
@@ -105,11 +98,13 @@
 
 <template>
     <div class="species-container">
+        <!-- {{ Object.keys(data) }} -->
         <div class="species-name">{{ species_name }}</div>
         <div class="species-photo">
-            <img :src="data?.image" />
-            <!-- {{ Object.keys(data) }} -->
-            <span v-if="!data.image">{{ data }}</span>
+            <species-photo
+                :species_data="data"
+                @selectedImage="selectedImage"
+            />
         </div>
         <div class="species-map">
             <d3-map :data="data.observations" />
@@ -150,6 +145,7 @@
 import {ref, computed, onMounted} from "vue";
 import * as d3 from "d3";
 
+import SpeciesPhoto from "./SpeciesPhoto.vue";
 import D3Map from "./D3Map.vue";
 import Hierarchy from "./Hierarchy.vue";
 
@@ -161,6 +157,8 @@ const props = defineProps({
         required: true
     }
 })
+
+const emit = defineEmits(["selectedImage"])
 
 onMounted(() => {
     species_name.value = props.data.name
@@ -182,4 +180,13 @@ onMounted(() => {
         portals: portals
     }
 })
+
+const selectedImage = (image) => {
+    let op = {
+        species_id: props.data.id,
+        ...image
+    }
+
+    emit("selectedImage", op)
+}
 </script>

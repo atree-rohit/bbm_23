@@ -1,6 +1,9 @@
 import axios from "axios"
 import * as d3 from "d3"
-import all_species_json from "../json/species_data.json"
+import species_data from "../json/species_data.json"
+import species_images from "../json/species_images.json"
+
+const MIN_SPECIES = 5
 
 export default {
     namespaced: true,
@@ -16,8 +19,29 @@ export default {
             states: {},
             districts: {}
         },
-        all_species: all_species_json,
+        species_data: species_data,
+        species_images: species_images,
         shouldPersist: true,
+    },
+    getters: {
+        all_species(state){
+            return state.species_data
+                .filter((s) => s.observations.length >= MIN_SPECIES)
+                .map((s) => {
+                    const image = state.species_images.filter((i) => i.species_id == s.id)
+                    let url = ""
+                    if(image.length){
+                        url = image[0].url
+                    }
+                    return {
+                        ...s,
+                        url
+                    }
+                })
+                .sort((a,b) => b.observations.length - a.observations.length)
+
+        }
+
     },
     mutations:{
         SET_LOADING(state, value) {

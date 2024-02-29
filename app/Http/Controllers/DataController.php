@@ -62,7 +62,8 @@ class DataController extends Controller
                     "longitude" => (float) $o->longitude,
                     "state" => $o->state,
                     "district" => $o->district,
-                    "portal" => "inat"
+                    "portal" => "inat",
+                    "url" => $o->img_url
                 ];
             }
             foreach($s->ibp_observations as $o){
@@ -75,7 +76,8 @@ class DataController extends Controller
                     "longitude" => (float) $o->longitude,
                     "state" => $o->state,
                     "district" => $o->district,
-                    "portal" => "ibp"
+                    "portal" => "ibp",
+                    "url" => $o->img_url
                 ];
             }
             foreach($s->ifb_observations as $o){
