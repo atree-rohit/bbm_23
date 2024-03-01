@@ -1,6 +1,6 @@
 <template>
-    <div class="container-fluid border border-danger rounded">
-        <h1 class="h1">Species Pages ( {{ all_species?.length }} )</h1>
+    <div class="container-fluid rounded">
+        <!-- <h1 class="h1">Species Pages ( {{ all_species?.length }} )</h1>
         <div class="footer-nav mx-auto d-flex gap-1">
             <button
                 class="btn"
@@ -38,7 +38,7 @@
         </div>
         <div class="bg-secondary text-light">
             {{ selected_images }}
-        </div>
+        </div> -->
         <div class="container-fluid" v-if="geojson_loaded">
             <species-page
                 v-for="species in all_species.slice(
@@ -90,7 +90,7 @@ const selectedImage = (image) => {
 }
 
 const currentPage = ref(1);
-const perPage = ref(10);
+const perPage = ref(50);
 const totalPages = computed(() =>  Math.ceil(all_species.value.length / perPage.value));
 const pageStart = computed(() => perPage.value * (currentPage.value - 1));
 </script>

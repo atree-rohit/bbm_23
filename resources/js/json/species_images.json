@@ -2485,9 +2485,11 @@
     },
     {
         "species_id": 356143,
-        "id": 95421104,
-        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/158410120/large.jpg",
-        "portal": "inat"
+        "id": 59556748,
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/95169369/large.jpg",
+        "portal": "inat",
+        "transform": "scale(1.5)",
+        "translate": "-0% -15%"
     },
     {
         "species_id": 154515,
@@ -2553,13 +2555,17 @@
         "species_id": 51583,
         "id": 184493147,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/322055262/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(1.25)",
+        "translate": "0 2.5%"
     },
     {
         "species_id": 70174,
         "id": 185598567,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/324166890/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(1.25)",
+        "translate": "0 2.5%"
     },
     {
         "species_id": 130767,
@@ -2583,31 +2589,39 @@
         "species_id": 51614,
         "id": 58583983,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/93543222/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(2)",
+        "translate": "0 -10%"
     },
     {
         "species_id": 51588,
         "id": 58937277,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/94130448/large.jpg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(1.15)"
     },
     {
         "species_id": 67835,
         "id": 58439076,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/93299864/large.jpg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(1.2)",
+        "translate": "0 -5%"
     },
     {
         "species_id": 51785,
         "id": 58416351,
         "url": "https://static.inaturalist.org/photos/93263718/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(2)"
     },
     {
         "species_id": 125570,
         "id": 58710381,
         "url": "https://static.inaturalist.org/photos/93753566/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(1.75)",
+        "translate": "-10% -5%"
     },
     {
         "species_id": 51567,
@@ -2643,7 +2657,9 @@
         "species_id": 320738,
         "id": 58439070,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/93299793/large.jpg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(2)",
+        "translate": "00% -20%"
     },
     {
         "species_id": 180386,
@@ -2661,7 +2677,9 @@
         "species_id": 52100,
         "id": 59855883,
         "url": "https://static.inaturalist.org/photos/95672648/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(1.75)",
+        "translate": "-10% -5%"
     },
     {
         "species_id": 146923,
@@ -2683,9 +2701,11 @@
     },
     {
         "species_id": 146661,
-        "id": 95119423,
-        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/157874917/large.jpg",
-        "portal": "inat"
+        "id": 59325896,
+        "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/94784200/large.jpg",
+        "portal": "inat",
+        "transform": "scale(2.0)",
+        "translate": "-10% 15%"
     },
     {
         "species_id": 125543,
@@ -2829,7 +2849,8 @@
         "species_id": 125537,
         "id": 59759329,
         "url": "https://inaturalist-open-data.s3.amazonaws.com/photos/95508677/large.jpeg",
-        "portal": "inat"
+        "portal": "inat",
+        "transform": "scale(2.0)"
     },
     {
         "species_id": 125579,

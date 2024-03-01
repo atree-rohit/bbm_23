@@ -28,10 +28,10 @@ export default {
             return state.species_data
                 .filter((s) => s.observations.length >= MIN_SPECIES)
                 .map((s) => {
-                    const image = state.species_images.filter((i) => i.species_id == s.id)
+                    const image = state.species_images.find((i) => i.species_id == s.id)
                     let url = ""
-                    if(image.length){
-                        url = image[0].url
+                    if(image){
+                        url = image.url
                     }
                     return {
                         ...s,

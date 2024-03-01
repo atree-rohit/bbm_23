@@ -1,6 +1,6 @@
 <style scoped>
 .img-container {
-    border: 2px solid teal;
+    /* border: 2px solid teal; */
     overflow: hidden;
     text-align: center;
     height: 100%;
@@ -9,8 +9,8 @@
     align-items: center;
 }
 .img-container img {
-    border-radius: 1.5rem;
-    object-fit: scale-down;
+    /* border-radius: 1.5rem; */
+    /* object-fit: scale-down; */
     /* max-height: 30vh; */
     max-height: 100%;
     max-width: 100%;
@@ -20,7 +20,7 @@
 <template>
     <div class="img-container">
         <template v-if="url">
-            <img :src="url" />
+            <img :src="url" :style="imageStyle" />
             <!-- <cropper :image="species_data" /> -->
         </template>
         <modal-select-species-photo
@@ -34,10 +34,12 @@
 
 <script lang="js" setup>
 import { ref, computed } from "vue";
+import { useStore } from 'vuex'
 import * as d3 from "d3";
 
+
 import ModalSelectSpeciesPhoto from "./ModalSelectSpeciesPhoto.vue";
-import Cropper from "./Cropper.vue";
+
 
 const props = defineProps({
     species_data: {
@@ -45,6 +47,19 @@ const props = defineProps({
         required: true
     }
 })
+const store = useStore()
+const species_image = computed(() => store.state.species_pages.species_images.find((i) => i.url == url.value))
+const imageStyle = computed(() => {
+    let op = ""
+    const {transform, translate} = species_image.value
+    if(transform){
+        op += `transform: ${transform};`
+    }
+    if(translate){
+        op += `translate: ${translate};`
+    }
+    return op
+});
 
 const INAT_IMAGE_SIZE = "medium";
 

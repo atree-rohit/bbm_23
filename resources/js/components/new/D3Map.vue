@@ -42,7 +42,7 @@
     overflow: scroll;
 }
 .map-container {
-    background-color: hsl(250, 50%, 20%);
+    background-color: hsl(225, 25%, 40%);
     display: flex;
     justify-content: center;
 }

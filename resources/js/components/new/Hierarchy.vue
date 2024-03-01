@@ -1,14 +1,20 @@
 <style>
 .hierarchy-table-container {
-    --clr-grey: rgb(150, 150, 200);
-    padding: 0.15rem;
+    --clr-grey: rgb(201, 201, 245);
+    /* padding: 0.15rem; */
+    height: 100%;
+    display: flex;
+    border-radius: 1rem;
+    border: 2px solid var(--clr-grey);
+    overflow: hidden;
 }
 .hierarchy-table {
-    width: 20vw;
-    /* border: 4px solid black; */
-    border-radius: 1rem;
+    width: 17.5vw;
+
+    /* border-radius: 1rem; */
 }
 .hierarchy-table tbody {
+    border-radius: 5rem;
     font-size: 0.9rem;
 }
 
