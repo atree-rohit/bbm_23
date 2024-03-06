@@ -48,7 +48,7 @@ const props = defineProps({
     }
 })
 const store = useStore()
-const species_image = computed(() => store.state.species_pages.species_images.find((i) => i.url == url.value))
+const species_image = computed(() => store.state.new_data.species_images.find((i) => i.url == url.value))
 const imageStyle = computed(() => {
     let op = ""
     const {transform, translate} = species_image.value

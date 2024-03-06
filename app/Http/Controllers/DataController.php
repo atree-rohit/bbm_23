@@ -106,6 +106,137 @@ class DataController extends Controller
         file_put_contents(public_path("data/species_data.json"), json_encode($all_species));
     }
 
+    public function json_for_states_data()
+    {
+        $all_states = [];
+        $counts = CountForm::where("date_cleaned", "like", "%-09-2020%")
+            ->orWhere("date_cleaned", "like", "%-09-2021%")
+            ->orWhere("date_cleaned", "like", "%-09-2022%")
+            ->orWhere("date_cleaned", "like", "%-09-2023%")
+            ->with("species_list")
+            ->get()
+            ->groupBy("state");
+        foreach($counts as $state => $state_counts){
+            if(!isset($all_states[$state])){
+                $all_states[$state] = [];
+            }
+            $districts = $state_counts->groupBy("district");
+            foreach($districts as $district => $district_counts){
+                if(!isset($all_states[$state][$district])){
+                    $all_states[$state][$district] = [];
+                }
+                
+                foreach($district_counts as $count){
+                    foreach($count->species_list as $species){
+                        $all_states[$state][$district][] = [
+                            "id" => $count->id,
+                            "latitude" => (float) $count->latitude,
+                            "longitude" => (float) $count->longitude,
+                            "user" => $count->name,
+                            "date" => $this->fix_date($count->date_cleaned),
+                            "portal" => "counts",
+                            "taxa" => $species->taxa_id,
+                            "individuals" => (int) $species->individuals,
+                        ];
+                    }
+                }
+            }
+        }
+        
+        $inat = INat::where("observed_on", "like", "%2020-09%")
+            ->orWhere("observed_on", "like", "%2021-09%")
+            ->orWhere("observed_on", "like", "%2022-09%")
+            ->orWhere("observed_on", "like", "%2023-09%")
+            ->where("country", "like", "India")
+            ->get()
+            ->groupBy("state");
+        foreach($inat as $state => $state_observations){
+            if(!isset($all_states[$state])){
+                $all_states[$state] = [];
+            }
+            $districts = $state_observations->groupBy("district");
+            foreach($districts as $district => $district_observations){
+                if(!isset($all_states[$state][$district])){
+                    $all_states[$state][$district] = [];
+                }
+                foreach($district_observations as $observation){
+                    $all_states[$state][$district][] = [
+                        "id" => $observation->id,
+                        "latitude" => (float) $observation->latitude,
+                        "longitude" => (float) $observation->longitude,
+                        "user" => $observation->user_id,
+                        "date" => $this->fix_date($observation->observed_on),
+                        "portal" => "inat",
+                        "taxa" => $observation->taxa_id,
+                        "url" => $observation->img_url
+                    ];
+                }
+            }
+        }
+        $ibp = IBP::where("observed_on", "like", "%2020-09%")
+            ->orWhere("observed_on", "like", "%2021-09%")
+            ->orWhere("observed_on", "like", "%2022-09%")
+            ->orWhere("observed_on", "like", "%2023-09%")
+            ->get()
+            ->groupBy("state");
+        foreach($ibp as $state => $state_observations){
+            if(!isset($all_states[$state])){
+                $all_states[$state] = [];
+            }
+            $districts = $state_observations->groupBy("district");
+            foreach($districts as $district => $district_observations){
+                if(!isset($all_states[$state][$district])){
+                    $all_states[$state][$district] = [];
+                }
+                foreach($district_observations as $observation){
+                    $all_states[$state][$district][] = [
+                        "id" => $observation->id,
+                        "latitude" => (float) $observation->latitude,
+                        "longitude" => (float) $observation->longitude,
+                        "user" => $observation->user,
+                        "date" => $this->fix_date($observation->observed_on),
+                        "portal" => "ibp",
+                        "taxa" => $observation->taxa_id,
+                        "url" => $observation->img_url
+                    ];
+                }
+            }
+        }
+
+        $ifb = ifb::where("observed_on", "like", "%2020-09%")
+            ->orWhere("observed_on", "like", "%2021-09%")
+            ->orWhere("observed_on", "like", "%2022-09%")
+            ->orWhere("observed_on", "like", "%2023-09%")
+            ->get()
+            ->groupBy("state");
+        foreach($ifb as $state => $state_observations){
+            if(!isset($all_states[$state])){
+                $all_states[$state] = [];
+            }
+            $districts = $state_observations->groupBy("district");
+            foreach($districts as $district => $district_observations){
+                if(!isset($all_states[$state][$district])){
+                    $all_states[$state][$district] = [];
+                }
+                foreach($district_observations as $observation){
+                    $all_states[$state][$district][] = [
+                        "id" => $observation->id,
+                        "latitude" => (float) $observation->latitude,
+                        "longitude" => (float) $observation->longitude,
+                        "user" => $observation->user,
+                        "date" => $this->fix_date($observation->observed_on),
+                        "portal" => "ifb",
+                        "taxa" => $observation->taxa_id,
+                        "url" => $observation->img_url
+                    ];
+                }
+            }
+        }
+
+        
+        file_put_contents(public_path("data/states_data.json"), json_encode($all_states));
+    }
+
     public function fix_date($date)
     {
         $date_arr = explode("-", $date);

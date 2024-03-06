@@ -13,7 +13,7 @@ import data from './data'
 import manage_users from './manage_users'
 import logs from './logs'
 import count_forms from './count_forms'
-import species_pages from './species_pages'
+import new_data from './new_data'
 
 const store = createStore({
     plugins: [
@@ -35,7 +35,7 @@ const store = createStore({
         press_links,
         resources,
         testimonials,
-        species_pages
+        new_data
     }
 })
 

@@ -1,11 +1,11 @@
 @extends('layouts.blank')
 
-@section('title', 'Species Pages')
+@section('title', 'Data')
 
 @section('content')
-    <species-pages />
+    <new-data />
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/species_pages.js')
+    @vite('resources/js/pages/new_data.js')
 @endpush

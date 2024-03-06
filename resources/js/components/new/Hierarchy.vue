@@ -60,7 +60,7 @@ const props = defineProps({
 
 const store = useStore();
 
-const taxa = computed(() => store.state.species_pages.taxa)
+const taxa = computed(() => store.state.new_data.taxa)
 const hierarchy = computed(() => {
     let op = []
     const ancestry = props.data.ancestry.split("/")
