@@ -9,6 +9,52 @@ use Illuminate\Http\Request;
 
 class CountFormController extends Controller
 {
+    public function submit_form_google(Request $request)
+    {
+        $coordinates = [$request->latitude, $request->longitude];
+        $admin = $this->get_district($coordinates);
+
+        $form = new CountForm();
+        $form->name = $request->name;
+        $form->affiliation = $request->affiliation;
+        $form->email = $request->email;
+        $form->team_members = $request->team_members;
+        $form->location = $request->place_name;
+        $form->country = $admin["country"] ?? null;
+        $form->state = $admin["state"] ?? null;
+        $form->district = $admin["district"] ?? null;
+        $form->coordinates = implode(",", $coordinates);
+        $form->latitude = $request->latitude;
+        $form->longitude = $request->longitude;
+        $form->date = $request->date;
+        $form->start_time = $request->start_time;
+        $form->end_time = $request->end_time;
+        $form->altitude = $request->altitude;
+        $form->distance = $request->distance;
+        $form->weather = $request->weather;
+        $form->comments = $request->notes;
+        $form->status = 'pending';
+        $form->validated = false;
+        $form->open_access = $request->open_access;
+        $form->save();
+
+        foreach($request->list as $k=>$sl){
+            $species = new CountSpecies();
+            $species->no = $k + 1;
+            $species->common_name = $sl["common_name"];
+            $species->scientific_name = $sl["scientific_name"];
+            $species->individuals = $sl["individuals"];
+            $species->remarks = $sl["remarks"];
+            $species->status = 'pending';
+            $species->validated = false;
+            $species->count_form_id = $form->id;
+            $species->save();
+        }
+        
+        return response()->json($form->toArray(), 200);
+
+    }
+
     public function submit_form(Request $request)
     {
         $coordinates = explode(',', $request->coordinates);
@@ -62,7 +108,8 @@ class CountFormController extends Controller
     {
         $match = [
             'district' => '',
-            'state' => ''
+            'state' => '',
+            'country' => ''
         ];
         if(!is_array($coordinates) || count($coordinates) != 2){
             return $match;            
@@ -73,6 +120,8 @@ class CountFormController extends Controller
                 if($this->pointInPolygon($coordinates[1], $coordinates[0], $arr)){
                     $match['district'] = $district->properties->district;
                     $match['state'] = $district->properties->state;
+                    $match['country'] = "India";
+
                     break;
                 }
             }

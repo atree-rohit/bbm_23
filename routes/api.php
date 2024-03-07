@@ -81,3 +81,4 @@ Route::delete('/count_forms/delete_form', [CountFormController::class, 'delete_f
 Route::get('/get_district/{slug}', [CountFormController::class, 'get_district']);
 
 Route::post('/butterfly-counts/submit-form', [CountFormController::class, 'submit_form']);
+Route::post('/bbm-google/submit-form', [CountFormController::class, 'submit_form_google']);
