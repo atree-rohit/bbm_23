@@ -50,6 +50,25 @@ class CountFormController extends Controller
             $species->count_form_id = $form->id;
             $species->save();
         }
+
+        $validated_flag = true;
+        forEach($form->species_list as $species){
+            $taxa = Taxa::where("name", $species->scientific_name)->get();
+            if($taxa->count() == 1){
+                $species->scientific_name_cleaned = $taxa->first()->name;
+                $species->taxa_id = $taxa->first()->id;
+                $species->status = 'approved';
+                $species->validated = true;
+                $species->save();
+            } else {
+                $validated_flag = false;
+            }
+        }
+        if($validated_flag){
+            $form->status = 'approved';
+            $form->validated = true;
+            $form->save();
+        }
         
         return response()->json($form->toArray(), 200);
 
