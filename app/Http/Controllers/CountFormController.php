@@ -7,8 +7,28 @@ use App\Models\CountForm;
 use App\Models\CountSpecies;
 use Illuminate\Http\Request;
 
+use App\Exports\ExcelExport;
+use App\Exports\AllFormsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class CountFormController extends Controller
 {
+
+    public function download_forms($email)
+    {
+        $filename = "bbm_butterfly_count_" . now()->timezone("Asia/Kolkata")->format('YmdHis'). ".xlsx";
+        // dd((new AllFormsExport($email))->sheets()[0]->query()->get());
+        return Excel::download(new AllFormsExport($email), $filename);
+        
+    }
+
+    public function download_form($form_id)
+    {
+        $form = CountForm::find($form_id);
+        $filename = "bbm_butterfly_count_" . $form->id . "_" .str_replace("-", "", $form->date) . str_replace(":", "", $form->start_time) . ".xlsx";
+        return Excel::download(new ExcelExport($form_id), $filename);
+        
+    }
     public function submit_form_google(Request $request)
     {
         $coordinates = [$request->latitude, $request->longitude];
