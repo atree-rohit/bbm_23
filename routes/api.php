@@ -82,3 +82,7 @@ Route::get('/get_district/{slug}', [CountFormController::class, 'get_district'])
 
 Route::post('/butterfly-counts/submit-form', [CountFormController::class, 'submit_form']);
 Route::post('/bbm-google/submit-form', [CountFormController::class, 'submit_form_google']);
+
+
+Route::get('/download_form/{form_id}', [CountFormController::class, 'download_form']);
+Route::get('/download_forms/{email}', [CountFormController::class, 'download_forms']);

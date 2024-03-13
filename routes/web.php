@@ -44,3 +44,6 @@ Route::get('/clean-data', [PageController::class, 'clean_data']);
 // Route::get('/{any}', [PageController::class, 'home']);
 
 Route::get('/add-country', [DataCleaningController::class, 'add_country']);
+
+Route::get('/download_form/{form_id}', [CountFormController::class, 'download_form']);
+Route::get('/download_forms/{email}', [CountFormController::class, 'download_forms']);
