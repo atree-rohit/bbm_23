@@ -26,6 +26,7 @@ class CountFormController extends Controller
     {
         $form = CountForm::find($form_id);
         $filename = "bbm_butterfly_count_" . $form->id . "_" .str_replace("-", "", $form->date) . str_replace(":", "", $form->start_time) . ".xlsx";
+        $filename = str_replace("/", "", $filename);
         return Excel::download(new ExcelExport($form_id), $filename);
         
     }
