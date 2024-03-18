@@ -209,7 +209,7 @@ class CountFormController extends Controller
         // dd($forms->first()->toArray());
         echo "<table border=1>";
         foreach($forms as $form){
-            $properly_cleaned = implode("-", array_reverse(explode("-", $form->date_cleaned)));
+            // $properly_cleaned = implode("-", array_reverse(explode("-", $form->date_cleaned)));
             echo "<tr>";
             echo "<td>".$form->id."</td>";
             echo "<td>".$form->date."</td>";
@@ -218,8 +218,8 @@ class CountFormController extends Controller
             echo "<td>".$form->start_time."</td>";
             echo "<td>".$form->end_time."</td>";
             echo "</tr>";
-            $form->date = $properly_cleaned;
-            $form->save();
+            // $form->date = $properly_cleaned;
+            // $form->save();
         }
         echo "</table>";
     }
