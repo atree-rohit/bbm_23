@@ -204,11 +204,29 @@ class CountFormController extends Controller
         return ($intersections % 2) == 1;
     }
 
-
+    function clean_count_forms() {
+        $forms = CountForm::get();
+        // dd($forms->first()->toArray());
+        echo "<table border=1>";
+        foreach($forms as $form){
+            $properly_cleaned = implode("-", array_reverse(explode("-", $form->date_cleaned)));
+            echo "<tr>";
+            echo "<td>".$form->id."</td>";
+            echo "<td>".$form->date."</td>";
+            echo "<td>".$form->date_cleaned."</td>";
+            echo "<td>".$properly_cleaned."</td>";
+            echo "<td>".$form->start_time."</td>";
+            echo "<td>".$form->end_time."</td>";
+            echo "</tr>";
+            $form->date = $properly_cleaned;
+            $form->save();
+        }
+        echo "</table>";
+    }
 
     public function count_forms()
     {
-        $forms = CountForm::where("id", ">", 699)->with("species_list")->get();
+        $forms = CountForm::where("status", "approved")->with("species_list")->get();
         return $this->clean_object($forms);
     }
 
@@ -221,10 +239,20 @@ class CountFormController extends Controller
         return $obj->transform(function($i) {
             $i->species_list->transform(function($j) {
                 unset($j->count_form_id);
+                unset($j->no);
+                unset($j->img_url);
+                unset($j->validated);
                 unset($j->created_at);
                 unset($j->updated_at);
                 return $j;
             });
+            unset($i->phone);
+            unset($i->photo_link);
+            unset($i->date_cleaned);
+            unset($i->file);
+            unset($i->original_filename);
+            unset($i->status);
+            unset($i->validated);
             unset($i->created_at);
             unset($i->updated_at);
             return $i;
