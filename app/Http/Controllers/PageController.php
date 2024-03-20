@@ -10,7 +10,7 @@ class PageController extends Controller
 {
     public function home(Request $request)
     {
-        return view("welcome");
+        return view("home");
     }
     
     public function about()
