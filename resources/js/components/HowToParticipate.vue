@@ -340,6 +340,7 @@ export default defineComponent({
     },
     created() {
         store.dispatch("data/getMaps");
+        store.dispatch("district_coordinators/getAllData");
     },
     methods: {
         gotoLink(link) {

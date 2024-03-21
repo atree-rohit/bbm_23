@@ -414,4 +414,5 @@ watch(
     (nVal) => emits("mode-change", nVal)
 );
 watch([() => props.data, () => props.geojson], () => init());
+onMounted(() => init());
 </script>
