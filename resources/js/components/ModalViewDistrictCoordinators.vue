@@ -1,24 +1,33 @@
 <style scoped>
-    .modal{
-        display: block !important;
-    }
-    .modal textarea{
-        min-height: 10rem;
-    }
-    .btn-group> *{
-        margin: 0 1rem;
-    }
+.modal {
+    display: block !important;
+}
+.modal textarea {
+    min-height: 10rem;
+}
+.btn-group > * {
+    margin: 0 1rem;
+}
 </style>
 <template>
     <div v-if="show" class="modal fade show" aria-modal="true" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLiveLabel">View District Coordinator</h3>
-                    <button type="button" class="btn-close" @click="closeModal"></button>
+                    <h3 class="modal-title" id="exampleModalLiveLabel">
+                        View District Coordinators
+                    </h3>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        @click="closeModal"
+                    ></button>
                 </div>
                 <div class="modal-body">
-                    <div class="btn-group mx-auto d-flex justify-content-center" v-if="data.length >= 1">
+                    <div
+                        class="btn-group mx-auto d-flex justify-content-center"
+                        v-if="data.length >= 1"
+                    >
                         <div>
                             <button
                                 class="btn btn-outline-secondary"
@@ -28,11 +37,16 @@
                                 &lt;
                             </button>
                         </div>
-                        <div class="my-0 mx-5 h3">{{ current_district_coordinator_id + 1 }}</div>
+                        <div class="my-0 mx-5 h3">
+                            {{ current_district_coordinator_id + 1 }}
+                        </div>
                         <div>
                             <button
                                 class="btn btn-outline-secondary"
-                                v-if="current_district_coordinator_id < data.length - 1"
+                                v-if="
+                                    current_district_coordinator_id <
+                                    data.length - 1
+                                "
                                 @click="current_district_coordinator_id++"
                             >
                                 &gt;
@@ -46,14 +60,25 @@
                                 :key="question.name"
                             >
                                 <td>{{ question.label }}</td>
-                                <td>{{ data[current_district_coordinator_id][question.name] }}</td>
+                                <td>
+                                    {{
+                                        data[current_district_coordinator_id][
+                                            question.name
+                                        ]
+                                    }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
-                    <!-- <button type="button" class="btn btn-success" @click="submit">Save changes</button> -->
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        @click="closeModal"
+                    >
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -62,81 +87,83 @@
 </template>
 
 <script>
-
-
 export default {
-    name: 'ModalViewDistrictCoordinators',
+    name: "ModalViewDistrictCoordinators",
     props: {
-        show:{
+        show: {
             type: Boolean,
-            default: false
+            default: false,
         },
         data: {
             type: Array,
-            default: () => []
-        }
+            default: () => [],
+        },
     },
     emits: ["close"],
-    data(){
+    data() {
         return {
             form_questions: [
                 {
-                    type: 'text',
-                    label: 'Name',
-                    name: 'name',
-                    required: true
-                },{
-                    type: 'text',
-                    label: 'Organization / Designation',
-                    name: 'designation',
-                    required: false
-                },{
-                    type: 'select',
-                    label: 'State',
-                    name: 'state_name',
+                    type: "text",
+                    label: "Name",
+                    name: "name",
                     required: true,
-                    options: []
-                },{
-                    type: 'select',
-                    label: 'District',
-                    name: 'district_name',
+                },
+                {
+                    type: "text",
+                    label: "Organization / Designation",
+                    name: "designation",
+                    required: false,
+                },
+                {
+                    type: "select",
+                    label: "State",
+                    name: "state_name",
                     required: true,
-                    options: []
-                },{
-                    type: 'text',
-                    label: 'Coordinates (Latitude, Longitude)',
-                    name: 'coordinates',
-                    required: false
-                },{
-                    type: 'text',
-                    label: 'Email',
-                    name: 'email',
-                    required: false
-                }
+                    options: [],
+                },
+                {
+                    type: "select",
+                    label: "District",
+                    name: "district_name",
+                    required: true,
+                    options: [],
+                },
+                {
+                    type: "text",
+                    label: "Coordinates (Latitude, Longitude)",
+                    name: "coordinates",
+                    required: false,
+                },
+                {
+                    type: "text",
+                    label: "Email",
+                    name: "email",
+                    required: false,
+                },
             ],
             current_district_coordinator_id: 0,
-        }
+        };
     },
-    created(){
-    },
-    watch:{
-        show(newVal){
-            this.current_district_coordinator_id = 0
-            let body = document.querySelector('body')
-            if(newVal == true){
-                body.classList.add('modal-open')
+    created() {},
+    watch: {
+        show(newVal) {
+            this.current_district_coordinator_id = 0;
+            let body = document.querySelector("body");
+            if (newVal == true) {
+                body.classList.add("modal-open");
             } else {
-                body.classList.remove('modal-open')
+                body.classList.remove("modal-open");
             }
-        }
+        },
     },
-    methods:{
-        valueFromLabel(str){
-            return str.replace(/\s/g, '_').toLowerCase()
+    methods: {
+        valueFromLabel(str) {
+            return str.replace(/\s/g, "_").toLowerCase();
         },
-        closeModal(){
-            this.$emit('close')
+        closeModal() {
+            this.$emit("close");
         },
-    }
-}
+    },
+};
 </script>
