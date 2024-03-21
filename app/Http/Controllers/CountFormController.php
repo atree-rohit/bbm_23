@@ -226,7 +226,7 @@ class CountFormController extends Controller
 
     public function count_forms()
     {
-        $forms = CountForm::where("status", "approved")->with("species_list")->get();
+        $forms = CountForm::where("status", "approved")->with("species_list")->orderBy("id", "desc")->get();
         return $this->clean_object($forms);
     }
 
