@@ -12,6 +12,10 @@
     overflow-y: auto;
 }
 
+.map-container .table-container th {
+    text-transform: capitalize;
+}
+
 @media (max-width: 500px) {
     .map-container {
         grid-template-columns: 1fr;
