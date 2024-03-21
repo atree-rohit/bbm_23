@@ -109,6 +109,7 @@ export default defineComponent({
             geojson: (state) => state.data.geojson,
         }),
         mapGeoJson() {
+            console.log(this.geojson);
             if (this.selected_state == "") {
                 return this.geojson[this.mode];
             } else {

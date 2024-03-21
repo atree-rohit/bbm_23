@@ -168,7 +168,7 @@ const init = () => {
         render_map();
         zoomToContent();
     } else {
-        console.log("No geojson");
+        console.log("No geojson", props);
     }
 };
 
