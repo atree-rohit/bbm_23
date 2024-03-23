@@ -12,7 +12,7 @@ export default defineConfig({
                 'resources/js/pages/about.js',
                 'resources/js/pages/butterfly_counts.js',
                 'resources/js/pages/data.js',
-                'resources/js/pages/home.js',
+                'resources/js/pages/homepage.js',
                 'resources/js/pages/how_to_participate.js',
                 'resources/js/pages/login.js',
                 'resources/js/pages/logout.js',

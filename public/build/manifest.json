@@ -187,23 +187,23 @@
     "isEntry": true,
     "src": "resources/js/pages/data.js"
   },
-  "resources/js/pages/home.css": {
-    "file": "assets/home-a18585cb.css",
-    "src": "resources/js/pages/home.css"
+  "resources/js/pages/homepage.css": {
+    "file": "assets/homepage-a18585cb.css",
+    "src": "resources/js/pages/homepage.css"
   },
-  "resources/js/pages/home.js": {
+  "resources/js/pages/homepage.js": {
     "css": [
-      "assets/home-a18585cb.css",
+      "assets/homepage-a18585cb.css",
       "assets/bootstrap-icons-9f7ec267.css"
     ],
-    "file": "assets/home-60cdbdb1.js",
+    "file": "assets/homepage-1c3c9f9e.js",
     "imports": [
       "__plugin-vue_export-helper-33534a81.js",
       "_FileUploadComponent-0bb16cc6.js",
       "_Footer-4e5982c7.js"
     ],
     "isEntry": true,
-    "src": "resources/js/pages/home.js"
+    "src": "resources/js/pages/homepage.js"
   },
   "resources/js/pages/how_to_participate.css": {
     "file": "assets/how_to_participate-f53d543a.css",
