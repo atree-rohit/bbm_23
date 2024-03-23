@@ -81,7 +81,7 @@
                 {{ section.text }}
             </div>
             <div class="image-container">
-                <img :src="section.img" alt="Section Image" loading="lazy" />
+                <img :src="section.img" alt="Section Image" loading="lazy" width="1600" height="900" />
             </div>
         </div>
     </div>
