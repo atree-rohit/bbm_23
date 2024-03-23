@@ -7,7 +7,7 @@
 
 .section {
     display: grid;
-    grid-template-columns: 35% 1fr 35%; /* Adjusted to allocate 35% space for each text section */
+    grid-template-columns: 45% 1fr 45%; /* Adjusted to allocate 35% space for each text section */
     width: 100%;
 }
 
@@ -30,7 +30,7 @@
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
-    font-size: 1.5rem;
+    font-size: 2.25vw;
     font-weight: 100;
 }
 
@@ -49,14 +49,14 @@
 
 @media (max-width: 500px) {
     .section {
-        grid-template-columns: 1fr; /* Display single column layout for text below image */
+        /* grid-template-columns: 1fr;  */
     }
 
     .section .content {
-        grid-column: 1; /* Span full width */
-        grid-row: 2;
-        padding: 0.5rem 2rem; /* Adjust padding for mobile layout */
-        font-size: 1rem;
+        /* grid-column: 1;  */
+        /* grid-row: 2; */
+        padding: 0.5rem; 
+        font-size: 2.85vw;
     }
 
     .section .image-container {
@@ -81,12 +81,11 @@
                 {{ section.text }}
             </div>
             <div class="image-container">
-                <img :src="section.img" alt="Section Image" />
+                <img :src="section.img" alt="Section Image" loading="lazy" />
             </div>
         </div>
     </div>
     <div class="main-container">
-        <partners />
         <testimonials />
         <press-links />
     </div>
@@ -95,7 +94,6 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import Partners from "./Partners.vue";
 import Testimonials from "./Testimonials.vue";
 import PressLinks from "./PressLinks.vue";
 import Footer from "./Footer.vue";
@@ -103,15 +101,15 @@ import Footer from "./Footer.vue";
 const sections = [
     {
         text: "Welcome to 'Big Butterfly Month,' a thrilling citizen science program that takes place annually throughout the month of September! This program invites individuals of all ages and backgrounds to join us in studying and celebrating the incredible world of butterflies.",
-        img: "img/butterflies/cropped/DSC_8431.JPG",
+        img: "img/homepage/b1.jpg",
     },
     {
         text: "At 'Big Butterfly Month', we recognize the vital role that citizen scientists like you can play in collecting important data and ,contributing to our understanding of these remarkable and delicate creatures. Our program focuses on butterflies, captivating insects that are ,not only beautiful but also serve as essential pollinators and indicators of ecosystem health.",
-        img: "img/butterflies/cropped/DSC_0726.JPG",
+        img: "img/homepage/b2.jpg",
     },
     {
         text: "Why butterflies? Butterflies are renowned for their enchanting beauty, their intricate life cycles, and their ecological significance. By studying butterflies, we can gain insights into the health of our environment, the impact of climate change, and the effectiveness of conservation efforts.",
-        img: "img/butterflies/cropped/DSC_1430.JPG",
+        img: "img/homepage/b3.jpg",
     },
 ];
 </script>

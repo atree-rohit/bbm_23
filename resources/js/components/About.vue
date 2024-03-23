@@ -58,6 +58,10 @@ p.section-text::first-letter {
             />
         </div>
         <div class="section">
+            <partners />
+        </div>
+        
+        <div class="section">
             <district-coordinators-component />
         </div>
     </div>
@@ -67,6 +71,7 @@ p.section-text::first-letter {
 <script>
 import { defineComponent } from "vue";
 import { mapState } from "vuex";
+import Partners from "./Partners.vue";
 import DistrictCoordinatorsComponent from "./DistrictCoordinatorsComponent.vue";
 import Footer from "./Footer.vue";
 
