@@ -7,5 +7,5 @@
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/home.js')
+    @vite("resources/js/pages/homepage.js")
 @endpush
