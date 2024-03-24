@@ -101,7 +101,7 @@ import Footer from "./Footer.vue";
 const sections = [
     {
         text: "Welcome to 'Big Butterfly Month,' a thrilling citizen science program that takes place annually throughout the month of September! This program invites individuals of all ages and backgrounds to join us in studying and celebrating the incredible world of butterflies.",
-        img: "img/homepage/b1.jpg",
+        img: "img/butterflies/16x9/b5-1.JPG",
     },
     {
         text: "At 'Big Butterfly Month', we recognize the vital role that citizen scientists like you can play in collecting important data and ,contributing to our understanding of these remarkable and delicate creatures. Our program focuses on butterflies, captivating insects that are ,not only beautiful but also serve as essential pollinators and indicators of ecosystem health.",
