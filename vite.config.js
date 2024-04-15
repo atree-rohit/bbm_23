@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/js/pages/data.js',
                 'resources/js/pages/home.js',
                 'resources/js/pages/how_to_participate.js',
+                'resources/js/pages/privacy.js',
                 'resources/js/pages/login.js',
                 'resources/js/pages/logout.js',
                 'resources/js/pages/manage_users.js',
