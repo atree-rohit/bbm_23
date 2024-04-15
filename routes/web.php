@@ -29,6 +29,7 @@ Route::get('/registration', [PageController::class, 'registration']);
 Route::get('/butterfly-counts', [PageController::class, 'buttetfly_counts']);
 Route::get('/resources', [PageController::class, 'resources']);
 Route::get('/calendar', [PageController::class, 'calendar']);
+Route::get('/privacy', [PageController::class, 'privacy']);
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/register', [PageController::class, 'register']);
 Route::get('/login', [PageController::class, 'login'])->name('login');
